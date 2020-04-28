@@ -21,6 +21,11 @@ cd Spoken-Analytics-System
 pip install -r requirements.txt 
 ```
 
+* Switch to branch "arish"
+```
+git checkout arish
+```
+
 * Finally, you’re ready to start the development server:
 ```
 python manage.py runserver
