@@ -31,6 +31,6 @@ git checkout arish
 python manage.py runserver
 ```
 
-Visit [localhost:8000](http://127.0.0.1:8000/dashboard) in your browser to visit visualization page.
+Visit http://127.0.0.1:8000/dashboard in your browser to get to visualization page.
 
 

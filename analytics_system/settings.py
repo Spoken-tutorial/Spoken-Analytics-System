@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from .config import *
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -75,16 +77,26 @@ WSGI_APPLICATION = 'analytics_system.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
+    # Default database
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-#     'default': {
-#       'ENGINE': 'djongo',
-#       'NAME': 'logs',
-#    }
+        'ENGINE': 'djongo',
+        'NAME': MongoDB,
+    },
+    # Database used for authentication
+    'spoken': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DB,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': '',                            # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',
+    },
 }
 
+DATABASE_ROUTERS = [
+    # Router to use 'spoken' database for authentications
+    'dashboard.router.AuthRouter',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

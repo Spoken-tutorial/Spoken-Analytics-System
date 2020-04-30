@@ -3,5 +3,8 @@ from django.conf.urls import url
 from dashboard import views
 
 urlpatterns = [
-    url('', views.index),
+    path('', views.index),
+    
+    # to serve data to graph at dashboard
+    path('graph_data/', views.graphData, name="graph-data"),
 ]
