@@ -23,7 +23,7 @@ git checkout arish
 
 * Next, install the dependencies using pip:
 ```
-pip install -r requirements.txt 
+pip install -r requirements-dev.txt 
 ```
 
 * Change analytics_system/config.py-exo to analytics_system/config.py and put the configuration of databases
