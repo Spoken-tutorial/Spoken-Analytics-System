@@ -1,7 +1,8 @@
 """
 This file can generate fake data for database.
-Call this file in python shell to execute it.
->> source gen_fake_data.py
+change num_rows to desired number of rows to be inserted.
+excute this file in python shell.
+>> exec(open("gen_fake_data.py").read())
 """
 
 import datetime
@@ -9,6 +10,8 @@ import random
 from django_populate import Faker
 from dashboard.models import Log
 import dateutil.parser
+
+num_rows = 100 # number of rows to inserted
 
 populator = Faker.getPopulator()
 
@@ -24,13 +27,11 @@ def randomData():
         'region': lambda x: populator.generator.state(),
         'country': lambda x: populator.generator.country(),
         'ip_address':  lambda x: populator.generator.ipv4(network=False, address_class=None, private=None),
-        'timestamp': lambda x: populator.generator.date_time_between(start_date='-10y', end_date='now'),
+        'timestamp': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='now'),
         'view_args': 'view_args',
         'view_kwargs': 'view_kwargs'
     }
     return data
 
-n = 10 # number of rows to inserted
-
-populator.addEntity(Log, n, randomData())
+populator.addEntity(Log, num_rows, randomData())
 populator.execute()

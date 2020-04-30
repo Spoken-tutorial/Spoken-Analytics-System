@@ -16,14 +16,22 @@ git clone https://github.com/Spoken-tutorial/Spoken-Analytics-System.git
 cd Spoken-Analytics-System
 ```
 
+* Switch to branch "arish"
+```
+git checkout arish
+```
+
 * Next, install the dependencies using pip:
 ```
 pip install -r requirements.txt 
 ```
 
-* Switch to branch "arish"
+* Change analytics_system/config.py-exo to analytics_system/config.py and put the configuration of databases
+
+* Make migrations and migrate the database
 ```
-git checkout arish
+python3 manage.py makemigraions
+python3 manage.py migrate --database=default
 ```
 
 * Finally, you’re ready to start the development server:
