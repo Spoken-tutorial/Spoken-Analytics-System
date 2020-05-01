@@ -374,6 +374,20 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="graph_from_date">From : </label>
+                    </div>
+                    <div class="col-md-3">
+                      <input class="form-control" id="graph_from_date" style="width: inherit" type="date" onChange='getGraphData()'>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="graph_to_date">To : </label>
+                    </div>
+                    <div class="col-md-3">
+                      <input class="form-control" id="graph_to_date" style="width: inherit" type="date" onChange='getGraphData()'>
+                    </div>
+                  </div>
                   <div class="chart-area">
                     <canvas id="myAreaChart"></canvas>
                   </div>

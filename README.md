@@ -1,7 +1,7 @@
 # Spoken-Analytics-System
 
 
-I have added django 2.2.12.
+## Chart visualization added
 
 ## Setting up the project
 * Create a virtual environment in recently created directory and activate it:
@@ -32,6 +32,12 @@ pip install -r requirements-dev.txt
 ```
 python3 manage.py makemigraions
 python3 manage.py migrate --database=default
+```
+
+* Genereate fake data
+excute gen_fake_data.py file in python shell.
+```
+>> exec(open("gen_fake_data.py").read())
 ```
 
 * Finally, you’re ready to start the development server:

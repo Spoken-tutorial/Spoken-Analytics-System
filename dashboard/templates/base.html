@@ -17,9 +17,14 @@
   <!-- Custom fonts for this template-->
   <link href="{% static '/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <!-- Material Design Bootstrap -->
+  <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
   <!-- Custom styles for this template-->
   <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+  <!-- Your custom styles (optional) -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 
@@ -29,6 +34,9 @@
 
   <!-- Bootstrap core JavaScript-->
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
   <!-- Core plugin JavaScript-->
@@ -37,8 +45,13 @@
   <!-- Custom scripts for all pages-->
   <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
 
+  <!-- Required for chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  
   <!-- Page level plugins -->
   <script src="{% static '/vendor/chart.js/Chart.min.js' %}"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
 
   <!-- Page level custom scripts -->
   <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
