@@ -12,18 +12,28 @@ def index(request):
     """
     Renders the dashboard page
     """
-    return render(request, 'index.html')
+
+    total_page_views = Log.objects.mongo_count()
+    max_date = Log.objects.all().order_by('-datetime')[0].datetime
+    min_date = Log.objects.all().order_by('datetime')[0].datetime
+    time_diff = max_date - min_date
+    average_daily_page_views = int(total_page_views / time_diff.days)
+
+    context = {
+        'average_daily_page_views': average_daily_page_views
+    }
+    return render(request, 'index.html', context)
 
 # This view serves the data required to plot graph on dashboard
 def graphData(request):
     """
     Suppy data to graph to display page loads per day
     """
-    fromdate = datetime.strptime(request.GET['fromDate'], '%Y-%m-%d')
-    todate = datetime.strptime(request.GET['toDate'], '%Y-%m-%d')
+    from_date = datetime.strptime(request.GET['fromDate'], '%Y-%m-%d')
+    to_date = datetime.strptime(request.GET['toDate'], '%Y-%m-%d')
 
     # building mongo query
-    q = [{"$match": {"datetime": { "$gte": fromdate, "$lte": todate }}}
+    q = [{"$match": {"datetime": { "$gte": from_date, "$lte": to_date }}}
     , {'$group': {'_id': {'date': { '$dateToString': {'date': '$datetime', 'format' : '%Y-%m-%d'}}}
     , 'count': { '$sum': 1 }}}, {'$sort': { '_id.date': 1 }}]
 

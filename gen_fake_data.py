@@ -27,7 +27,7 @@ def randomData():
         'region': lambda x: populator.generator.state(),
         'country': lambda x: populator.generator.country(),
         'ip_address':  lambda x: populator.generator.ipv4(network=False, address_class=None, private=None),
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-30d', end_date='now'),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-60d', end_date='now'),
         'view_args': 'view_args',
         'view_kwargs': 'view_kwargs'
     }
