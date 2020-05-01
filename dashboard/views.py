@@ -13,14 +13,20 @@ def index(request):
     Renders the dashboard page
     """
 
+    # calculating average daily page views
     total_page_views = Log.objects.mongo_count()
     max_date = Log.objects.all().order_by('-datetime')[0].datetime
     min_date = Log.objects.all().order_by('datetime')[0].datetime
     time_diff = max_date - min_date
     average_daily_page_views = int(total_page_views / time_diff.days)
 
+    # Calculating average daily unique visits
+    number_of_distinct_ip_addresses = len(Log.objects.mongo_distinct('ip_address'))
+    average_daily_unique_visits = int(number_of_distinct_ip_addresses / time_diff.days)
+
     context = {
-        'average_daily_page_views': average_daily_page_views
+        'average_daily_page_views': average_daily_page_views,
+        'average_daily_unique_visits': average_daily_unique_visits
     }
     return render(request, 'index.html', context)
 
