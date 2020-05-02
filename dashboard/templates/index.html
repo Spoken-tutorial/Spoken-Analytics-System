@@ -84,17 +84,15 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <!-- Topbar Search -->
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
-              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                  <i class="fas fa-search fa-sm"></i>
-                </button>
-              </div>
-            </div>
-          </form>
+          <!-- Topbar Select -->
+          <select style="width: 6em" class="browser-default custom-select">
+            <option selected>Daily</option>
+            <option value="1">Weekly</option>
+            <option value="2">Monthly</option>
+            <option value="3">Yearly</option>
+          </select>
+
+          <span><h5 style="margin-bottom: 0em">&nbsp&nbspStats</h5></span>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
@@ -376,16 +374,69 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-3">
-                      <label for="graph_from_date">From : </label>
+                      <button class="date-control" id="graph-left-jump" title="Jump Left">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" version="1.1" xml:space="preserve" width="12px" height="9px" class="svg">
+                          <g>
+                            <path style="fill:#fff;" d="M 12 7.6611 L 8.5189 4.5005 L 12 1.3389 L 10.5883 0 L 6 4.3514 L 6.179 4.5005 L 6 4.6486 L 10.5883 9 L 12 7.6611 Z"></path>
+                            <path style="fill:#fff;" d="M 6 7.6611 L 2.5189 4.5005 L 6 1.3389 L 4.5883 0 L 0 4.3514 L 0.179 4.5005 L 0 4.6486 L 4.5883 9 L 6 7.6611 Z"></path>
+                          </g>
+                        </svg>
+                      </button>
+                      <button class="date-control" id="graph-left-crawl" title="Move Left">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 13" version="1.1" xml:space="preserve" width="7px" height="13px" class="arrow">
+                          <g transform="translate(-1,1)">
+                            <path style="fill:#fff;" d="M 8.1961,7.4604 4.4026,3.8289 8.1961,0.196 6.6576,-1.3424 l -5.195,5.1713 5.195,5.17 z"></path>
+                          </g>
+                        </svg>
+                      </button>
+                      <button class="date-control" id="graph-right-crawl" title="Move Right">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 13" version="1.1" xml:space="preserve" width="7px" height="13px" class="arrow">
+                          <g transform="translate(-1.4,1)">
+                            <path style="fill:#fff;" d="M 1.4626,7.4604 5.2561,3.8289 1.4626,0.196 l 1.5385,-1.5384 5.195,5.1713 -5.195,5.17 z"></path>
+                          </g>
+                        </svg>
+                      </button>
+                      <button class="date-control" id="graph-right-jump" title="Jump Right">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" version="1.1" xml:space="preserve" width="12px" height="9px" class="svg">
+                          <g transform="matrix(-1,0,0,1,12,0)">
+                            <path style="fill:#fff;" d="M 12 7.6611 L 8.5189 4.5005 L 12 1.3389 L 10.5883 0 L 6 4.3514 L 6.179 4.5005 L 6 4.6486 L 10.5883 9 L 12 7.6611 Z"></path>
+                            <path style="fill:#fff;" d="M 6 7.6611 L 2.5189 4.5005 L 6 1.3389 L 4.5883 0 L 0 4.3514 L 0.179 4.5005 L 0 4.6486 L 4.5883 9 L 6 7.6611 Z"></path>
+                          </g>
+                        </svg>
+                      </button>
                     </div>
-                    <div class="col-md-3">
-                      <input class="form-control" id="graph_from_date" style="width: inherit" type="date" onChange='getGraphData()'>
+                    <div class="col-md-2">
+                      <button class="date-control" id="graph-zoom-out" title="Zoom Out">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" version="1.1" xml:space="preserve" width="10px" height="10px">
+                          <g>
+                            <rect style="fill:#fff;" x="0" y="4" width="10" height="2"></rect>
+                          </g>
+                        </svg>
+                      </button>
+                      <button class="date-control" id="graph-zoom-in" title="Zoom In">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" version="1.1" xml:space="preserve" width="10px" height="10px">
+                          <g>
+                            <rect style="fill:#fff;" x="0" y="4" width="10" height="2"></rect>
+                            <rect style="fill:#fff;" x="4" y="0" width="2" height="10"></rect>
+                          </g>
+                        </svg>
+                      </button>
                     </div>
-                    <div class="col-md-3">
-                      <label for="graph_to_date">To : </label>
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" id="graph_to_date" style="width: inherit" type="date" onChange='getGraphData()'>
+                    <div class="col-md-7" style="background: #4e73df; color: #fff; height: 30px;">
+                      <div class="row">
+                        <div class="col-md-2" style="padding:0px; font-size: larger; text-align: center;">
+                          <label for="graph_from_date">From : </label>
+                        </div>
+                        <div class="col-md-4" style="padding:0px; margin: 3px 0px;">
+                          <input class="form-control" id="graph_from_date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
+                        </div>
+                        <div class="col-md-2" style="padding:0px; font-size: larger;; text-align: center;">
+                          <label for="graph_to_date">To : </label>
+                        </div>
+                        <div class="col-md-4" style="padding:0px; margin: 3px 0px 0px -3px;">
+                          <input class="form-control" id="graph_to_date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="chart-area">
