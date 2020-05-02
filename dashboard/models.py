@@ -13,7 +13,7 @@ class Log(models.Model):
     state_code = models.CharField (max_length=5, blank=False)
     city = models.CharField (max_length=100, blank=False)
     datetime = models.DateTimeField()
-    first_time_visit = models.BooleanField(null=False)
+    first_time_visit = models.CharField(max_length=5,null=False)
     
     def __str__(self):
         return "Website Log Object"

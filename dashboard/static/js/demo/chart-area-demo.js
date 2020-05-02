@@ -1,6 +1,8 @@
 var timeFormat = 'YYYY-MM-DD';
 
-graphData = []
+daily_page_loads_array = []
+daily_unique_visits_array = []
+daily_returning_visits_array = []
 
 var color = Chart.helpers.color; // chart.js colors
 
@@ -39,12 +41,25 @@ var config = {
   type: 'line',
   data: {
       datasets: [{
-          label: 'Page Views',
-          backgroundColor: color('rgb(54, 162, 235)').alpha(0.5).rgbString(),
-          borderColor: 'rgb(54, 162, 235)',
-          fill: false,
-          data: graphData,
-      }]
+        label: 'Page Views',
+        backgroundColor: color('rgb(78,115,223)').alpha(0.5).rgbString(),
+        borderColor: 'rgb(78,115,223)',
+        fill: false,
+        data: daily_page_loads_array,
+      },{
+        label: 'Unique Visits',
+        backgroundColor: color('rgb(28,200,138)').alpha(0.5).rgbString(),
+        borderColor: 'rgb(28,200,138)',
+        fill: false,
+        data: daily_unique_visits_array,
+      },{
+        label: 'Returning Visits',
+        backgroundColor: color('rgb(246,194,62)').alpha(0.5).rgbString(),
+        borderColor: 'rgb(246,194,62)',
+        fill: false,
+        data: daily_returning_visits_array,
+      },
+    ]
   },
   options: {
       responsive: true,
@@ -107,15 +122,41 @@ function getGraphData(){
     },
     url: "/dashboard/graph_data/",
     success: function(data) {
-        graphData.length = 0
-        data = JSON.parse(data);
-        data.forEach((key, value) => {
-            // pushing chart data in graphData variable
-            graphData.push({
-                'x': moment(key._id.date).format(timeFormat),//key._id.date.format(),
+
+        console.log(data);
+
+        daily_page_loads_array.length = 0
+        daily_unique_visits_array.length = 0
+        daily_returning_visits_array.length = 0
+
+        daily_page_loads = JSON.parse(data.daily_page_loads_json);
+        daily_unique_visits = JSON.parse(data.daily_unique_visits_json)
+        daily_returning_visits = JSON.parse(data.daily_returning_visits_json)
+
+        daily_page_loads.forEach((key, value) => {
+            // pushing chart data in daily_page_loads_array variable
+            daily_page_loads_array.push({
+                'x': moment(key._id.date).format(timeFormat),
                 'y': key.count,
             })
         });
+
+        daily_unique_visits.forEach((key, value) => {
+            // pushing chart data in daily_unique_visits variable
+            daily_unique_visits_array.push({
+                'x': moment(key._id.date).format(timeFormat),
+                'y': key.count,
+            })
+        });
+
+        daily_returning_visits.forEach((key, value) => {
+            // pushing chart data in daily_unique_visits variable
+            daily_returning_visits_array.push({
+                'x': moment(key._id.date).format(timeFormat),
+                'y': key.count,
+            })
+        });
+
         new Chart(ctx_day_chart, config);
     },
     error: function(err) {

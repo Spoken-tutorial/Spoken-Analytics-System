@@ -29,7 +29,8 @@ def index(request):
     average_daily_first_time_visits = int(total_first_time_visits / time_diff.days)
 
     # Calculating average daily returning visits
-    average_daily_returning_visits = average_daily_unique_visits - average_daily_first_time_visits
+    total_returning_visits = Log.objects.filter(first_time_visit="True").count()
+    average_daily_returning_visits = int(total_returning_visits / time_diff.days)
 
     context = {
         'average_daily_page_views': average_daily_page_views,
@@ -47,11 +48,37 @@ def graphData(request):
     from_date = datetime.strptime(request.GET['fromDate'], '%Y-%m-%d')
     to_date = datetime.strptime(request.GET['toDate'], '%Y-%m-%d')
 
-    # building mongo query
-    q = [{"$match": {"datetime": { "$gte": from_date, "$lte": to_date }}}
+    # query to get daily page loads
+    query_daily_page_loads = [{"$match": {"datetime": { "$gte": from_date, "$lte": to_date }}}
     , {'$group': {'_id': {'date': { '$dateToString': {'date': '$datetime', 'format' : '%Y-%m-%d'}}}
     , 'count': { '$sum': 1 }}}, {'$sort': { '_id.date': 1 }}]
 
-    obj = Log.objects.mongo_aggregate(q)
-    qs_json = dumps(obj)
-    return JsonResponse(qs_json, safe=False) # sending data
+
+    daily_page_loads_obj = Log.objects.mongo_aggregate(query_daily_page_loads)
+    daily_page_loads_json = dumps(daily_page_loads_obj)
+
+    # query to get daily unique visits
+    query_daily_unique_visits = [{'$match': {'datetime': { '$gte': from_date, '$lte': to_date }}}
+    , {'$group': {'_id': {'date': { '$dateToString': {'date': '$datetime', 'format' : '%Y-%m-%d'}}, 'ip_address': '$ip_address'}}}
+    , {'$group': {'_id': {'date': '$_id.date'} ,'count': {'$sum': 1}}}
+    , {'$sort': { '_id.date': 1 }}]
+
+    daily_unique_visits_obj = Log.objects.mongo_aggregate(query_daily_unique_visits)
+    daily_unique_visits_json = dumps(daily_unique_visits_obj)
+
+    # query to get daily returning visits
+    query_daily_returning_visits = [{'$match': {'datetime': { '$gte': from_date, '$lte': to_date }}}
+    , {'$match': {'first_time_visit': 'False'}}
+    , {'$group': {'_id': {'date': { '$dateToString': {'date': '$datetime', 'format' : '%Y-%m-%d'}}, 'ip_address': '$ip_address'}}}
+       , {'$group': {'_id': {'date': '$_id.date'} ,'count': {'$sum': 1}}}
+    , {'$sort': { '_id.date': 1 }}]
+
+    daily_returning_visits_obj = Log.objects.mongo_aggregate(query_daily_returning_visits)
+    daily_returning_visits_json = dumps(daily_returning_visits_obj)
+
+    json_res = {
+        'daily_page_loads_json': daily_page_loads_json,
+        'daily_unique_visits_json': daily_unique_visits_json,
+        'daily_returning_visits_json': daily_returning_visits_json,
+    }
+    return JsonResponse(json_res, safe=False) # sending data
