@@ -24,9 +24,18 @@ def index(request):
     number_of_distinct_ip_addresses = len(Log.objects.mongo_distinct('ip_address'))
     average_daily_unique_visits = int(number_of_distinct_ip_addresses / time_diff.days)
 
+    # Calculating average daily first time visits
+    total_first_time_visits = Log.objects.filter(first_time_visit="True").count()
+    average_daily_first_time_visits = int(total_first_time_visits / time_diff.days)
+
+    # Calculating average daily returning visits
+    average_daily_returning_visits = average_daily_unique_visits - average_daily_first_time_visits
+
     context = {
         'average_daily_page_views': average_daily_page_views,
-        'average_daily_unique_visits': average_daily_unique_visits
+        'average_daily_unique_visits': average_daily_unique_visits,
+        'average_daily_first_time_visits': average_daily_first_time_visits,
+        'average_daily_returning_visits': average_daily_returning_visits,
     }
     return render(request, 'index.html', context)
 
