@@ -5,7 +5,7 @@ from bson.json_util import dumps
 from django.shortcuts import render
 from .models import Log
 from django.http import JsonResponse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Create your views here.
 def index(request):
@@ -46,7 +46,7 @@ def graphData(request):
     Suppy data to graph to display page loads per day
     """
     from_date = datetime.strptime(request.GET['fromDate'], '%Y-%m-%d')
-    to_date = datetime.strptime(request.GET['toDate'], '%Y-%m-%d')
+    to_date = datetime.strptime(request.GET['toDate'], '%Y-%m-%d') + timedelta(days=1)
 
     # query to get daily page loads
     query_daily_page_loads = [{"$match": {"datetime": { "$gte": from_date, "$lte": to_date }}}
@@ -75,6 +75,8 @@ def graphData(request):
 
     daily_returning_visits_obj = Log.objects.mongo_aggregate(query_daily_returning_visits)
     daily_returning_visits_json = dumps(daily_returning_visits_obj)
+
+    print(to_date)
 
     json_res = {
         'daily_page_loads_json': daily_page_loads_json,

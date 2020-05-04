@@ -34,7 +34,7 @@ def randomData():
         'country': country,
         # 'ip_address':  lambda x: populator.generator.ipv4(network=False, address_class=None, private=None),
         'ip_address':  lambda x: random.choice(["127.0.0.1", "127.0.0.2", "127.0.0.3", "127.0.0.4"]),
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-60d', end_date='now'),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-60d', end_date='+1d'),
         'first_time_visit': lambda x: random.choice(["True", "False"]),
     }
     return data

@@ -11,7 +11,7 @@ var ctx_day_chart = document.getElementById("myAreaChart").getContext('2d');
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
-
+Chart.defaults.global.elements.line.tension = 0;
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
   // *     return: '1 234,56'
@@ -42,19 +42,19 @@ var config = {
   data: {
       datasets: [{
         label: 'Page Views',
-        backgroundColor: color('rgb(78,115,223)').alpha(0.5).rgbString(),
+        backgroundColor: color('rgb(78,115,223)').alpha(0.8).rgbString(),
         borderColor: 'rgb(78,115,223)',
         fill: false,
         data: daily_page_loads_array,
       },{
         label: 'Unique Visits',
-        backgroundColor: color('rgb(28,200,138)').alpha(0.5).rgbString(),
+        backgroundColor: color('rgb(28,200,138)').alpha(0.8).rgbString(),
         borderColor: 'rgb(28,200,138)',
         fill: false,
         data: daily_unique_visits_array,
       },{
         label: 'Returning Visits',
-        backgroundColor: color('rgb(246,194,62)').alpha(0.5).rgbString(),
+        backgroundColor: color('rgb(246,194,62)').alpha(0.8).rgbString(),
         borderColor: 'rgb(246,194,62)',
         fill: false,
         data: daily_returning_visits_array,
@@ -69,38 +69,42 @@ var config = {
       },
       scales: {
           xAxes: [{
-              type: 'time',
-              time: {
-                  parser: timeFormat,
-                  unit: 'day',
-                  tooltipFormat: 'll'
-              },
-              display: true,
-              scaleLabel: {
-                  display: true,
-                  labelString: 'Date'
-              },
-              ticks: {
-                  major: {
-                      fontStyle: 'bold',
-                      fontColor: '#FF0000'
-                  }
-              }
+            type: 'time',
+            time: {
+                parser: timeFormat,
+                unit: 'day',
+                tooltipFormat: 'll'
+            },
+            display: true,
+            scaleLabel: {
+                display: true,
+                labelString: 'Date'
+            },
+            ticks: {
+                major: {
+                    fontStyle: 'bold',
+                    fontColor: '#FF0000'
+                }
+            },
+            gridLines: {
+                offsetGridLines: true
+            },
+            offset: true,
           }],
           yAxes: [{
             ticks: {
-              maxTicksLimit: 5,
-              padding: 10,
-              // Include a dollar sign in the ticks
-              callback: function(value, index, values) {
+                beginAtZero: true,
+                maxTicksLimit: 5,
+                padding: 10,
+                callback: function(value, index, values) {
                   return number_format(value);
                 }
-              },
-              display: true,
-              scaleLabel: {
-                  display: true,
-                  labelString: 'Views'
-              },
+            },
+            display: true,
+            scaleLabel: {
+                display: true,
+                //   labelString: 'Views'
+            },
           }]
       }
   }
@@ -112,59 +116,67 @@ function getGraphData(){
     toDate = $('#graph_to_date').val()
 
     $.ajax({
-    type: "GET",
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    data: {
-        fromDate: fromDate,
-        toDate: toDate,
-    },
-    url: "/dashboard/graph_data/",
-    success: function(data) {
+        type: "GET",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: {
+            fromDate: fromDate,
+            toDate: toDate,
+        },
+        url: "/dashboard/graph_data/",
+        success: function(data) {
 
-        daily_page_loads_array.length = 0
-        daily_unique_visits_array.length = 0
-        daily_returning_visits_array.length = 0
+            daily_page_loads_array.length = 0
+            daily_unique_visits_array.length = 0
+            daily_returning_visits_array.length = 0
 
-        daily_page_loads = JSON.parse(data.daily_page_loads_json);
-        daily_unique_visits = JSON.parse(data.daily_unique_visits_json)
-        daily_returning_visits = JSON.parse(data.daily_returning_visits_json)
+            daily_page_loads = JSON.parse(data.daily_page_loads_json);
+            daily_unique_visits = JSON.parse(data.daily_unique_visits_json)
+            daily_returning_visits = JSON.parse(data.daily_returning_visits_json)
 
-        daily_page_loads.forEach((key, value) => {
-            // pushing chart data in daily_page_loads_array variable
-            daily_page_loads_array.push({
-                'x': moment(key._id.date).format(timeFormat),
-                'y': key.count,
-            })
-        });
+            daily_page_loads.forEach((key, value) => {
+                // pushing chart data in daily_page_loads_array variable
+                daily_page_loads_array.push({
+                    'x': moment(key._id.date).format(timeFormat),
+                    'y': key.count,
+                })
+            });
 
-        daily_unique_visits.forEach((key, value) => {
-            // pushing chart data in daily_unique_visits variable
-            daily_unique_visits_array.push({
-                'x': moment(key._id.date).format(timeFormat),
-                'y': key.count,
-            })
-        });
+            daily_unique_visits.forEach((key, value) => {
+                // pushing chart data in daily_unique_visits variable
+                daily_unique_visits_array.push({
+                    'x': moment(key._id.date).format(timeFormat),
+                    'y': key.count,
+                })
+            });
 
-        daily_returning_visits.forEach((key, value) => {
-            // pushing chart data in daily_unique_visits variable
-            daily_returning_visits_array.push({
-                'x': moment(key._id.date).format(timeFormat),
-                'y': key.count,
-            })
-        });
+            daily_returning_visits.forEach((key, value) => {
+                // pushing chart data in daily_unique_visits variable
+                daily_returning_visits_array.push({
+                    'x': moment(key._id.date).format(timeFormat),
+                    'y': key.count,
+                })
+            });
 
-        new Chart(ctx_day_chart, config);
-    },
-    error: function(err) {
-        console.log("Error:" + err);
-    }
+            new Chart(ctx_day_chart, config);
+        },
+        error: function(err) {
+            console.log("Error:" + err);
+        }
     });
 }
 
 $('#chart_select').on('change', function() {
-    config.type = $('#chart_select').val();
+    var chart_type = $('#chart_select').val();
+    config.type = chart_type;
+    // if(chart_type == 'line') {
+    //     config.options.scales.xAxes[0].gridLines.offsetGridLines = false;
+    //     config.options.scales.xAxes[0].offset = false
+    // } else {
+    //     config.options.scales.xAxes[0].gridLines.offsetGridLines = true;
+    //     config.options.scales.xAxes[0].offset = true
+    // }
     getGraphData();
 });
 

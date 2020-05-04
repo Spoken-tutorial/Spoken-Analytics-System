@@ -26,6 +26,9 @@
   <!-- Your custom styles (optional) -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+  <!-- Custom styles for this page -->
+  <link href="{% static 'vendor/datatables/datatables.bootstrap4.min.css' %}" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -52,6 +55,12 @@
   <script src="{% static '/vendor/chart.js/Chart.min.js' %}"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+  <!-- Page level plugins -->
+  <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 
   <!-- Page level custom scripts -->
   <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
