@@ -38,7 +38,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 var config = {
-  type: 'line',
+  type: 'bar',
   data: {
       datasets: [{
         label: 'Page Views',
@@ -162,6 +162,11 @@ function getGraphData(){
     }
     });
 }
+
+$('#chart_select').on('change', function() {
+    config.type = $('#chart_select').val();
+    getGraphData();
+});
 
 $(document).ready( function () {
     document.querySelector("#graph_to_date").value = moment().toISOString().substr(0, 10);
