@@ -123,8 +123,6 @@ function getGraphData(){
     url: "/dashboard/graph_data/",
     success: function(data) {
 
-        console.log(data);
-
         daily_page_loads_array.length = 0
         daily_unique_visits_array.length = 0
         daily_returning_visits_array.length = 0
@@ -165,102 +163,113 @@ function getGraphData(){
     });
 }
 
-document.querySelector("#graph_to_date").value = moment().toISOString().substr(0, 10);
-document.querySelector("#graph_from_date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
-
-
 $(document).ready( function () {
+    document.querySelector("#graph_to_date").value = moment().toISOString().substr(0, 10);
+    document.querySelector("#graph_from_date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
     getGraphData();
 });
 
-// Area Chart Example
-// var config = {
-//   type: 'line',
-//   data: {
-//     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-//     datasets: [{
-//       label: "Earnings",
-//       lineTension: 0.3,
-//       backgroundColor: "rgba(78, 115, 223, 0.05)",
-//       borderColor: "rgba(78, 115, 223, 1)",
-//       pointRadius: 3,
-//       pointBackgroundColor: "rgba(78, 115, 223, 1)",
-//       pointBorderColor: "rgba(78, 115, 223, 1)",
-//       pointHoverRadius: 3,
-//       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-//       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-//       pointHitRadius: 10,
-//       pointBorderWidth: 2,
-//       data: graphData,
-//     }],
-//   },
-//   options: {
-//     maintainAspectRatio: false,
-//     layout: {
-//       padding: {
-//         left: 10,
-//         right: 25,
-//         top: 25,
-//         bottom: 0
-//       }
-//     },
-//     scales: {
-//       xAxes: [{
-//         type: 'time',
-//         time: {
-//             parser: timeFormat,
-//             unit: 'day',
-//             tooltipFormat: 'll'
-//         },
-//         gridLines: {
-//           display: false,
-//           drawBorder: false
-//         },
-//         ticks: {
-//           maxTicksLimit: 7
-//         }
-//       }],
-//       yAxes: [{
-//         ticks: {
-//           maxTicksLimit: 5,
-//           padding: 10,
-//           // Include a dollar sign in the ticks
-//           callback: function(value, index, values) {
-//             return '$' + number_format(value);
-//           }
-//         },
-//         gridLines: {
-//           color: "rgb(234, 236, 244)",
-//           zeroLineColor: "rgb(234, 236, 244)",
-//           drawBorder: false,
-//           borderDash: [2],
-//           zeroLineBorderDash: [2]
-//         }
-//       }],
-//     },
-//     legend: {
-//       display: false
-//     },
-//     tooltips: {
-//       backgroundColor: "rgb(255,255,255)",
-//       bodyFontColor: "#858796",
-//       titleMarginBottom: 10,
-//       titleFontColor: '#6e707e',
-//       titleFontSize: 14,
-//       borderColor: '#dddfeb',
-//       borderWidth: 1,
-//       xPadding: 15,
-//       yPadding: 15,
-//       displayColors: false,
-//       intersect: false,
-//       mode: 'index',
-//       caretPadding: 10,
-//       callbacks: {
-//         label: function(tooltipItem, chart) {
-//           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-//           return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
-//         }
-//       }
-//     }
-//   }
-// };
+// Utility function to add days to a date
+function addDays(date, days) {
+    const copy = new Date(Number(date))
+    copy.setDate(date.getDate() + days)
+    return copy
+}
+
+// Utility function to find number of days berween two dates
+function daysBetween( date1, date2 ) {
+    //Get 1 day in milliseconds
+    var one_day=1000*60*60*24;
+
+    // Convert both dates to milliseconds
+    var date1_ms = date1.getTime();
+    var date2_ms = date2.getTime();
+
+    // Calculate the difference in milliseconds
+    var difference_ms = date2_ms - date1_ms;
+        
+    // Convert back to days and return
+    return Math.round(difference_ms/one_day); 
+}
+
+$("#graph-left-jump").click(function(){
+    var from_date = new Date($('#graph_from_date').val());
+    var to_date = new Date($('#graph_to_date').val());
+    var new_from_date = addDays(from_date, -7);
+    var new_to_date = addDays(to_date, -7);
+    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    getGraphData();
+});
+
+$("#graph-right-jump").click(function(){
+    var from_date = new Date($('#graph_from_date').val());
+    var to_date = new Date($('#graph_to_date').val());
+    var today = new Date();
+    var new_from_date = addDays(from_date, 7);
+    var new_to_date = addDays(to_date, 7);
+    var diff_days = daysBetween(new_to_date, today);
+    if(diff_days == -7) {
+        return;
+    } else if(diff_days >= -7) {
+        $("#graph_from_date").val(addDays(from_date, 7+diff_days).toISOString().substr(0, 10));
+        $("#graph_to_date").val(addDays(to_date, 7+diff_days).toISOString().substr(0, 10));
+        getGraphData();
+    } else {
+        $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
+        $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+        getGraphData();
+    }
+});
+
+$("#graph-left-crawl").click(function(){
+    var from_date = new Date($('#graph_from_date').val());
+    var to_date = new Date($('#graph_to_date').val());
+    var new_from_date = addDays(from_date, -1);
+    var new_to_date = addDays(to_date, -1);
+    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    getGraphData();
+});
+
+$("#graph-right-crawl").click(function(){
+    var from_date = new Date($('#graph_from_date').val());
+    var to_date = new Date($('#graph_to_date').val());
+    var today = new Date();
+    var new_from_date = addDays(from_date, 1);
+    var new_to_date = addDays(to_date, 1);
+    if(daysBetween(new_to_date, today) < 0) {
+        return;
+    }
+    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    getGraphData();
+});
+
+$("#graph-zoom-out").click(function(){
+    var from_date = new Date($('#graph_from_date').val());
+    var to_date = new Date($('#graph_to_date').val());
+    var today = new Date();
+    var new_from_date = addDays(from_date, -1);
+    var new_to_date = addDays(to_date, 1);
+    if(daysBetween(today, new_to_date) > 0) {
+        $("#graph_from_date").val(addDays(from_date, -2).toISOString().substr(0, 10));
+    } else {
+        $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
+        $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    }
+    getGraphData();
+});
+
+$("#graph-zoom-in").click(function(){
+    var from_date = new Date($('#graph_from_date').val());
+    var to_date = new Date($('#graph_to_date').val());
+    var new_from_date = addDays(from_date, 1);
+    var new_to_date = addDays(to_date, -1);
+    if(daysBetween(from_date, to_date) < 4) {
+        return;
+    }
+    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    getGraphData();
+});
