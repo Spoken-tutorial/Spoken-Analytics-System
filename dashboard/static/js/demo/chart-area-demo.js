@@ -123,7 +123,7 @@ var graphDataTable = $('#graph-data-table').DataTable({
         { "width": "15%" },
         { "width": "15%" },
       ],
-    columnDefs: [ { 'type': 'date', 'targets': [0],  } ],
+    columnDefs: [ { 'type': 'date', 'targets': [0],  }],
     order: [[ 0, 'asc' ]],
 });
 
@@ -187,15 +187,15 @@ function getGraphData(){
 }
 
 $('#chart-select').on('change', function() {
-    var chart_type = $('#chart_select').val();
+    var chart_type = $('#chart-select').val();
     config.type = chart_type;
-    // if(chart_type == 'line') {
-    //     config.options.scales.xAxes[0].gridLines.offsetGridLines = false;
-    //     config.options.scales.xAxes[0].offset = false
-    // } else {
-    //     config.options.scales.xAxes[0].gridLines.offsetGridLines = true;
-    //     config.options.scales.xAxes[0].offset = true
-    // }
+    if(chart_type == 'line') {
+        config.options.scales.xAxes[0].gridLines.offsetGridLines = false;
+        config.options.scales.xAxes[0].offset = false
+    } else {
+        config.options.scales.xAxes[0].gridLines.offsetGridLines = true;
+        config.options.scales.xAxes[0].offset = true
+    }
     getGraphData();
 });
 

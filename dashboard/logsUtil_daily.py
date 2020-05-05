@@ -35,7 +35,7 @@ for _date in dates:
 
     for ip in unique_visitors:
         first_time = 0
-        for log in obj:
+        for log in daily_logs:
             if log.ip_address == ip and first_time == 0:
                 prev_datetime = log.datetime
                 first_time = 1

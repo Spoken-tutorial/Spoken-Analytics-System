@@ -30,3 +30,16 @@ class DailyStats(models.Model):
         return "Daily Stats"
 
     objects = models.DjongoManager()
+
+class WeeklyStats(models.Model):
+    week_of_year = models.IntegerField()
+    year = models.IntegerField()
+    page_loads = models.IntegerField()
+    unique_visits = models.IntegerField()
+    first_time_visits = models.IntegerField()
+    returning_visits = models.IntegerField()
+
+    def __str__(sekf):
+        return "Weekly Stats"
+
+    objects = models.DjongoManager()
