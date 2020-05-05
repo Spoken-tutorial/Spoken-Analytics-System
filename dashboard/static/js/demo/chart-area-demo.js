@@ -116,46 +116,37 @@ function getGraphData(){
     toDate = $('#graph_to_date').val()
 
     $.ajax({
-        type: "GET",
+        type: "POST",
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': window.CSRF_TOKEN,
+            'Accept': 'application/json'
         },
-        data: {
+        data: JSON.stringify({
             fromDate: fromDate,
             toDate: toDate,
-        },
+        }),
         url: "/dashboard/graph_data/",
         success: function(data) {
+            data = JSON.parse(data);
 
             daily_page_loads_array.length = 0
             daily_unique_visits_array.length = 0
             daily_returning_visits_array.length = 0
 
-            daily_page_loads = JSON.parse(data.daily_page_loads_json);
-            daily_unique_visits = JSON.parse(data.daily_unique_visits_json)
-            daily_returning_visits = JSON.parse(data.daily_returning_visits_json)
-
-            daily_page_loads.forEach((key, value) => {
+            data.forEach((key, value) => {
                 // pushing chart data in daily_page_loads_array variable
                 daily_page_loads_array.push({
-                    'x': moment(key._id.date).format(timeFormat),
-                    'y': key.count,
+                    'x': moment(key.fields.date).format(timeFormat),
+                    'y': key.fields.page_loads,
                 })
-            });
-
-            daily_unique_visits.forEach((key, value) => {
-                // pushing chart data in daily_unique_visits variable
                 daily_unique_visits_array.push({
-                    'x': moment(key._id.date).format(timeFormat),
-                    'y': key.count,
+                    'x': moment(key.fields.date).format(timeFormat),
+                    'y': key.fields.unique_visits,
                 })
-            });
-
-            daily_returning_visits.forEach((key, value) => {
-                // pushing chart data in daily_unique_visits variable
                 daily_returning_visits_array.push({
-                    'x': moment(key._id.date).format(timeFormat),
-                    'y': key.count,
+                    'x': moment(key.fields.date).format(timeFormat),
+                    'y': key.fields.returning_visits,
                 })
             });
 
