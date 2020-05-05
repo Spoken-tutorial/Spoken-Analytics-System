@@ -3,6 +3,7 @@ var timeFormat = 'YYYY-MM-DD';
 daily_page_loads_array = []
 daily_unique_visits_array = []
 daily_returning_visits_array = []
+graph_data_table_array = []
 
 var color = Chart.helpers.color; // chart.js colors
 
@@ -12,6 +13,7 @@ var ctx_day_chart = document.getElementById("myAreaChart").getContext('2d');
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 Chart.defaults.global.elements.line.tension = 0;
+
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
   // *     return: '1 234,56'
@@ -110,10 +112,25 @@ var config = {
   }
 };
 
+
+var graphDataTable = $('#graph-data-table').DataTable({
+    searching: false,
+    data: graph_data_table_array,
+    columns: [
+        { "width": "40%" },
+        { "width": "15%" },
+        { "width": "15%" },
+        { "width": "15%" },
+        { "width": "15%" },
+      ],
+    columnDefs: [ { 'type': 'date', 'targets': [0],  } ],
+    order: [[ 0, 'asc' ]],
+});
+
 function getGraphData(){
     // Getting chart data from server 
-    fromDate = $('#graph_from_date').val()
-    toDate = $('#graph_to_date').val()
+    fromDate = $('#graph-from-date').val()
+    toDate = $('#graph-to-date').val()
 
     $.ajax({
         type: "POST",
@@ -133,6 +150,7 @@ function getGraphData(){
             daily_page_loads_array.length = 0
             daily_unique_visits_array.length = 0
             daily_returning_visits_array.length = 0
+            graph_data_table_array.length = 0
 
             data.forEach((key, value) => {
                 // pushing chart data in daily_page_loads_array variable
@@ -148,9 +166,19 @@ function getGraphData(){
                     'x': moment(key.fields.date).format(timeFormat),
                     'y': key.fields.returning_visits,
                 })
+                graph_data_table_array.push([
+                    moment(key.fields.date).format('dddd, MMMM Do, YYYY'),
+                    key.fields.page_loads,
+                    key.fields.unique_visits,
+                    key.fields.first_time_visits,
+                    key.fields.returning_visits,
+                ])
             });
 
+            graph_data_table_array.reverse()
+
             new Chart(ctx_day_chart, config);
+            graphDataTable.clear().rows.add(graph_data_table_array).draw();
         },
         error: function(err) {
             console.log("Error:" + err);
@@ -158,7 +186,7 @@ function getGraphData(){
     });
 }
 
-$('#chart_select').on('change', function() {
+$('#chart-select').on('change', function() {
     var chart_type = $('#chart_select').val();
     config.type = chart_type;
     // if(chart_type == 'line') {
@@ -172,9 +200,10 @@ $('#chart_select').on('change', function() {
 });
 
 $(document).ready( function () {
-    document.querySelector("#graph_to_date").value = moment().toISOString().substr(0, 10);
-    document.querySelector("#graph_from_date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
+    document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
+    document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
     getGraphData();
+    
 });
 
 // Utility function to add days to a date
@@ -201,18 +230,18 @@ function daysBetween( date1, date2 ) {
 }
 
 $("#graph-left-jump").click(function(){
-    var from_date = new Date($('#graph_from_date').val());
-    var to_date = new Date($('#graph_to_date').val());
+    var from_date = new Date($('#graph-from-date').val());
+    var to_date = new Date($('#graph-to-date').val());
     var new_from_date = addDays(from_date, -7);
     var new_to_date = addDays(to_date, -7);
-    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
-    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     getGraphData();
 });
 
 $("#graph-right-jump").click(function(){
-    var from_date = new Date($('#graph_from_date').val());
-    var to_date = new Date($('#graph_to_date').val());
+    var from_date = new Date($('#graph-from-date').val());
+    var to_date = new Date($('#graph-to-date').val());
     var today = new Date();
     var new_from_date = addDays(from_date, 7);
     var new_to_date = addDays(to_date, 7);
@@ -220,64 +249,64 @@ $("#graph-right-jump").click(function(){
     if(diff_days == -7) {
         return;
     } else if(diff_days >= -7) {
-        $("#graph_from_date").val(addDays(from_date, 7+diff_days).toISOString().substr(0, 10));
-        $("#graph_to_date").val(addDays(to_date, 7+diff_days).toISOString().substr(0, 10));
+        $("#graph-from-date").val(addDays(from_date, 7+diff_days).toISOString().substr(0, 10));
+        $("#graph-to-date").val(addDays(to_date, 7+diff_days).toISOString().substr(0, 10));
         getGraphData();
     } else {
-        $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
-        $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+        $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+        $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
         getGraphData();
     }
 });
 
 $("#graph-left-crawl").click(function(){
-    var from_date = new Date($('#graph_from_date').val());
-    var to_date = new Date($('#graph_to_date').val());
+    var from_date = new Date($('#graph-from-date').val());
+    var to_date = new Date($('#graph-to-date').val());
     var new_from_date = addDays(from_date, -1);
     var new_to_date = addDays(to_date, -1);
-    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
-    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     getGraphData();
 });
 
 $("#graph-right-crawl").click(function(){
-    var from_date = new Date($('#graph_from_date').val());
-    var to_date = new Date($('#graph_to_date').val());
+    var from_date = new Date($('#graph-from-date').val());
+    var to_date = new Date($('#graph-to-date').val());
     var today = new Date();
     var new_from_date = addDays(from_date, 1);
     var new_to_date = addDays(to_date, 1);
     if(daysBetween(new_to_date, today) < 0) {
         return;
     }
-    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
-    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     getGraphData();
 });
 
 $("#graph-zoom-out").click(function(){
-    var from_date = new Date($('#graph_from_date').val());
-    var to_date = new Date($('#graph_to_date').val());
+    var from_date = new Date($('#graph-from-date').val());
+    var to_date = new Date($('#graph-to-date').val());
     var today = new Date();
     var new_from_date = addDays(from_date, -1);
     var new_to_date = addDays(to_date, 1);
     if(daysBetween(today, new_to_date) > 0) {
-        $("#graph_from_date").val(addDays(from_date, -2).toISOString().substr(0, 10));
+        $("#graph-from-date").val(addDays(from_date, -2).toISOString().substr(0, 10));
     } else {
-        $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
-        $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+        $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+        $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     }
     getGraphData();
 });
 
 $("#graph-zoom-in").click(function(){
-    var from_date = new Date($('#graph_from_date').val());
-    var to_date = new Date($('#graph_to_date').val());
+    var from_date = new Date($('#graph-from-date').val());
+    var to_date = new Date($('#graph-to-date').val());
     var new_from_date = addDays(from_date, 1);
     var new_to_date = addDays(to_date, -1);
     if(daysBetween(from_date, to_date) < 4) {
         return;
     }
-    $("#graph_from_date").val(new_from_date.toISOString().substr(0, 10));
-    $("#graph_to_date").val(new_to_date.toISOString().substr(0, 10));
+    $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     getGraphData();
 });
