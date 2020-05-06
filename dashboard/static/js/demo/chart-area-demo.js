@@ -1,13 +1,15 @@
 var timeFormat = 'YYYY-MM-DD';
 
-daily_page_views_array = []
-daily_unique_visits_array = []
-daily_returning_visits_array = []
+page_views_array = []
+unique_visits_array = []
+returning_visits_array = []
 graph_data_table_array = []
 
 var color = Chart.helpers.color; // chart.js colors
 
 var ctx_day_chart = document.getElementById("myAreaChart").getContext('2d');
+
+var data_summary_type = 'daily'
 
 var chart;
 
@@ -49,19 +51,19 @@ var config = {
         backgroundColor: color('rgb(78,115,223)').alpha(0.8).rgbString(),
         borderColor: 'rgb(78,115,223)',
         fill: false,
-        data: daily_page_views_array,
+        data:page_views_array,
       },{
         label: 'Unique Visits',
         backgroundColor: color('rgb(28,200,138)').alpha(0.8).rgbString(),
         borderColor: 'rgb(28,200,138)',
         fill: false,
-        data: daily_unique_visits_array,
+        data: unique_visits_array,
       },{
         label: 'Returning Visits',
         backgroundColor: color('rgb(246,194,62)').alpha(0.8).rgbString(),
         borderColor: 'rgb(246,194,62)',
         fill: false,
-        data: daily_returning_visits_array,
+        data: returning_visits_array,
       },
     ]
   },
@@ -129,8 +131,8 @@ var graphDataTable = $('#graph-data-table').DataTable({
     order: [[ 0, 'asc' ]],
 });
 
-// Getting daily chart data from server
-function getDailyGraphData(){ 
+// Getting chart data from server
+function getGraphData(){ 
     fromDate = $('#graph-from-date').val()
     toDate = $('#graph-to-date').val()
 
@@ -142,29 +144,29 @@ function getDailyGraphData(){
             'Accept': 'application/json'
         },
         data: JSON.stringify({
+            data_summary_type: data_summary_type,
             fromDate: fromDate,
             toDate: toDate,
         }),
-        url: "/dashboard/daily_graph_data/",
+        url: "/dashboard/graph_data/",
         success: function(data) {
             data = JSON.parse(data);
 
-            daily_page_views_array.length = 0
-            daily_unique_visits_array.length = 0
-            daily_returning_visits_array.length = 0
+            page_views_array.length = 0
+            unique_visits_array.length = 0
+            returning_visits_array.length = 0
             graph_data_table_array.length = 0
 
             data.forEach((key, value) => {
-                // pushing chart data in daily_page_views_array variable
-                daily_page_views_array.push({
+                page_views_array.push({
                     'x': moment(key.fields.date).format(timeFormat),
                     'y': key.fields.page_views,
                 })
-                daily_unique_visits_array.push({
+                unique_visits_array.push({
                     'x': moment(key.fields.date).format(timeFormat),
                     'y': key.fields.unique_visits,
                 })
-                daily_returning_visits_array.push({
+                returning_visits_array.push({
                     'x': moment(key.fields.date).format(timeFormat),
                     'y': key.fields.returning_visits,
                 })
@@ -203,14 +205,16 @@ $('#chart-select').on('change', function() {
 
 $('#summary-granularity-trigger').on('change', function() {
     var summary_type = $('#summary-granularity-trigger').val();
-    console.log(summary_type);
+
+    data_summary_type = summary_type;
+
     if (summary_type == 'daily') {
 
         $('#date-select-div').show();
         $('#week-select-div').hide();
 
         config.options.scales.xAxes[0].time.unit = 'day';
-        getDailyGraphData();
+        getGraphData();
 
     } else if (summary_type == 'weekly') {
         
@@ -221,11 +225,13 @@ $('#summary-granularity-trigger').on('change', function() {
 
     } else if (summary_type == 'monthly') {
 
-
+        config.options.scales.xAxes[0].time.unit = 'month';
+        getGraphData();
         
     } else if (summary_type == 'yearly') {
 
-
+        config.options.scales.xAxes[0].time.unit = 'year';
+        getGraphData();
 
     }
 });
@@ -233,7 +239,7 @@ $('#summary-granularity-trigger').on('change', function() {
 $(document).ready( function () {
     document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
     document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
-    getDailyGraphData();
+    getGraphData();
     
 });
 
@@ -267,7 +273,7 @@ $("#graph-left-jump").click(function(){
     var new_to_date = addDays(to_date, -7);
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getDailyGraphData();
+    getGraphData();
 });
 
 $("#graph-right-jump").click(function(){
@@ -282,11 +288,11 @@ $("#graph-right-jump").click(function(){
     } else if(diff_days > -7 && diff_days < 0) {
         $("#graph-from-date").val(addDays(from_date, 7+diff_days).toISOString().substr(0, 10));
         $("#graph-to-date").val(addDays(to_date, 7+diff_days).toISOString().substr(0, 10));
-        getDailyGraphData();
+        getGraphData();
     } else {
         $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
         $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-        getDailyGraphData();
+        getGraphData();
     }
 });
 
@@ -297,7 +303,7 @@ $("#graph-left-crawl").click(function(){
     var new_to_date = addDays(to_date, -1);
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getDailyGraphData();
+    getGraphData();
 });
 
 $("#graph-right-crawl").click(function(){
@@ -311,7 +317,7 @@ $("#graph-right-crawl").click(function(){
     }
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getDailyGraphData();
+    getGraphData();
 });
 
 $("#graph-zoom-out").click(function(){
@@ -326,7 +332,7 @@ $("#graph-zoom-out").click(function(){
         $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
         $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     }
-    getDailyGraphData();
+    getGraphData();
 });
 
 $("#graph-zoom-in").click(function(){
@@ -339,5 +345,5 @@ $("#graph-zoom-in").click(function(){
     }
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getDailyGraphData();
+    getGraphData();
 });

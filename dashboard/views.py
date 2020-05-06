@@ -49,7 +49,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 # This view serves the daily stats to graph of dashboard
-def dailyGraphData(request):
+def graphData(request):
     """
     Suppy data to graph to display page loads per day
     """
@@ -69,18 +69,18 @@ def dailyGraphData(request):
     return JsonResponse(json_res, safe=False) # sending data
 
 # This view serves the weekly stats to graph of dashboard
-def weeklyGraphData():
+# def weeklyGraphData():
 
-    data = json.loads(request.body) # Fetch data from request
+#     data = json.loads(request.body) # Fetch data from request
 
-    # Duration of which data is to send
-    from_week = datetime.strptime(data['fromWeek'], '%Y-%m-%d')
-    to_week = datetime.strptime(data['toWeek'], '%Y-%m-%d') + timedelta(days=1)
+#     # Duration of which data is to send
+#     from_week = datetime.strptime(data['fromWeek'], '%Y-%m-%d')
+#     to_week = datetime.strptime(data['toWeek'], '%Y-%m-%d') + timedelta(days=1)
 
-    # Extracting data from database
-    daily_stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
+#     # Extracting data from database
+#     daily_stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
 
-    # Converting data to json object
-    json_res = serializers.serialize('json', list(daily_stats))
+#     # Converting data to json object
+#     json_res = serializers.serialize('json', list(daily_stats))
 
-    return JsonResponse({}, safe=False) # sending data
+#     return JsonResponse({}, safe=False) # sending data

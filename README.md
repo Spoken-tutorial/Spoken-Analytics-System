@@ -26,7 +26,12 @@ git checkout arish
 pip install -r requirements-dev.txt 
 ```
 
-* Change analytics_system/config.py-exo to analytics_system/config.py and put the configuration of databases
+* Change analytics_system/config.py-exp to analytics_system/config.py and put the configuration of databases
+
+* Restore the mongo dump
+```
+mongorestore --db logs --verbose \path\dump\<dumpfolder>
+```
 
 * Make migrations and migrate the database
 ```
