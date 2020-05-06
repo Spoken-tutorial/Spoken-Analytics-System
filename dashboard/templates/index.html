@@ -84,16 +84,6 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <!-- Topbar Select -->
-          <select style="width: 7em" class="browser-default custom-select">
-            <option value="daily" selected>Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
-
-          <span><h5 style="margin-bottom: 0em">&nbsp&nbspStats</h5></span>
-
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 
@@ -357,22 +347,18 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Page Views</h6>
-                  <!-- <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Dropdown Header:</div>
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div> -->
-                  <select id="chart-select" style="width: 8em" class="browser-default custom-select">
-                    <option value='bar' selected>Bar Chart</option>
-                    <option value="line">Line Chart</option>
-                  </select>
+                  <div>
+                    <select id="summary-granularity-trigger" style="width: 7em" class="browser-default custom-select">
+                      <option value="daily" selected>Daily</option>
+                      <option value="weekly">Weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="yearly">Yearly</option>
+                    </select>
+                    <select id="chart-select" style="width: 8em" class="browser-default custom-select">
+                      <option value='bar' selected>Bar Chart</option>
+                      <option value="line">Line Chart</option>
+                    </select>
+                  </div>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -427,19 +413,29 @@
                       </button>
                     </div>
                     <div class="col-md-7" style="background: #4e73df; color: #fff; height: 30px;">
+                      <div style="display: none" class="row">
+                        <div class="col-md-5" style="padding:0px; margin: 3px 3px;">
+                          <input class="form-control" id="graph-from-date" style="width: inherit; height: 25px;" type="date" onChange='getDailyGraphData()'>
+                        </div>
+                        <div class="col-md-2" style="text-align: center; padding-top: 3px; margin-left: -6px">
+                          -
+                        </div>
+                        <div class="col-md-5" style="padding:0px; margin: 3px 0px 0px -3px;">
+                          <input class="form-control" id="graph-to-date" style="width: inherit; height: 25px;" type="date" onChange='getDailyGraphData()'>
+                        </div>
+                      </div>
                       <div class="row">
-                        <div class="col-md-2" style="padding:0px; font-size: larger; text-align: center;">
-                          <label for="graph_from_date">From : </label>
-                        </div>
-                        <div class="col-md-4" style="padding:0px; margin: 3px 0px;">
-                          <input class="form-control" id="graph-from-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
-                        </div>
-                        <div class="col-md-2" style="padding:0px; font-size: larger;; text-align: center;">
-                          <label for="graph_to_date">To : </label>
-                        </div>
-                        <div class="col-md-4" style="padding:0px; margin: 3px 0px 0px -3px;">
-                          <input class="form-control" id="graph-to-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
-                        </div>
+                        <select id="weekFrom" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select">
+                          <option value='bar' selected>Bar Chart</option>
+                          <option value="line">Line Chart</option>
+                        </select>
+                        <input type="number" style="height: 25px; margin: 3px; width: 6em;">
+                        -
+                        <select id="chart-select" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select">
+                          <option value='bar' selected>Bar Chart</option>
+                          <option value="line">Line Chart</option>
+                        </select>
+                        <input type="number" style="height: 25px; margin: 3px; width: 6em;">
                       </div>
                     </div>
                   </div>

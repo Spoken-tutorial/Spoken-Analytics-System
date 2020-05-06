@@ -1,6 +1,6 @@
 var timeFormat = 'YYYY-MM-DD';
 
-daily_page_loads_array = []
+daily_page_views_array = []
 daily_unique_visits_array = []
 daily_returning_visits_array = []
 graph_data_table_array = []
@@ -8,6 +8,8 @@ graph_data_table_array = []
 var color = Chart.helpers.color; // chart.js colors
 
 var ctx_day_chart = document.getElementById("myAreaChart").getContext('2d');
+
+var chart;
 
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
@@ -47,7 +49,7 @@ var config = {
         backgroundColor: color('rgb(78,115,223)').alpha(0.8).rgbString(),
         borderColor: 'rgb(78,115,223)',
         fill: false,
-        data: daily_page_loads_array,
+        data: daily_page_views_array,
       },{
         label: 'Unique Visits',
         backgroundColor: color('rgb(28,200,138)').alpha(0.8).rgbString(),
@@ -127,8 +129,8 @@ var graphDataTable = $('#graph-data-table').DataTable({
     order: [[ 0, 'asc' ]],
 });
 
-function getGraphData(){
-    // Getting chart data from server 
+// Getting daily chart data from server
+function getDailyGraphData(){ 
     fromDate = $('#graph-from-date').val()
     toDate = $('#graph-to-date').val()
 
@@ -143,20 +145,20 @@ function getGraphData(){
             fromDate: fromDate,
             toDate: toDate,
         }),
-        url: "/dashboard/graph_data/",
+        url: "/dashboard/daily_graph_data/",
         success: function(data) {
             data = JSON.parse(data);
 
-            daily_page_loads_array.length = 0
+            daily_page_views_array.length = 0
             daily_unique_visits_array.length = 0
             daily_returning_visits_array.length = 0
             graph_data_table_array.length = 0
 
             data.forEach((key, value) => {
-                // pushing chart data in daily_page_loads_array variable
-                daily_page_loads_array.push({
+                // pushing chart data in daily_page_views_array variable
+                daily_page_views_array.push({
                     'x': moment(key.fields.date).format(timeFormat),
-                    'y': key.fields.page_loads,
+                    'y': key.fields.page_views,
                 })
                 daily_unique_visits_array.push({
                     'x': moment(key.fields.date).format(timeFormat),
@@ -168,7 +170,7 @@ function getGraphData(){
                 })
                 graph_data_table_array.push([
                     moment(key.fields.date).format('dddd, MMMM Do, YYYY'),
-                    key.fields.page_loads,
+                    key.fields.page_views,
                     key.fields.unique_visits,
                     key.fields.first_time_visits,
                     key.fields.returning_visits,
@@ -177,7 +179,7 @@ function getGraphData(){
 
             graph_data_table_array.reverse()
 
-            new Chart(ctx_day_chart, config);
+            chart = new Chart(ctx_day_chart, config);
             graphDataTable.clear().rows.add(graph_data_table_array).draw();
         },
         error: function(err) {
@@ -196,13 +198,36 @@ $('#chart-select').on('change', function() {
         config.options.scales.xAxes[0].gridLines.offsetGridLines = true;
         config.options.scales.xAxes[0].offset = true
     }
-    getGraphData();
+    chart.update();
+});
+
+$('#summary-granularity-trigger').on('change', function() {
+    var summary_type = $('#summary-granularity-trigger').val();
+    console.log(summary_type);
+    if (summary_type == 'daily') {
+
+        config.options.scales.xAxes[0].time.unit = 'day';
+        getDailyGraphData();
+
+    } else if (summary_type == 'weekly') {
+
+        config.options.scales.xAxes[0].time.unit = 'week';
+
+    } else if (summary_type == 'monthly') {
+
+
+        
+    } else if (summary_type == 'yearly') {
+
+
+
+    }
 });
 
 $(document).ready( function () {
     document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
     document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
-    getGraphData();
+    getDailyGraphData();
     
 });
 
@@ -236,7 +261,7 @@ $("#graph-left-jump").click(function(){
     var new_to_date = addDays(to_date, -7);
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getGraphData();
+    getDailyGraphData();
 });
 
 $("#graph-right-jump").click(function(){
@@ -248,14 +273,14 @@ $("#graph-right-jump").click(function(){
     var diff_days = daysBetween(new_to_date, today);
     if(diff_days == -7) {
         return;
-    } else if(diff_days >= -7) {
+    } else if(diff_days > -7 && diff_days < 0) {
         $("#graph-from-date").val(addDays(from_date, 7+diff_days).toISOString().substr(0, 10));
         $("#graph-to-date").val(addDays(to_date, 7+diff_days).toISOString().substr(0, 10));
-        getGraphData();
+        getDailyGraphData();
     } else {
         $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
         $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-        getGraphData();
+        getDailyGraphData();
     }
 });
 
@@ -266,7 +291,7 @@ $("#graph-left-crawl").click(function(){
     var new_to_date = addDays(to_date, -1);
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getGraphData();
+    getDailyGraphData();
 });
 
 $("#graph-right-crawl").click(function(){
@@ -280,7 +305,7 @@ $("#graph-right-crawl").click(function(){
     }
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getGraphData();
+    getDailyGraphData();
 });
 
 $("#graph-zoom-out").click(function(){
@@ -295,7 +320,7 @@ $("#graph-zoom-out").click(function(){
         $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
         $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
     }
-    getGraphData();
+    getDailyGraphData();
 });
 
 $("#graph-zoom-in").click(function(){
@@ -308,5 +333,5 @@ $("#graph-zoom-in").click(function(){
     }
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-    getGraphData();
+    getDailyGraphData();
 });

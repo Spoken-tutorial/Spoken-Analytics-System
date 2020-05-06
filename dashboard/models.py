@@ -21,10 +21,11 @@ class Log(models.Model):
 
 class DailyStats(models.Model):
     date = models.DateTimeField()
-    page_loads = models.IntegerField()
+    page_views = models.IntegerField()
     unique_visits = models.IntegerField()
     first_time_visits = models.IntegerField()
     returning_visits = models.IntegerField()
+    unique_visitors = models.IntegerField()
 
     def __str__(sekf):
         return "Daily Stats"
@@ -34,12 +35,27 @@ class DailyStats(models.Model):
 class WeeklyStats(models.Model):
     week_of_year = models.IntegerField()
     year = models.IntegerField()
-    page_loads = models.IntegerField()
+    page_views = models.IntegerField()
     unique_visits = models.IntegerField()
     first_time_visits = models.IntegerField()
     returning_visits = models.IntegerField()
+    unique_visitors = models.IntegerField()
 
     def __str__(sekf):
         return "Weekly Stats"
+
+    objects = models.DjongoManager()
+
+class MonthlyStats(models.Model):
+    month_of_year = models.IntegerField()
+    year = models.IntegerField()
+    page_views = models.IntegerField()
+    unique_visits = models.IntegerField()
+    first_time_visits = models.IntegerField()
+    returning_visits = models.IntegerField()
+    unique_visitors = models.IntegerField()
+
+    def __str__(sekf):
+        return "Monthly Stats"
 
     objects = models.DjongoManager()
