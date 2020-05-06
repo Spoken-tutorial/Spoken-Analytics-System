@@ -59,3 +59,16 @@ class MonthlyStats(models.Model):
         return "Monthly Stats"
 
     objects = models.DjongoManager()
+
+class YearlyStats(models.Model):
+    year = models.IntegerField()
+    page_views = models.IntegerField()
+    unique_visits = models.IntegerField()
+    first_time_visits = models.IntegerField()
+    returning_visits = models.IntegerField()
+    unique_visitors = models.IntegerField()
+
+    def __str__(sekf):
+        return "Yearly Stats"
+
+    objects = models.DjongoManager()

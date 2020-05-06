@@ -49,12 +49,14 @@ for week in weeks:
         first_time = 0
         for log in weekly_logs:
             if log.ip_address == ip:
+                # if ip is found for the first time
                 if first_time == 0:
                     prev_datetime = log.datetime
                     first_time = 1
                     first_time_total += 1
                     unique_visits += 1
                 else:
+                    # if same ip occurs within time differce of 30 minutes
                     if (log.datetime - prev_datetime).seconds / 60 > 30:
                         prev_datetime = log.datetime
                         returning_visits += 1

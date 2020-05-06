@@ -35,7 +35,7 @@ def randomData():
         'region': region,
         'country': country,
         'ip_address':  ip_address,
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-60d', end_date='now'),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-4y', end_date='now'),
         'first_time_visit': lambda x: random.choice(["True", "False"]),
     }
     return data

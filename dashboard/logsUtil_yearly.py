@@ -10,30 +10,28 @@ Terms:
     Unique visitors: number of users who visited the site.
 """
 import datetime
-from dashboard.models import Log, MonthlyStats
-from calendar import monthrange
+from dashboard.models import Log, YearlyStats
 
-months = [] # Stores all months for which data is present
+years = [] # Stores all years for which data is present
 
-logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'month': {'$month': '$datetime'}, 'year': { '$year': '$datetime' }}}}])
+logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'year': {'$year': '$datetime'}}}}])
 
-# Calculating number of months of which data is present
+# Calculating number of years of which data is present
 for log in logs:
-    months.append(log['_id'])
+    years.append(log['_id'])
 
 # For each day calculating stats and storing them
-for month in months:
+for year in years:
 
-    current_month = month['month']
-    current_year = month['year']
+    current_year = year['year']
 
-    current_month_start = datetime.datetime(day= 1, month=current_month, year=current_year)
-    current_month_end = datetime.datetime(day= monthrange(current_year, current_month)[1], month=current_month, year=current_year)
+    current_year_start = datetime.datetime(day= 1, month=1, year=current_year)
+    current_year_end = datetime.datetime(day= 31, month=12, year=current_year)
 
-    current_month_min_time = datetime.datetime.combine(current_month_start, datetime.time.min)
-    current_month_max_time = datetime.datetime.combine(current_month_end, datetime.time.max)
+    current_year_min_time = datetime.datetime.combine(current_year_start, datetime.time.min)
+    current_year_max_time = datetime.datetime.combine(current_year_end, datetime.time.max)
     
-    monthly_logs = Log.objects.filter(datetime__range=(current_month_min_time, current_month_max_time)).order_by('datetime') # Getting data of the date from log collection
+    monthly_logs = Log.objects.filter(datetime__range=(current_year_min_time, current_year_max_time)).order_by('datetime') # Getting data of the date from log collection
 
     unique_visitors = [] # Stores unique ip addresses
 
@@ -66,14 +64,13 @@ for month in months:
                         returning_visits += 1
                         unique_visits += 1
 
-    monthly_stats = MonthlyStats() # MonthlyStats object
+    yearly_stats = YearlyStats() # YearlyStats object
 
-    monthly_stats.month_of_year = current_month
-    monthly_stats.year = current_year
-    monthly_stats.page_views = len(monthly_logs)
-    monthly_stats.unique_visits = unique_visits
-    monthly_stats.first_time_visits = first_time_total
-    monthly_stats.returning_visits = returning_visits
-    monthly_stats.unique_visitors = len(unique_visitors)
+    yearly_stats.year = current_year
+    yearly_stats.page_views = len(monthly_logs)
+    yearly_stats.unique_visits = unique_visits
+    yearly_stats.first_time_visits = first_time_total
+    yearly_stats.returning_visits = returning_visits
+    yearly_stats.unique_visitors = len(unique_visitors)
     
-    monthly_stats.save() # saving the calculations to database
+    yearly_stats.save() # saving the calculations to database

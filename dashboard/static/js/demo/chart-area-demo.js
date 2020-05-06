@@ -206,10 +206,16 @@ $('#summary-granularity-trigger').on('change', function() {
     console.log(summary_type);
     if (summary_type == 'daily') {
 
+        $('#date-select-div').show();
+        $('#week-select-div').hide();
+
         config.options.scales.xAxes[0].time.unit = 'day';
         getDailyGraphData();
 
     } else if (summary_type == 'weekly') {
+        
+        $('#date-select-div').hide();
+        $('#week-select-div').show();
 
         config.options.scales.xAxes[0].time.unit = 'week';
 
