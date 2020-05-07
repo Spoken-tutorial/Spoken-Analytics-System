@@ -18,6 +18,10 @@ Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,Bli
 Chart.defaults.global.defaultFontColor = '#858796';
 Chart.defaults.global.elements.line.tension = 0;
 
+function minTwoDigits(n) {
+    return (n < 10 ? '0' : '') + n;
+}
+
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
   // *     return: '1 234,56'
@@ -79,7 +83,12 @@ var config = {
             time: {
                 parser: timeFormat,
                 unit: 'day',
-                tooltipFormat: 'll'
+                tooltipFormat: 'll',
+                isoWeekday: true,
+                displayFormats: {
+                    week:'YYYY-[W]WW',
+                    month: 'MMM YYYY',
+                }
             },
             display: true,
             scaleLabel: {
@@ -133,8 +142,26 @@ var graphDataTable = $('#graph-data-table').DataTable({
 
 // Getting chart data from server
 function getGraphData(){ 
-    fromDate = $('#graph-from-date').val()
-    toDate = $('#graph-to-date').val()
+
+    if(data_summary_type == 'weekly') {
+
+        fromDate = {
+            week: $('#fromWeek').val(),
+            year: $('#fromYear').val()
+        }
+
+        toDate = {
+            week: $('#toWeek').val(),
+            year: $('#toYear').val()
+        }
+
+
+    } else {
+
+        fromDate = $('#graph-from-date').val()
+        toDate = $('#graph-to-date').val()
+
+    }
 
     $.ajax({
         type: "POST",
@@ -145,41 +172,14 @@ function getGraphData(){
         },
         data: JSON.stringify({
             data_summary_type: data_summary_type,
-            fromDate: fromDate,
-            toDate: toDate,
+            from: fromDate,
+            to: toDate,
         }),
         url: "/dashboard/graph_data/",
         success: function(data) {
             data = JSON.parse(data);
 
-            page_views_array.length = 0
-            unique_visits_array.length = 0
-            returning_visits_array.length = 0
-            graph_data_table_array.length = 0
-
-            data.forEach((key, value) => {
-                page_views_array.push({
-                    'x': moment(key.fields.date).format(timeFormat),
-                    'y': key.fields.page_views,
-                })
-                unique_visits_array.push({
-                    'x': moment(key.fields.date).format(timeFormat),
-                    'y': key.fields.unique_visits,
-                })
-                returning_visits_array.push({
-                    'x': moment(key.fields.date).format(timeFormat),
-                    'y': key.fields.returning_visits,
-                })
-                graph_data_table_array.push([
-                    moment(key.fields.date).format('dddd, MMMM Do, YYYY'),
-                    key.fields.page_views,
-                    key.fields.unique_visits,
-                    key.fields.first_time_visits,
-                    key.fields.returning_visits,
-                ])
-            });
-
-            graph_data_table_array.reverse()
+            fillDataToChartArrays(data)
 
             chart = new Chart(ctx_day_chart, config);
             graphDataTable.clear().rows.add(graph_data_table_array).draw();
@@ -188,6 +188,119 @@ function getGraphData(){
             console.log("Error:" + err);
         }
     });
+}
+
+function fillDataToChartArrays(data) {
+
+    page_views_array.length = 0
+    unique_visits_array.length = 0
+    returning_visits_array.length = 0
+    graph_data_table_array.length = 0
+
+    if(data_summary_type == 'daily') {
+
+        data.forEach((key, value) => {
+
+            page_views_array.push({
+                'x': moment(key.fields.date).format(timeFormat),
+                'y': key.fields.page_views,
+            })
+
+            unique_visits_array.push({
+                'x': moment(key.fields.date).format(timeFormat),
+                'y': key.fields.unique_visits,
+            })
+
+            returning_visits_array.push({
+                'x': moment(key.fields.date).format(timeFormat),
+                'y': key.fields.returning_visits,
+            })
+
+            graph_data_table_array.push([
+                moment(key.fields.date).format('dddd, MMMM Do, YYYY'),
+                key.fields.page_views,
+                key.fields.unique_visits,
+                key.fields.first_time_visits,
+                key.fields.returning_visits,
+            ])
+
+        });
+
+    } else if(data_summary_type == 'weekly') {
+
+        data.forEach((key, value) => {
+            page_views_array.push({
+                'x': moment(key.fields.year.toString() + '-W' + minTwoDigits(key.fields.week_of_year.toString()) + '-1'),
+                'y': key.fields.page_views,
+            })
+            unique_visits_array.push({
+                'x': moment(key.fields.year.toString() + '-W' + minTwoDigits(key.fields.week_of_year.toString()) + '-1'),
+                'y': key.fields.unique_visits,
+            })
+            returning_visits_array.push({
+                'x': moment(key.fields.year.toString() + '-W' + minTwoDigits(key.fields.week_of_year.toString()) + '-1'),
+                'y': key.fields.returning_visits,
+            })
+            graph_data_table_array.push([
+                moment(key.fields.year.toString() + '-W' + minTwoDigits(key.fields.week_of_year.toString()) + '-1').format(timeFormat),
+                key.fields.page_views,
+                key.fields.unique_visits,
+                key.fields.first_time_visits,
+                key.fields.returning_visits,
+            ])
+        });
+
+    } else if(data_summary_type == 'monthly') {
+
+        data.forEach((key, value) => {
+            page_views_array.push({
+                'x': moment(key.fields.year.toString() + '-' + minTwoDigits(key.fields.month_of_year.toString())),
+                'y': key.fields.page_views,
+            })
+            unique_visits_array.push({
+                'x': moment(key.fields.year.toString() + '-' + minTwoDigits(key.fields.month_of_year.toString())),
+                'y': key.fields.unique_visits,
+            })
+            returning_visits_array.push({
+                'x': moment(key.fields.year.toString() + '-' + minTwoDigits(key.fields.month_of_year.toString())),
+                'y': key.fields.returning_visits,
+            })
+            graph_data_table_array.push([
+                moment(key.fields.year.toString() + '-' + minTwoDigits(key.fields.month_of_year.toString())).format(timeFormat),
+                key.fields.page_views,
+                key.fields.unique_visits,
+                key.fields.first_time_visits,
+                key.fields.returning_visits,
+            ])
+        });
+
+    } else if(data_summary_type == 'yearly') {
+
+        data.forEach((key, value) => {
+            page_views_array.push({
+                'x': moment(key.fields.year.toString() + '-01'),
+                'y': key.fields.page_views,
+            })
+            unique_visits_array.push({
+                'x': moment(key.fields.year.toString() + '-01'),
+                'y': key.fields.unique_visits,
+            })
+            returning_visits_array.push({
+                'x': moment(key.fields.year.toString() + '-01'),
+                'y': key.fields.returning_visits,
+            })
+            graph_data_table_array.push([
+                moment(key.fields.year.toString() + '-01'),
+                key.fields.page_views,
+                key.fields.unique_visits,
+                key.fields.first_time_visits,
+                key.fields.returning_visits,
+            ])
+        });
+    }
+    
+    graph_data_table_array.reverse()
+    
 }
 
 $('#chart-select').on('change', function() {
@@ -209,6 +322,11 @@ $('#summary-granularity-trigger').on('change', function() {
     data_summary_type = summary_type;
 
     if (summary_type == 'daily') {
+        
+        timeFormat = 'YYYY-MM-DD';
+
+        document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
+        document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
 
         $('#date-select-div').show();
         $('#week-select-div').hide();
@@ -218,27 +336,81 @@ $('#summary-granularity-trigger').on('change', function() {
 
     } else if (summary_type == 'weekly') {
         
+        timeFormat = 'YYYY-[W]WW';
+        
         $('#date-select-div').hide();
         $('#week-select-div').show();
 
         config.options.scales.xAxes[0].time.unit = 'week';
 
+        getGraphData()
+
     } else if (summary_type == 'monthly') {
 
+        timeFormat = 'MMM YYYY'
+
+        $('#date-select-div').show();
+        $('#week-select-div').hide();
+
+        document.querySelector("#graph-from-date").value = moment().subtract(2, 'months').toISOString().substr(0, 10);
+
         config.options.scales.xAxes[0].time.unit = 'month';
+
         getGraphData();
         
     } else if (summary_type == 'yearly') {
 
+        timeFormat = 'YYYY'
+
+        $('#date-select-div').show();
+        $('#week-select-div').hide();
+
+        document.querySelector("#graph-from-date").value = moment().subtract(2, 'years').toISOString().substr(0, 10);
+
         config.options.scales.xAxes[0].time.unit = 'year';
+
         getGraphData();
 
     }
 });
 
 $(document).ready( function () {
+
     document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
     document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
+
+    var week_of_year = moment().isoWeek();
+    var year = moment().year();
+    for(var i=1;i<=52;i++) {
+        text = 'Week ' + i;
+        value = i;
+
+
+        if( i == week_of_year) {
+            $('#toWeek').append(`<option value="${value}" selected> ${text} </option>`); 
+        } else {
+            $('#toWeek').append(`<option value="${value}"> ${text} </option>`); 
+        }
+
+        if((week_of_year - 4) < 1) {
+            value = 52 - week_of_year;
+            text = 'Week ' + value;
+        }
+
+        if( i == (week_of_year - 4)) {
+            $('#fromWeek').append(`<option value="${value}" selected> ${text} </option>`); 
+        } else {
+            $('#fromWeek').append(`<option value="${value}"> ${text} </option>`); 
+        }
+    }
+
+    if((week_of_year - 4) < 1) {
+        year -= 1;
+    }
+
+    $('#fromYear').val(year);
+    $('#toYear').val(moment().year());
+
     getGraphData();
     
 });

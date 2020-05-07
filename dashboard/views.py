@@ -4,10 +4,11 @@ from django.db import connections
 from django.db.models import Avg
 from bson.json_util import dumps
 from django.shortcuts import render
-from .models import Log, DailyStats
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.core import serializers
+
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats
 
 # Create your views here.
 def index(request):
@@ -56,31 +57,40 @@ def graphData(request):
 
     data = json.loads(request.body) # Fetch data from request
 
+    data_summary_type = data['data_summary_type']
+
     # Duration of which data is to send
-    from_date = datetime.strptime(data['fromDate'], '%Y-%m-%d')
-    to_date = datetime.strptime(data['toDate'], '%Y-%m-%d') + timedelta(days=1)
 
-    # Extracting data from database
-    daily_stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
+    if(data_summary_type == 'weekly'):
+        
+        from_week = data['from']['week']
+        from_year = data['from']['year']
 
+        to_week = data['to']['week']
+        to_year = data['to']['year']
+
+    else:
+
+        from_date = datetime.strptime(data['from'], '%Y-%m-%d')
+        to_date = datetime.strptime(data['to'], '%Y-%m-%d')
+
+    if data_summary_type == 'daily':
+        
+        stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
+
+    elif data_summary_type == 'weekly':
+
+        stats = WeeklyStats.objects.filter(year__gte=from_year, year__lte=to_year, week_of_year__gte=from_week, week_of_year__lte=to_week).order_by('year', 'week_of_year')
+    
+    elif data_summary_type == 'monthly':
+
+        stats = MonthlyStats.objects.filter(month_of_year__gte=from_date.month, month_of_year__lte=to_date.month, year__gte=from_date.year, year__lte=to_date.year).order_by('year', 'month_of_year')
+
+    elif data_summary_type == 'yearly':
+
+        stats = YearlyStats.objects.filter(year__gte=from_date.year, year__lte=to_date.year).order_by('year')
+        
+    
     # Converting data to json object
-    json_res = serializers.serialize('json', list(daily_stats))
-
+    json_res = serializers.serialize('json', list(stats))
     return JsonResponse(json_res, safe=False) # sending data
-
-# This view serves the weekly stats to graph of dashboard
-# def weeklyGraphData():
-
-#     data = json.loads(request.body) # Fetch data from request
-
-#     # Duration of which data is to send
-#     from_week = datetime.strptime(data['fromWeek'], '%Y-%m-%d')
-#     to_week = datetime.strptime(data['toWeek'], '%Y-%m-%d') + timedelta(days=1)
-
-#     # Extracting data from database
-#     daily_stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
-
-#     # Converting data to json object
-#     json_res = serializers.serialize('json', list(daily_stats))
-
-#     return JsonResponse({}, safe=False) # sending data

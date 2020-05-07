@@ -11,7 +11,7 @@ from django_populate import Faker
 from dashboard.models import Log
 import dateutil.parser
 
-num_rows = 10000 # number of rows to insert
+num_rows = 100000 # number of rows to insert
 
 # Creating populator object
 populator = Faker.getPopulator()
@@ -24,13 +24,14 @@ def randomData():
     region = lambda x: populator.generator.state()
     country = lambda x: populator.generator.country()
     ip_address = lambda x: "127.0.0." + str(random.randint(0, 255))
+    event_name = lambda x: random.choice(["event.video.watch", "event.cdcontent.download", "event.tutorial.search", "event.news", "event.login", "event.logout", "event.register", "event.software.training", "event.software.training.planner", "event.software.training.student.batch", "event.software.training.select.participants", "event.software.training.resource.center", "event.participant.login"])
     data = {
         'path_info': path_info,
         'visited_by': visited_by,
         'browser_info' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
         'request_data' : '{data: request_data}',
         'method': method,
-        'event_name': '',
+        'event_name': event_name,
         'city': city,
         'region': region,
         'country': country,

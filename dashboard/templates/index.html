@@ -413,7 +413,7 @@
                       </button>
                     </div>
                     <div class="col-md-7" style="background: #4e73df; color: #fff; height: 30px;">
-                      <div id="date-select-div" style="display: none" class="row">
+                      <div id="date-select-div" class="row">
                         <div class="col-md-5" style="padding:0px; margin: 3px 3px;">
                           <input class="form-control" id="graph-from-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
                         </div>
@@ -424,18 +424,12 @@
                           <input class="form-control" id="graph-to-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
                         </div>
                       </div>
-                      <div id="week-select-div" class="row">
-                        <select id="weekFrom" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select">
-                          <option value='week1' selected>Week 1</option>
-                          <option value="week2">Week 2</option>
-                        </select>
-                        <input type="number" style="height: 25px; margin: 3px; width: 6em;" value="2020">
+                      <div id="week-select-div" style="display: none" class="row">
+                        <select id="fromWeek" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select" onChange='getGraphData()'></select>
+                        <input id="fromYear" style="height: 25px; margin: 3px; width: 6em;" type="number" onChange='getGraphData()'>
                         -
-                        <select id="chart-select" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select">
-                          <option value='week1' selected>Week 1</option>
-                          <option value="week2">Week 2</option>
-                        </select>
-                        <input type="number" style="height: 25px; margin: 3px 0px 0px 2px; width: 6em;" value="2020">
+                        <select id="toWeek" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select" onChange='getGraphData()'></select>
+                        <input id="toYear" style="height: 25px; margin: 3px 0px 0px 2px; width: 6em;" type="number" onChange='getGraphData()'>
                       </div>
                     </div>
                   </div>
