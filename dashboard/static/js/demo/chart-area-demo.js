@@ -317,16 +317,15 @@ $('#chart-select').on('change', function() {
 });
 
 $('#summary-granularity-trigger').on('change', function() {
-    var summary_type = $('#summary-granularity-trigger').val();
+    data_summary_type = $('#summary-granularity-trigger').val();
+    
+    $("#graph-to-date").val(moment().toISOString().substr(0, 10));
 
-    data_summary_type = summary_type;
-
-    if (summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
         
         timeFormat = 'YYYY-MM-DD';
 
-        document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
-        document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
+        $("#graph-from-date").val(moment().subtract(7, 'days').toISOString().substr(0, 10));
 
         $('#date-select-div').show();
         $('#week-select-div').hide();
@@ -334,7 +333,7 @@ $('#summary-granularity-trigger').on('change', function() {
         config.options.scales.xAxes[0].time.unit = 'day';
         getGraphData();
 
-    } else if (summary_type == 'weekly') {
+    } else if (data_summary_type == 'weekly') {
         
         timeFormat = 'YYYY-[W]WW';
         
@@ -345,27 +344,27 @@ $('#summary-granularity-trigger').on('change', function() {
 
         getGraphData()
 
-    } else if (summary_type == 'monthly') {
+    } else if (data_summary_type == 'monthly') {
 
         timeFormat = 'MMM YYYY'
 
         $('#date-select-div').show();
         $('#week-select-div').hide();
 
-        document.querySelector("#graph-from-date").value = moment().subtract(2, 'months').toISOString().substr(0, 10);
+        $("#graph-from-date").val(moment().startOf('month').subtract(2, 'months').toISOString().substr(0, 10));
 
         config.options.scales.xAxes[0].time.unit = 'month';
 
         getGraphData();
         
-    } else if (summary_type == 'yearly') {
+    } else if (data_summary_type == 'yearly') {
 
         timeFormat = 'YYYY'
 
         $('#date-select-div').show();
         $('#week-select-div').hide();
 
-        document.querySelector("#graph-from-date").value = moment().subtract(2, 'years').toISOString().substr(0, 10);
+        $("#graph-from-date").val(moment().startOf('year').subtract(2, 'years').toISOString().substr(0, 10));
 
         config.options.scales.xAxes[0].time.unit = 'year';
 
@@ -439,83 +438,248 @@ function daysBetween( date1, date2 ) {
 }
 
 $("#graph-left-jump").click(function(){
+
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
-    var new_from_date = addDays(from_date, -7);
-    var new_to_date = addDays(to_date, -7);
+
+    var new_from_date = from_date;
+    var new_to_date = to_date;
+
+    if(data_summary_type == 'daily') {
+
+        new_from_date.setDate(new_from_date.getDate() - 7);
+        new_to_date.setDate(new_to_date.getDate() - 7);
+
+    } else if (data_summary_type == 'weekly') {
+        
+
+
+    } else if (data_summary_type == 'monthly') {
+
+        new_from_date.setMonth(new_from_date.getMonth() - 1);
+        new_to_date.setMonth(new_to_date.getMonth() - 1);
+
+    } else {
+
+        new_from_date.setFullYear(new_from_date.getFullYear() - 1);
+        new_to_date.setFullYear(new_to_date.getFullYear() - 1);
+
+    }
+
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
-    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));4
+
     getGraphData();
 });
 
 $("#graph-right-jump").click(function(){
+
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
-    var today = new Date();
-    var new_from_date = addDays(from_date, 7);
-    var new_to_date = addDays(to_date, 7);
-    var diff_days = daysBetween(new_to_date, today);
-    if(diff_days == -7) {
-        return;
-    } else if(diff_days > -7 && diff_days < 0) {
-        $("#graph-from-date").val(addDays(from_date, 7+diff_days).toISOString().substr(0, 10));
-        $("#graph-to-date").val(addDays(to_date, 7+diff_days).toISOString().substr(0, 10));
-        getGraphData();
+
+    var new_from_date = from_date;
+    var new_to_date = to_date;
+
+    if(data_summary_type == 'daily') {
+
+        new_from_date.setDate(new_from_date.getDate() + 7);
+        new_to_date.setDate(new_to_date.getDate() + 7);
+
+    } else if (data_summary_type == 'weekly') {
+        
+
+
+    } else if (data_summary_type == 'monthly') {
+
+        new_from_date.setMonth(new_from_date.getMonth() + 1);
+        new_to_date.setMonth(new_to_date.getMonth() + 1);
+
     } else {
-        $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
-        $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
-        getGraphData();
+
+        new_from_date.setFullYear(new_from_date.getFullYear() + 1);
+        new_to_date.setFullYear(new_to_date.getFullYear() + 1);
+
     }
+
+    if(new_to_date > moment()) {
+        return;
+    }
+
+    $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+
+    getGraphData();
 });
 
 $("#graph-left-crawl").click(function(){
+
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
-    var new_from_date = addDays(from_date, -1);
-    var new_to_date = addDays(to_date, -1);
+
+    var new_from_date = from_date;
+    var new_to_date = to_date;
+
+    if(data_summary_type == 'daily') {
+
+        new_from_date.setDate(new_from_date.getDate() - 1);
+        new_to_date.setDate(new_to_date.getDate() - 1);
+
+    } else if (data_summary_type == 'weekly') {
+        
+
+
+    } else if (data_summary_type == 'monthly') {
+
+        new_from_date.setMonth(new_from_date.getMonth() - 1);
+        new_to_date.setMonth(new_to_date.getMonth() - 1);
+
+    } else {
+
+        new_from_date.setFullYear(new_from_date.getFullYear() - 1);
+        new_to_date.setFullYear(new_to_date.getFullYear() - 1);
+
+    }
+
+    if(new_to_date > moment()) {
+        return;
+    }
+
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+
     getGraphData();
 });
 
 $("#graph-right-crawl").click(function(){
+
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
-    var today = new Date();
-    var new_from_date = addDays(from_date, 1);
-    var new_to_date = addDays(to_date, 1);
-    if(daysBetween(new_to_date, today) < 0) {
+
+    var new_from_date = from_date;
+    var new_to_date = to_date;
+
+    if(data_summary_type == 'daily') {
+
+        new_from_date.setDate(new_from_date.getDate() + 1);
+        new_to_date.setDate(new_to_date.getDate() + 1);
+
+    } else if (data_summary_type == 'weekly') {
+        
+
+
+    } else if (data_summary_type == 'monthly') {
+
+        new_from_date.setMonth(new_from_date.getMonth() + 1);
+        new_to_date.setMonth(new_to_date.getMonth() + 1);
+
+    } else {
+
+        new_from_date.setFullYear(new_from_date.getFullYear() + 1);
+        new_to_date.setFullYear(new_to_date.getFullYear() + 1);
+
+    }
+
+    if(new_to_date > moment()) {
         return;
     }
+
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+
     getGraphData();
 });
 
 $("#graph-zoom-out").click(function(){
+
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
-    var today = new Date();
-    var new_from_date = addDays(from_date, -1);
-    var new_to_date = addDays(to_date, 1);
-    if(daysBetween(today, new_to_date) > 0) {
-        $("#graph-from-date").val(addDays(from_date, -2).toISOString().substr(0, 10));
+
+    var new_from_date = from_date;
+    var new_to_date = to_date;
+
+    if(data_summary_type == 'daily') {
+
+        new_from_date.setDate(new_from_date.getDate() - 1);
+        new_to_date.setDate(new_to_date.getDate() + 1);
+
+        if(new_to_date > moment()) {
+
+            new_from_date.setDate(new_from_date.getDate() - 1);
+            new_to_date = moment();
+
+        }
+
+    } else if (data_summary_type == 'weekly') {
+        
+
+
+    } else if (data_summary_type == 'monthly') {
+
+        new_from_date.setMonth(new_from_date.getMonth() - 1);
+        new_to_date.setMonth(new_to_date.getMonth() + 1);
+
+        if(new_to_date > moment()) {
+
+            new_from_date.setDate(new_from_date.getMonth() - 1);
+            new_to_date = moment();
+
+        }
+
     } else {
-        $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
-        $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+
+        new_from_date.setFullYear(new_from_date.getFullYear() - 1);
+        new_to_date.setFullYear(new_to_date.getFullYear() + 1);
+
+        if(new_to_date > moment()) {
+
+            new_from_date.setDate(new_from_date.getFullYear() - 1);
+            new_to_date = moment();
+
+        }
+
     }
+
+    $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+
     getGraphData();
 });
 
 $("#graph-zoom-in").click(function(){
+
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
-    var new_from_date = addDays(from_date, 1);
-    var new_to_date = addDays(to_date, -1);
-    if(daysBetween(from_date, to_date) < 4) {
+
+    var new_from_date = from_date;
+    var new_to_date = to_date;
+
+    if(data_summary_type == 'daily') {
+
+        new_from_date.setDate(new_from_date.getDate() + 1);
+        new_to_date.setDate(new_to_date.getDate() - 1);
+
+    } else if (data_summary_type == 'weekly') {
+        
+
+
+    } else if (data_summary_type == 'monthly') {
+
+        new_from_date.setMonth(new_from_date.getMonth() + 1);
+        new_to_date.setMonth(new_to_date.getMonth() - 1);
+
+    } else {
+
+        new_from_date.setFullYear(new_from_date.getFullYear() + 1);
+        new_to_date.setFullYear(new_to_date.getFullYear() - 1);
+
+    }
+
+    if(new_from_date >= new_to_date) {
         return;
     }
+
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
     $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+
     getGraphData();
 });

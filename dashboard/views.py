@@ -69,6 +69,13 @@ def graphData(request):
         to_week = data['to']['week']
         to_year = data['to']['year']
 
+        from_week_year = str(from_year) + '-W' + str(from_week)
+        to_week_year = str(to_year) + '-W' + str(to_week)
+
+        from_date = datetime.strptime(from_week_year + '-1', '%G-W%V-%u')
+        to_date = datetime.strptime(to_week_year + '-1', '%G-W%V-%u')
+        print(from_date, to_date)
+
     else:
 
         from_date = datetime.strptime(data['from'], '%Y-%m-%d')
@@ -80,15 +87,15 @@ def graphData(request):
 
     elif data_summary_type == 'weekly':
 
-        stats = WeeklyStats.objects.filter(year__gte=from_year, year__lte=to_year, week_of_year__gte=from_week, week_of_year__lte=to_week).order_by('year', 'week_of_year')
+        stats = WeeklyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
     
     elif data_summary_type == 'monthly':
 
-        stats = MonthlyStats.objects.filter(month_of_year__gte=from_date.month, month_of_year__lte=to_date.month, year__gte=from_date.year, year__lte=to_date.year).order_by('year', 'month_of_year')
+        stats = MonthlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
 
     elif data_summary_type == 'yearly':
 
-        stats = YearlyStats.objects.filter(year__gte=from_date.year, year__lte=to_date.year).order_by('year')
+        stats = YearlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
         
     
     # Converting data to json object

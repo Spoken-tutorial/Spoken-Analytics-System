@@ -33,6 +33,7 @@ class DailyStats(models.Model):
     objects = models.DjongoManager()
 
 class WeeklyStats(models.Model):
+    date = models.DateTimeField()
     week_of_year = models.IntegerField()
     year = models.IntegerField()
     page_views = models.IntegerField()
@@ -47,6 +48,7 @@ class WeeklyStats(models.Model):
     objects = models.DjongoManager()
 
 class MonthlyStats(models.Model):
+    date = models.DateTimeField()
     month_of_year = models.IntegerField()
     year = models.IntegerField()
     page_views = models.IntegerField()
@@ -61,6 +63,7 @@ class MonthlyStats(models.Model):
     objects = models.DjongoManager()
 
 class YearlyStats(models.Model):
+    date = models.DateTimeField()
     year = models.IntegerField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()

@@ -64,6 +64,7 @@ for week in weeks:
 
     weekly_stats = WeeklyStats() # WeeklyStats object
 
+    weekly_stats.date = week_min
     weekly_stats.week_of_year = week['woy']
     weekly_stats.year = int(week['year'])
     weekly_stats.page_views = len(weekly_logs)

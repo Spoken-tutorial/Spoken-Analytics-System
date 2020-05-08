@@ -66,6 +66,7 @@ for year in years:
 
     yearly_stats = YearlyStats() # YearlyStats object
 
+    yearly_stats.date = current_year_min_time
     yearly_stats.year = current_year
     yearly_stats.page_views = len(monthly_logs)
     yearly_stats.unique_visits = unique_visits

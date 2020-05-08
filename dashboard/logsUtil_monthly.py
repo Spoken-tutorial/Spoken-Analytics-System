@@ -68,6 +68,7 @@ for month in months:
 
     monthly_stats = MonthlyStats() # MonthlyStats object
 
+    monthly_stats.date = current_month_min_time
     monthly_stats.month_of_year = current_month
     monthly_stats.year = current_year
     monthly_stats.page_views = len(monthly_logs)
