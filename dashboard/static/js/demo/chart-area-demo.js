@@ -7,8 +7,6 @@ graph_data_table_array = []
 
 var color = Chart.helpers.color; // chart.js colors
 
-var ctx_day_chart = document.getElementById("myAreaChart").getContext('2d');
-
 var data_summary_type = 'daily'
 
 var chart;
@@ -17,6 +15,23 @@ var chart;
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 Chart.defaults.global.elements.line.tension = 0;
+
+function redrawChart() {
+    //if we already have a chart destroy it then carry on as normal
+    if(chart)
+    {
+            chart.destroy();
+    }
+    var w = $("#chart-area").width();
+    var c = document.getElementById("my-chart");
+    c.width = w;
+    c.height = w/2;
+    $("#chart_canvas").css("width", w);
+    $("#chart_canvas").css("height", w/2);
+
+    var chart_canvas = document.getElementById("my-chart").getContext("2d");
+    chart= new Chart(chart_canvas, config)
+};
 
 function minTwoDigits(n) {
     return (n < 10 ? '0' : '') + n;
@@ -86,8 +101,10 @@ var config = {
                 tooltipFormat: 'll',
                 isoWeekday: true,
                 displayFormats: {
+                    day: 'll',
                     week:'YYYY-[W]WW',
                     month: 'MMM YYYY',
+                    year: 'YYYY'
                 }
             },
             display: true,
@@ -102,6 +119,7 @@ var config = {
                 }
             },
             gridLines: {
+                display: true,
                 offsetGridLines: true
             },
             offset: true,
@@ -116,10 +134,6 @@ var config = {
                 }
             },
             display: true,
-            scaleLabel: {
-                display: true,
-                //   labelString: 'Views'
-            },
           }]
       }
   }
@@ -146,13 +160,13 @@ function getGraphData(){
     if(data_summary_type == 'weekly') {
 
         fromDate = {
-            week: $('#fromWeek').val(),
-            year: $('#fromYear').val()
+            week: $('#graph-from-week').val(),
+            year: $('#graph-from-year').val()
         }
 
         toDate = {
-            week: $('#toWeek').val(),
-            year: $('#toYear').val()
+            week: $('#graph-to-week').val(),
+            year: $('#graph-to-year').val()
         }
 
 
@@ -180,8 +194,7 @@ function getGraphData(){
             data = JSON.parse(data);
 
             fillDataToChartArrays(data)
-
-            chart = new Chart(ctx_day_chart, config);
+            redrawChart();
             graphDataTable.clear().rows.add(graph_data_table_array).draw();
         },
         error: function(err) {
@@ -290,7 +303,7 @@ function fillDataToChartArrays(data) {
                 'y': key.fields.returning_visits,
             })
             graph_data_table_array.push([
-                moment(key.fields.year.toString() + '-01'),
+                moment(key.fields.year.toString()).format('YYYY'),
                 key.fields.page_views,
                 key.fields.unique_visits,
                 key.fields.first_time_visits,
@@ -317,6 +330,7 @@ $('#chart-select').on('change', function() {
 });
 
 $('#summary-granularity-trigger').on('change', function() {
+
     data_summary_type = $('#summary-granularity-trigger').val();
     
     $("#graph-to-date").val(moment().toISOString().substr(0, 10));
@@ -386,9 +400,9 @@ $(document).ready( function () {
 
 
         if( i == week_of_year) {
-            $('#toWeek').append(`<option value="${value}" selected> ${text} </option>`); 
+            $('#graph-to-week').append(`<option value="${value}" selected> ${text} </option>`); 
         } else {
-            $('#toWeek').append(`<option value="${value}"> ${text} </option>`); 
+            $('#graph-to-week').append(`<option value="${value}"> ${text} </option>`); 
         }
 
         if((week_of_year - 4) < 1) {
@@ -397,9 +411,9 @@ $(document).ready( function () {
         }
 
         if( i == (week_of_year - 4)) {
-            $('#fromWeek').append(`<option value="${value}" selected> ${text} </option>`); 
+            $('#graph-from-week').append(`<option value="${value}" selected> ${text} </option>`); 
         } else {
-            $('#fromWeek').append(`<option value="${value}"> ${text} </option>`); 
+            $('#graph-from-week').append(`<option value="${value}"> ${text} </option>`); 
         }
     }
 
@@ -407,35 +421,35 @@ $(document).ready( function () {
         year -= 1;
     }
 
-    $('#fromYear').val(year);
-    $('#toYear').val(moment().year());
+    $('#graph-from-year').val(year);
+    $('#graph-to-year').val(moment().year());
 
     getGraphData();
     
 });
 
 // Utility function to add days to a date
-function addDays(date, days) {
-    const copy = new Date(Number(date))
-    copy.setDate(date.getDate() + days)
-    return copy
-}
+// function addDays(date, days) {
+//     const copy = new Date(Number(date))
+//     copy.setDate(date.getDate() + days)
+//     return copy
+// }
 
 // Utility function to find number of days berween two dates
-function daysBetween( date1, date2 ) {
-    //Get 1 day in milliseconds
-    var one_day=1000*60*60*24;
+// function daysBetween( date1, date2 ) {
+//     //Get 1 day in milliseconds
+//     var one_day=1000*60*60*24;
 
-    // Convert both dates to milliseconds
-    var date1_ms = date1.getTime();
-    var date2_ms = date2.getTime();
+//     // Convert both dates to milliseconds
+//     var date1_ms = date1.getTime();
+//     var date2_ms = date2.getTime();
 
-    // Calculate the difference in milliseconds
-    var difference_ms = date2_ms - date1_ms;
+//     // Calculate the difference in milliseconds
+//     var difference_ms = date2_ms - date1_ms;
         
-    // Convert back to days and return
-    return Math.round(difference_ms/one_day); 
-}
+//     // Convert back to days and return
+//     return Math.round(difference_ms/one_day); 
+// }
 
 $("#graph-left-jump").click(function(){
 
@@ -452,6 +466,29 @@ $("#graph-left-jump").click(function(){
 
     } else if (data_summary_type == 'weekly') {
         
+        var from_week_select = $('#graph-from-week');
+        var to_week_select = $('#graph-to-week');
+
+        var from_week = from_week_select.val();
+        var to_week = to_week_select.val();
+
+        var new_from_week = parseInt(from_week) - 1;
+        var new_to_week = parseInt(to_week) - 1 ;
+
+        if(new_from_week < 1) {
+            new_from_week = 52;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year)-1);
+        }
+
+        if(new_to_week < 1) {
+            new_to_week = 52;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)-1);
+        }
+
+        from_week_select.val(new_from_week);
+        to_week_select.val(new_to_week);
 
 
     } else if (data_summary_type == 'monthly') {
@@ -487,7 +524,33 @@ $("#graph-right-jump").click(function(){
 
     } else if (data_summary_type == 'weekly') {
         
+        var from_week_select = $('#graph-from-week');
+        var to_week_select = $('#graph-to-week');
 
+        var from_week = from_week_select.val();
+        var to_week = to_week_select.val();
+
+        var new_from_week = parseInt(from_week) + 1;
+        var new_to_week = parseInt(to_week) + 1 ;
+
+        if(new_from_week > 52) {
+            new_from_week = 1;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year) +1);
+        }
+
+        if(new_to_week > 52) {
+            new_to_week = 1;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)+1);
+        }
+
+        if(new_to_week > moment().isoWeek()) {
+            return;
+        }
+
+        from_week_select.val(new_from_week);
+        to_week_select.val(new_to_week);
 
     } else if (data_summary_type == 'monthly') {
 
@@ -526,6 +589,29 @@ $("#graph-left-crawl").click(function(){
 
     } else if (data_summary_type == 'weekly') {
         
+        var from_week_select = $('#graph-from-week');
+        var to_week_select = $('#graph-to-week');
+
+        var from_week = from_week_select.val();
+        var to_week = to_week_select.val();
+
+        var new_from_week = parseInt(from_week) - 1;
+        var new_to_week = parseInt(to_week) - 1 ;
+
+        if(new_from_week < 1) {
+            new_from_week = 52;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year)-1);
+        }
+
+        if(new_to_week < 1) {
+            new_to_week = 52;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)-1);
+        }
+
+        from_week_select.val(new_from_week);
+        to_week_select.val(new_to_week);
 
 
     } else if (data_summary_type == 'monthly') {
@@ -565,7 +651,33 @@ $("#graph-right-crawl").click(function(){
 
     } else if (data_summary_type == 'weekly') {
         
+        var from_week_select = $('#graph-from-week');
+        var to_week_select = $('#graph-to-week');
 
+        var from_week = from_week_select.val();
+        var to_week = to_week_select.val();
+
+        var new_from_week = parseInt(from_week) + 1;
+        var new_to_week = parseInt(to_week) + 1 ;
+
+        if(new_from_week > 52) {
+            new_from_week = 1;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year) +1);
+        }
+
+        if(new_to_week > 52) {
+            new_to_week = 1;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)+1);
+        }
+
+        if(new_to_week > moment().isoWeek()) {
+            return;
+        }
+
+        from_week_select.val(new_from_week);
+        to_week_select.val(new_to_week);
 
     } else if (data_summary_type == 'monthly') {
 
@@ -611,7 +723,48 @@ $("#graph-zoom-out").click(function(){
 
     } else if (data_summary_type == 'weekly') {
         
+        var from_week_select = $('#graph-from-week');
+        var to_week_select = $('#graph-to-week');
 
+        var from_week = from_week_select.val();
+        var to_week = to_week_select.val();
+
+        var new_from_week = parseInt(from_week) - 1;
+        var new_to_week = parseInt(to_week) + 1 ;
+
+        if(new_to_week >= moment().isoWeek()) {
+            new_to_week = to_week;
+            new_from_week -= 1;
+        }
+
+        if(new_from_week > 52) {
+            new_from_week = 1;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year) +1);
+        }
+
+        if(new_to_week > 52) {
+            new_to_week = 1;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)+1);
+        }
+
+
+        if(new_from_week < 1) {
+            new_from_week = 52;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year)-1);
+        }
+
+
+        if(new_to_week < 1) {
+            new_to_week = 52;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)-1);
+        }
+
+        from_week_select.val(new_from_week);
+        to_week_select.val(new_to_week);
 
     } else if (data_summary_type == 'monthly') {
 
@@ -632,7 +785,7 @@ $("#graph-zoom-out").click(function(){
 
         if(new_to_date > moment()) {
 
-            new_from_date.setDate(new_from_date.getFullYear() - 1);
+            new_from_date.setFullYear(new_from_date.getFullYear() - 1);
             new_to_date = moment();
 
         }
@@ -660,7 +813,47 @@ $("#graph-zoom-in").click(function(){
 
     } else if (data_summary_type == 'weekly') {
         
+        var from_week_select = $('#graph-from-week');
+        var to_week_select = $('#graph-to-week');
 
+        var from_week = from_week_select.val();
+        var to_week = to_week_select.val();
+
+        var new_from_week = parseInt(from_week) + 1;
+        var new_to_week = parseInt(to_week) - 1 ;
+
+        if(new_from_week > 52) {
+            new_from_week = 1;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year) +1);
+        }
+
+        if(new_to_week > 52) {
+            new_to_week = 1;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)+1);
+        }
+
+
+        if(new_from_week < 1) {
+            new_from_week = 52;
+            var year = $('#graph-from-year').val();
+            $('#graph-from-year').val(parseInt(year)-1);
+        }
+
+
+        if(new_to_week < 1) {
+            new_to_week = 52;
+            var year = $('#graph-to-year').val();
+            $('#graph-to-year').val(parseInt(year)-1);
+        }
+
+        if(new_from_week >= new_to_week && $('#graph-from-year').val() === $('#graph-to-year').val()) {
+            return;
+        }
+
+        from_week_select.val(new_from_week);
+        to_week_select.val(new_to_week);
 
     } else if (data_summary_type == 'monthly') {
 
