@@ -259,18 +259,19 @@
           <!-- Content Row -->
           <div class="row">
 
-            <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body" style="padding: 0.7em;">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Daily Page Views</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ average_daily_page_views }}</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average <span class="granularity">Daily</span> Page Views</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <div class="average-daily">{{ average_stats.average_daily_page_views }}</div>
+                        <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_page_views }}</div>
+                        <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_page_views }}</div>
+                        <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_page_views }}</div>
+                      </div>
                     </div>
-                    <!-- <div class="col-auto">
-                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div> -->
                   </div>
                 </div>
               </div>
@@ -279,58 +280,55 @@
             <!-- Earnings (Monthly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
+                <div class="card-body" style="padding: 0.7em;">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Average Daily Unique Visits</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ average_daily_unique_visits }}</div>
-                    </div>
-                    <!-- <div class="col-auto">
-                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Average Daily First Time Visits</div>
-                      <div class="row no-gutters align-items-center">
-                        <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ average_daily_first_time_visits }}</div>
-                        </div>
-                        <!-- <div class="col">
-                          <div class="progress progress-sm mr-2">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div> -->
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Average <span class="granularity">Daily</span> Unique Visits</div>
+                      <div id="average-unique_visits" class="h5 mb-0 font-weight-bold text-gray-800">
+                        <div class="average-daily">{{ average_stats.average_daily_unique_visits }}</div>
+                        <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_unique_visits }}</div>
+                        <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_unique_visits }}</div>
+                        <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_unique_visits }}</div>
                       </div>
                     </div>
-                    <!-- <div class="col-auto">
-                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                    </div> -->
                   </div>
                 </div>
               </div>
             </div>
-
-            <!-- Pending Requests Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body" style="padding: 0.7em;">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Average Daily Returning Visits</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{ average_daily_returning_visits }}</div>
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Average <span class="granularity">Daily</span> First Time Visits</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div id="average-first_time_visits" class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                            <div class="average-daily">{{ average_stats.average_daily_first_time_visits }}</div>
+                            <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_first_time_visits }}</div>
+                            <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_first_time_visits }}</div>
+                            <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_first_time_visits }}</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <!-- <div class="col-auto">
-                      <i class="fas fa-comments fa-2x text-gray-300"></i>
-                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body" style="padding: 0.7em;">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Average <span class="granularity">Daily</span> Returning Visits</div>
+                      <div id="average-returning-visits" class="h5 mb-0 font-weight-bold text-gray-800">
+                        <div class="average-daily">{{ average_stats.average_daily_returning_visits }}</div>
+                        <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_returning_visits }}</div>
+                        <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_returning_visits }}</div>
+                        <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_returning_visits }}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

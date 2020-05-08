@@ -1,50 +1,24 @@
 import json
 
 from django.db import connections
-from django.db.models import Avg
 from bson.json_util import dumps
 from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.core import serializers
 
-from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 
 # Create your views here.
 def index(request):
     """
     Renders the dashboard page
     """
-    # Fetching data from dashboard_dailystats collection
-    daily_stats = DailyStats.objects.all() 
-
-    # Variables to store stats
-    num_days = 0
-    total_page_views = 0
-    total_unique_visits = 0
-    total_first_time_visits = 0
-    total_returning_visits = 0
-
-    # Calculating stats
-    for stats in daily_stats:
-        num_days += 1
-        total_page_views += stats.page_views
-        total_unique_visits += stats.unique_visits
-        total_first_time_visits += stats.first_time_visits
-        total_returning_visits += stats.returning_visits
-    
-
-    average_daily_page_views = int(total_page_views/num_days)
-    average_daily_unique_visits = int(total_unique_visits/num_days)
-    average_daily_first_time_visits = int(total_first_time_visits/num_days)
-    average_daily_returning_visits = int(total_returning_visits/num_days)
-
+    # Fetching data from averagestats collection
+    average_stats = AverageStats.objects.all()[0]
 
     context = {
-        'average_daily_page_views': average_daily_page_views,
-        'average_daily_unique_visits': average_daily_unique_visits,
-        'average_daily_first_time_visits': average_daily_first_time_visits,
-        'average_daily_returning_visits': average_daily_returning_visits,
+        'average_stats': average_stats,
     }
     
     return render(request, 'index.html', context)
@@ -96,8 +70,14 @@ def graphData(request):
     elif data_summary_type == 'yearly':
 
         stats = YearlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
-        
-    
+
     # Converting data to json object
-    json_res = serializers.serialize('json', list(stats))
+    json_stats = serializers.serialize('json', stats)
+
+    avg_stats = AverageStats.objects.all()
+
+    json_avg_stats = serializers.serialize('json', avg_stats)
+
+    json_res = {'stats': json_stats, 'avg_stats': json_avg_stats}
+
     return JsonResponse(json_res, safe=False) # sending data

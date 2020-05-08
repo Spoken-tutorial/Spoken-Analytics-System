@@ -19,6 +19,31 @@ class Log(models.Model):
 
     objects = models.DjongoManager()
 
+
+class AverageStats(models.Model):
+    average_daily_page_views = models.IntegerField()
+    average_daily_unique_visits = models.IntegerField()
+    average_daily_first_time_visits = models.IntegerField()
+    average_daily_returning_visits = models.IntegerField()
+    average_weekly_page_views = models.IntegerField()
+    average_weekly_unique_visits = models.IntegerField()
+    average_weekly_first_time_visits = models.IntegerField()
+    average_weekly_returning_visits = models.IntegerField()
+    average_monthly_page_views = models.IntegerField()
+    average_monthly_unique_visits = models.IntegerField()
+    average_monthly_first_time_visits = models.IntegerField()
+    average_monthly_returning_visits = models.IntegerField()
+    average_yearly_page_views = models.IntegerField()
+    average_yearly_unique_visits = models.IntegerField()
+    average_yearly_first_time_visits = models.IntegerField()
+    average_yearly_returning_visits = models.IntegerField()
+    
+    def __str__(self):
+        return "Average Stats Object"
+
+    objects = models.DjongoManager()
+
+
 class DailyStats(models.Model):
     date = models.DateTimeField()
     page_views = models.IntegerField()
@@ -31,6 +56,7 @@ class DailyStats(models.Model):
         return "Daily Stats"
 
     objects = models.DjongoManager()
+
 
 class WeeklyStats(models.Model):
     date = models.DateTimeField()
@@ -47,6 +73,7 @@ class WeeklyStats(models.Model):
 
     objects = models.DjongoManager()
 
+
 class MonthlyStats(models.Model):
     date = models.DateTimeField()
     month_of_year = models.IntegerField()
@@ -61,6 +88,7 @@ class MonthlyStats(models.Model):
         return "Monthly Stats"
 
     objects = models.DjongoManager()
+
 
 class YearlyStats(models.Model):
     date = models.DateTimeField()

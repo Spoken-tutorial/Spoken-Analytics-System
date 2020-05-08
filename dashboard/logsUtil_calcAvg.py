@@ -1,0 +1,117 @@
+from dashboard.models import DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
+
+# Fetching data from collections
+daily_stats = DailyStats.objects.all() 
+weekly_stats = WeeklyStats.objects.all()
+monthly_stats = MonthlyStats.objects.all()
+yearly_stats = YearlyStats.objects.all()
+
+
+# Variables to store stats
+total_records = 0
+total_page_views = 0
+total_unique_visits = 0
+total_first_time_visits = 0
+total_returning_visits = 0
+
+# Calculating stats
+for stats in daily_stats:
+    total_records += 1
+    total_page_views += stats.page_views
+    total_unique_visits += stats.unique_visits
+    total_first_time_visits += stats.first_time_visits
+    total_returning_visits += stats.returning_visits
+
+
+average_daily_page_views = int(total_page_views/total_records)
+average_daily_unique_visits = int(total_unique_visits/total_records)
+average_daily_first_time_visits = int(total_first_time_visits/total_records)
+average_daily_returning_visits = int(total_returning_visits/total_records)
+
+# Variables to store stats
+total_records = 0
+total_page_views = 0
+total_unique_visits = 0
+total_first_time_visits = 0
+total_returning_visits = 0
+
+# Calculating stats
+for stats in weekly_stats:
+    total_records += 1
+    total_page_views += stats.page_views
+    total_unique_visits += stats.unique_visits
+    total_first_time_visits += stats.first_time_visits
+    total_returning_visits += stats.returning_visits
+
+
+average_weekly_page_views = int(total_page_views/total_records)
+average_weekly_unique_visits = int(total_unique_visits/total_records)
+average_weekly_first_time_visits = int(total_first_time_visits/total_records)
+average_weekly_returning_visits = int(total_returning_visits/total_records)
+
+# Variables to store stats
+total_records = 0
+total_page_views = 0
+total_unique_visits = 0
+total_first_time_visits = 0
+total_returning_visits = 0
+
+# Calculating stats
+for stats in monthly_stats:
+    total_records += 1
+    total_page_views += stats.page_views
+    total_unique_visits += stats.unique_visits
+    total_first_time_visits += stats.first_time_visits
+    total_returning_visits += stats.returning_visits
+
+
+average_monthly_page_views = int(total_page_views/total_records)
+average_monthly_unique_visits = int(total_unique_visits/total_records)
+average_monthly_first_time_visits = int(total_first_time_visits/total_records)
+average_monthly_returning_visits = int(total_returning_visits/total_records)
+
+# Variables to store stats
+total_records = 0
+total_page_views = 0
+total_unique_visits = 0
+total_first_time_visits = 0
+total_returning_visits = 0
+
+# Calculating stats
+for stats in yearly_stats:
+    total_records += 1
+    total_page_views += stats.page_views
+    total_unique_visits += stats.unique_visits
+    total_first_time_visits += stats.first_time_visits
+    total_returning_visits += stats.returning_visits
+
+
+average_yearly_page_views = int(total_page_views/total_records)
+average_yearly_unique_visits = int(total_unique_visits/total_records)
+average_yearly_first_time_visits = int(total_first_time_visits/total_records)
+average_yearly_returning_visits = int(total_returning_visits/total_records)
+
+avg_stats = AverageStats()
+
+avg_stats.average_daily_page_views = average_daily_page_views
+avg_stats.average_daily_unique_visits = average_daily_unique_visits
+avg_stats.average_daily_first_time_visits = average_daily_first_time_visits
+avg_stats.average_daily_returning_visits = average_daily_returning_visits
+
+avg_stats.average_weekly_page_views = average_weekly_page_views
+avg_stats.average_weekly_unique_visits = average_weekly_unique_visits
+avg_stats.average_weekly_first_time_visits = average_weekly_first_time_visits
+avg_stats.average_weekly_returning_visits = average_weekly_returning_visits
+
+avg_stats.average_monthly_page_views = average_monthly_page_views
+avg_stats.average_monthly_unique_visits = average_monthly_unique_visits
+avg_stats.average_monthly_first_time_visits = average_monthly_first_time_visits
+avg_stats.average_monthly_returning_visits = average_monthly_returning_visits
+
+avg_stats.average_yearly_page_views = average_yearly_page_views
+avg_stats.average_yearly_unique_visits = average_yearly_unique_visits
+avg_stats.average_yearly_first_time_visits = average_yearly_first_time_visits
+avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
+
+
+avg_stats.save()

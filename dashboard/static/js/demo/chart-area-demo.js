@@ -20,7 +20,7 @@ function redrawChart() {
     //if we already have a chart destroy it then carry on as normal
     if(chart)
     {
-            chart.destroy();
+        chart.destroy();
     }
     var w = $("#chart-area").width();
     var c = document.getElementById("my-chart");
@@ -35,31 +35,6 @@ function redrawChart() {
 
 function minTwoDigits(n) {
     return (n < 10 ? '0' : '') + n;
-}
-
-function number_format(number, decimals, dec_point, thousands_sep) {
-  // *     example: number_format(1234.56, 2, ',', ' ');
-  // *     return: '1 234,56'
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
-  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || '';
-    s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
 }
 
 var config = {
@@ -129,9 +104,6 @@ var config = {
                 beginAtZero: true,
                 maxTicksLimit: 5,
                 padding: 10,
-                callback: function(value, index, values) {
-                  return number_format(value);
-                }
             },
             display: true,
           }]
@@ -152,6 +124,12 @@ var graphDataTable = $('#graph-data-table').DataTable({
       ],
     columnDefs: [ { 'type': 'date', 'targets': [0],  }],
     order: [[ 0, 'asc' ]],
+    buttons: [
+        'copyHtml5',
+        'excelHtml5',
+        'csvHtml5',
+        'pdfHtml5'
+    ]
 });
 
 // Getting chart data from server
@@ -191,10 +169,14 @@ function getGraphData(){
         }),
         url: "/dashboard/graph_data/",
         success: function(data) {
-            data = JSON.parse(data);
 
-            fillDataToChartArrays(data)
+            data_for_graph = JSON.parse(data.stats);
+            avg_stats = JSON.parse(data.avg_stats);
+
+            fillDataToChartArrays(data_for_graph);
+
             redrawChart();
+
             graphDataTable.clear().rows.add(graph_data_table_array).draw();
         },
         error: function(err) {
@@ -303,7 +285,7 @@ function fillDataToChartArrays(data) {
                 'y': key.fields.returning_visits,
             })
             graph_data_table_array.push([
-                moment(key.fields.year.toString()).format('YYYY'),
+                moment(key.fields.year.toString() + '-01').format('YYYY'),
                 key.fields.page_views,
                 key.fields.unique_visits,
                 key.fields.first_time_visits,
@@ -332,6 +314,8 @@ $('#chart-select').on('change', function() {
 $('#summary-granularity-trigger').on('change', function() {
 
     data_summary_type = $('#summary-granularity-trigger').val();
+
+    updateAverageCounters();
     
     $("#graph-to-date").val(moment().toISOString().substr(0, 10));
 
@@ -427,29 +411,6 @@ $(document).ready( function () {
     getGraphData();
     
 });
-
-// Utility function to add days to a date
-// function addDays(date, days) {
-//     const copy = new Date(Number(date))
-//     copy.setDate(date.getDate() + days)
-//     return copy
-// }
-
-// Utility function to find number of days berween two dates
-// function daysBetween( date1, date2 ) {
-//     //Get 1 day in milliseconds
-//     var one_day=1000*60*60*24;
-
-//     // Convert both dates to milliseconds
-//     var date1_ms = date1.getTime();
-//     var date2_ms = date2.getTime();
-
-//     // Calculate the difference in milliseconds
-//     var difference_ms = date2_ms - date1_ms;
-        
-//     // Convert back to days and return
-//     return Math.round(difference_ms/one_day); 
-// }
 
 $("#graph-left-jump").click(function(){
 
@@ -876,3 +837,85 @@ $("#graph-zoom-in").click(function(){
 
     getGraphData();
 });
+
+function updateAverageCounters() {
+
+    $(".granularity").each(function() {
+        $(this).html(data_summary_type);
+    });
+
+    if(data_summary_type == 'daily') {
+
+        $('.average-daily').each(function () {
+            $(this).show();
+        });
+
+        $('.average-weekly').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-monthly').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-yearly').each(function () {
+            $(this).hide();
+        });
+
+    } else if(data_summary_type == 'weekly') {
+
+        $('.average-daily').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-weekly').each(function () {
+            $(this).show();
+        });
+
+        $('.average-monthly').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-yearly').each(function () {
+            $(this).hide();
+        });
+
+    } else if(data_summary_type == 'monthly') {
+
+        $('.average-daily').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-weekly').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-monthly').each(function () {
+            $(this).show();
+        });
+
+        $('.average-yearly').each(function () {
+            $(this).hide();
+        });
+        
+    } else {
+
+        $('.average-daily').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-weekly').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-monthly').each(function () {
+            $(this).hide();
+        });
+
+        $('.average-yearly').each(function () {
+            $(this).show();
+        });
+
+    }
+
+}
