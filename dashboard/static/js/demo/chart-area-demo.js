@@ -124,12 +124,7 @@ var graphDataTable = $('#graph-data-table').DataTable({
       ],
     columnDefs: [ { 'type': 'date', 'targets': [0],  }],
     order: [[ 0, 'asc' ]],
-    buttons: [
-        'copyHtml5',
-        'excelHtml5',
-        'csvHtml5',
-        'pdfHtml5'
-    ]
+    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
 });
 
 // Getting chart data from server
@@ -212,7 +207,7 @@ function fillDataToChartArrays(data) {
             })
 
             graph_data_table_array.push([
-                moment(key.fields.date).format('dddd, MMMM Do, YYYY'),
+                moment(key.fields.date).format('dddd MMMM Do YYYY'),
                 key.fields.page_views,
                 key.fields.unique_visits,
                 key.fields.first_time_visits,
@@ -918,4 +913,47 @@ function updateAverageCounters() {
 
     }
 
+}
+
+function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Hide download link
+    downloadLink.style.display = "none";
+
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+}
+
+function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("table tr");
+    
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (var j = 0; j < cols.length; j++) 
+            row.push(cols[j].innerText);
+        
+        csv.push(row.join(","));        
+    }
+
+    // Download CSV file
+    downloadCSV(csv.join("\n"), filename);
 }

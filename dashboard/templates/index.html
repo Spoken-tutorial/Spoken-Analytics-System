@@ -424,10 +424,10 @@
                       </div>
                       <div id="week-select-div" style="display: none" class="row">
                         <select id="graph-from-week" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select" onChange='getGraphData()'></select>
-                        <input id="graph-from-year" style="height: 25px; margin: 3px; width: 6em;" type="number" onChange='getGraphData()'>
+                        <input id="graph-from-year" style="height: 26px; margin: 2px; width: 6em;" type="number" onChange='getGraphData()'>
                         -
                         <select id="graph-to-week" style="width: 6em; height: 25px; margin: 3px 0px 3px 3px; padding: 0px;" class="browser-default custom-select" onChange='getGraphData()'></select>
-                        <input id="graph-to-year" style="height: 25px; margin: 3px 0px 0px 2px; width: 6em;" type="number" onChange='getGraphData()'>
+                        <input id="graph-to-year" style="height: 26px; margin: 2px 0px 0px 2px; width: 6em;" type="number" onChange='getGraphData()'>
                       </div>
                     </div>
                   </div>
@@ -483,25 +483,20 @@
             </div>
             <div class="card-body">
               <div class="table-responsive">
+                <button class="btn btn-primary" style="float: right" onclick="exportTableToCSV('summary.csv')">
+                  <span><i class="fas fa-sign-out-alt"></i></span>
+                 Export
+                </button>
                 <table class="table table-bordered display" id="graph-data-table" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      <th></th>
                       <th>Page Views</th>
                       <th>Unique Visits</th>
                       <th>First Time Visits</th>
                       <th>Returning Visits</th>
                     </tr>
                   </thead>
-                  <tfoot>
-                    <tr>
-                      <th>Date</th>
-                      <th>Page Views</th>
-                      <th>Unique Visits</th>
-                      <th>First Time Visits</th>
-                      <th>Returning Visits</th>
-                    </tr>
-                  </tfoot>
                   <tbody>
                   </tbody>
                 </table>
