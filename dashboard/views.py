@@ -5,9 +5,10 @@ from bson.json_util import dumps
 from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+from django.utils.timezone import get_current_timezone
 from django.core import serializers
 
-from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats
 
 # Create your views here.
 def index(request):
@@ -94,4 +95,16 @@ def events(request):
     Renders the events page
     """
 
-    return render(request, 'events.html')
+    today = datetime.now(tz=get_current_timezone())
+    end_date = today - timedelta(days=4)
+    start_date = start_date - timedelta(days=1)
+
+    # getting event stats of 4 days ago
+    # you can choose any day but difference must be of 1 day
+    event_stats = EventStats.objects.filter(date__range=(start_date, end_date))
+
+    context = {
+        'event_stats': event_stats,
+    }
+
+    return render(request, 'events.html', context)

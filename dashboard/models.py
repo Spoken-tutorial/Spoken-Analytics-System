@@ -52,7 +52,7 @@ class DailyStats(models.Model):
     returning_visits = models.IntegerField()
     unique_visitors = models.IntegerField()
 
-    def __str__(sekf):
+    def __str__(self):
         return "Daily Stats"
 
     objects = models.DjongoManager()
@@ -68,7 +68,7 @@ class WeeklyStats(models.Model):
     returning_visits = models.IntegerField()
     unique_visitors = models.IntegerField()
 
-    def __str__(sekf):
+    def __str__(self):
         return "Weekly Stats"
 
     objects = models.DjongoManager()
@@ -84,7 +84,7 @@ class MonthlyStats(models.Model):
     returning_visits = models.IntegerField()
     unique_visitors = models.IntegerField()
 
-    def __str__(sekf):
+    def __str__(self):
         return "Monthly Stats"
 
     objects = models.DjongoManager()
@@ -99,7 +99,18 @@ class YearlyStats(models.Model):
     returning_visits = models.IntegerField()
     unique_visitors = models.IntegerField()
 
-    def __str__(sekf):
+    def __str__(self):
         return "Yearly Stats"
+
+    objects = models.DjongoManager()
+
+class EventStats(models.Model):
+    event_name = models.CharField (max_length=100, blank=False)
+    path_info = models.CharField (max_length=200)
+    date = models.DateTimeField()
+    unique_visits = models.IntegerField()
+
+    def __str__(self):
+        return "Event Stats"
 
     objects = models.DjongoManager()

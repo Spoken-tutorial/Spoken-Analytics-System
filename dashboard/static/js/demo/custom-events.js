@@ -1,7 +1,7 @@
 var pagesDataTable = $('#pages-data-table').DataTable({
     searching: false,
     scrollX: false,
-    data: [],
+    // data: [],
     columns: [
         { "width": "75%" },
         { "width": "25%" },
