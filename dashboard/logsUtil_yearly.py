@@ -1,5 +1,5 @@
 """
-This file takes logs from the dashboard_dailystats collection, calculates daily logs stats
+This script takes logs from the dashboard_dailystats collection, calculates daily logs stats
 such as daily_page_views, daily_unique_visits, daily_returning_visits and daily_first_time_visits.
 Then it stores them in the dashboard_dailystats collection.
 

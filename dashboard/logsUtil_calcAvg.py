@@ -1,3 +1,6 @@
+"""
+This script calculates the average stats from different collections
+"""
 from dashboard.models import DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 
 # Fetching data from collections
@@ -91,6 +94,7 @@ average_yearly_unique_visits = int(total_unique_visits/total_records)
 average_yearly_first_time_visits = int(total_first_time_visits/total_records)
 average_yearly_returning_visits = int(total_returning_visits/total_records)
 
+# making AverageStats object
 avg_stats = AverageStats()
 
 avg_stats.average_daily_page_views = average_daily_page_views
@@ -113,5 +117,5 @@ avg_stats.average_yearly_unique_visits = average_yearly_unique_visits
 avg_stats.average_yearly_first_time_visits = average_yearly_first_time_visits
 avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
 
-
+# Saving the object
 avg_stats.save()

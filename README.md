@@ -39,12 +39,6 @@ python3 manage.py makemigraions
 python3 manage.py migrate --database=default
 ```
 
-* Genereate fake data
-excute gen_fake_data.py file in python shell.
-```
->> exec(open("gen_fake_data.py").read())
-```
-
 * Finally, you’re ready to start the development server:
 ```
 python manage.py runserver

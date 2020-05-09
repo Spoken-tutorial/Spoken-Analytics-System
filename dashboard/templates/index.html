@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>Dashboard</title>
+{% endblock %}
 {% block content %}
   <!-- Page Wrapper -->
   <div id="wrapper">
@@ -266,10 +270,10 @@
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average <span class="granularity">Daily</span> Page Views</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <div class="average-daily">{{ average_stats.average_daily_page_views }}</div>
-                        <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_page_views }}</div>
-                        <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_page_views }}</div>
-                        <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_page_views }}</div>
+                        <div class="avg average-daily">{{ average_stats.average_daily_page_views }}</div>
+                        <div class="avg average-weekly" style="display: none;">{{ average_stats.average_weekly_page_views }}</div>
+                        <div class="avg average-monthly" style="display: none;">{{ average_stats.average_monthly_page_views }}</div>
+                        <div class="avg average-yearly" style="display: none;">{{ average_stats.average_yearly_page_views }}</div>
                       </div>
                     </div>
                   </div>
@@ -285,10 +289,10 @@
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Average <span class="granularity">Daily</span> Unique Visits</div>
                       <div id="average-unique_visits" class="h5 mb-0 font-weight-bold text-gray-800">
-                        <div class="average-daily">{{ average_stats.average_daily_unique_visits }}</div>
-                        <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_unique_visits }}</div>
-                        <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_unique_visits }}</div>
-                        <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_unique_visits }}</div>
+                        <div class="avg average-daily">{{ average_stats.average_daily_unique_visits }}</div>
+                        <div class="avg average-weekly" style="display: none;">{{ average_stats.average_weekly_unique_visits }}</div>
+                        <div class="avg average-monthly" style="display: none;">{{ average_stats.average_monthly_unique_visits }}</div>
+                        <div class="avg average-yearly" style="display: none;">{{ average_stats.average_yearly_unique_visits }}</div>
                       </div>
                     </div>
                   </div>
@@ -304,10 +308,10 @@
                       <div class="row no-gutters align-items-center">
                         <div class="col-auto">
                           <div id="average-first_time_visits" class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                            <div class="average-daily">{{ average_stats.average_daily_first_time_visits }}</div>
-                            <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_first_time_visits }}</div>
-                            <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_first_time_visits }}</div>
-                            <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_first_time_visits }}</div>
+                            <div class="avg average-daily">{{ average_stats.average_daily_first_time_visits }}</div>
+                            <div class="avg average-weekly" style="display: none;">{{ average_stats.average_weekly_first_time_visits }}</div>
+                            <div class="avg average-monthly" style="display: none;">{{ average_stats.average_monthly_first_time_visits }}</div>
+                            <div class="avg average-yearly" style="display: none;">{{ average_stats.average_yearly_first_time_visits }}</div>
                           </div>
                         </div>
                       </div>
@@ -323,10 +327,10 @@
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Average <span class="granularity">Daily</span> Returning Visits</div>
                       <div id="average-returning-visits" class="h5 mb-0 font-weight-bold text-gray-800">
-                        <div class="average-daily">{{ average_stats.average_daily_returning_visits }}</div>
-                        <div class="average-weekly" style="display: none;">{{ average_stats.average_weekly_returning_visits }}</div>
-                        <div class="average-monthly" style="display: none;">{{ average_stats.average_monthly_returning_visits }}</div>
-                        <div class="average-yearly" style="display: none;">{{ average_stats.average_yearly_returning_visits }}</div>
+                        <div class="avg average-daily">{{ average_stats.average_daily_returning_visits }}</div>
+                        <div class="avg average-weekly" style="display: none;">{{ average_stats.average_weekly_returning_visits }}</div>
+                        <div class="avg average-monthly" style="display: none;">{{ average_stats.average_monthly_returning_visits }}</div>
+                        <div class="avg average-yearly" style="display: none;">{{ average_stats.average_yearly_returning_visits }}</div>
                       </div>
                     </div>
                   </div>
@@ -549,4 +553,8 @@
       </div>
     </div>
   </div>
+  {% endblock %}
+
+  {% block custom_js %}
+  <script src="{% static 'js/demo/custom-dashboard.js' %}"></script>
   {% endblock %}

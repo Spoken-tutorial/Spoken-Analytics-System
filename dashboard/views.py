@@ -26,15 +26,20 @@ def index(request):
 # This view serves the daily stats to graph of dashboard
 def graphData(request):
     """
-    Suppy data to graph to display page loads per day
+    Suppy data to graph for visualization
     """
 
     data = json.loads(request.body) # Fetch data from request
 
     data_summary_type = data['data_summary_type']
 
-    # Duration of which data is to send
+    
+    # if data_summary_type is 'weekly' the data object is like
+    # {'data_summary_type': 'weekly', 'from': {'week': '15', 'year': '2020'}, 'to': {'week': '19', 'year': '2020'}}
+    # else the data object is like
+    # {'data_summary_type': 'daily', 'from': '2020-05-01', 'to': '2020-05-08'}
 
+    # Duration of which data is to be sent
     if(data_summary_type == 'weekly'):
         
         from_week = data['from']['week']
@@ -43,18 +48,18 @@ def graphData(request):
         to_week = data['to']['week']
         to_year = data['to']['year']
 
-        from_week_year = str(from_year) + '-W' + str(from_week)
-        to_week_year = str(to_year) + '-W' + str(to_week)
+        from_week_year = str(from_year) + '-W' + str(from_week) # conveting week and year in the format
+        to_week_year = str(to_year) + '-W' + str(to_week)       # 2020-W03 for it to be converted into datetime object
 
-        from_date = datetime.strptime(from_week_year + '-1', '%G-W%V-%u')
-        to_date = datetime.strptime(to_week_year + '-1', '%G-W%V-%u')
-        print(from_date, to_date)
+        from_date = datetime.strptime(from_week_year + '-1', '%G-W%V-%u') # converting to datetime object
+        to_date = datetime.strptime(to_week_year + '-1', '%G-W%V-%u')     # converting to datetime object
 
     else:
 
-        from_date = datetime.strptime(data['from'], '%Y-%m-%d')
-        to_date = datetime.strptime(data['to'], '%Y-%m-%d')
+        from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
+        to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # extracting data on basis of granuality (weekly, monthly, etc)
     if data_summary_type == 'daily':
         
         stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
@@ -74,8 +79,10 @@ def graphData(request):
     # Converting data to json object
     json_stats = serializers.serialize('json', stats)
 
+    # getting average stats
     avg_stats = AverageStats.objects.all()
 
+    # Converting data to json object
     json_avg_stats = serializers.serialize('json', avg_stats)
 
     json_res = {'stats': json_stats, 'avg_stats': json_avg_stats}
