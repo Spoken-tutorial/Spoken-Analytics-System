@@ -21,9 +21,9 @@ Chart.defaults.global.defaultFontColor = '#858796';
 Chart.defaults.global.elements.line.tension = 0; // tension of lines in line graph
 
 // Initialization after page load
-$(document).ready( function () {
+$(document).ready(function() {
 
-    $('.avg').each(function () {
+    $('.avg').each(function() {
 
         // Format counter values
         var value = $(this).html();
@@ -39,43 +39,43 @@ $(document).ready( function () {
     var year = moment().year();
 
     // Fill options of Week selects
-    for(var i=1;i<=52;i++) {
+    for (var i = 1; i <= 52; i++) {
 
         text = 'Week ' + i;
         value = i;
 
         // If i is the week of year make it selected otherwise not
-        if( i == week_of_year) {
+        if (i == week_of_year) {
 
-            $('#graph-to-week').append(`<option value="${value}" selected> ${text} </option>`); 
+            $('#graph-to-week').append(`<option value="${value}" selected> ${text} </option>`);
 
         } else {
 
-            $('#graph-to-week').append(`<option value="${value}"> ${text} </option>`); 
+            $('#graph-to-week').append(`<option value="${value}"> ${text} </option>`);
 
         }
 
         // If current week_of_year is less than 5, make from_week = 52 - week_of_year 
-        if((week_of_year - 4) < 1) {
+        if ((week_of_year - 4) < 1) {
 
             value = 52 - week_of_year;
             text = 'Week ' + value;
 
         }
 
-        if( i == (week_of_year - 4)) {
+        if (i == (week_of_year - 4)) {
 
-            $('#graph-from-week').append(`<option value="${value}" selected> ${text} </option>`); 
+            $('#graph-from-week').append(`<option value="${value}" selected> ${text} </option>`);
 
         } else {
 
-            $('#graph-from-week').append(`<option value="${value}"> ${text} </option>`); 
+            $('#graph-from-week').append(`<option value="${value}"> ${text} </option>`);
 
         }
     }
 
     // If current week_of_year is less than 5, subtract 1 from from_year
-    if((week_of_year - 4) < 1) {
+    if ((week_of_year - 4) < 1) {
 
         year -= 1;
 
@@ -87,7 +87,7 @@ $(document).ready( function () {
 
     // Get graph data after values are set
     getGraphData();
-    
+
 });
 
 // Utility function to format numbers (10000 to 10K)
@@ -95,17 +95,17 @@ function nFormatter(num) {
 
     if (num >= 1000000000) {
 
-       return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
 
     }
     if (num >= 1000000) {
 
-       return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
 
     }
     if (num >= 1000) {
 
-       return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
 
     }
 
@@ -116,7 +116,7 @@ function nFormatter(num) {
 // Function used to redraw chart after datasets chage
 function redrawChart() {
     //if we already have a chart destroy it then carry on as normal
-    if(chart) {
+    if (chart) {
 
         chart.destroy();
 
@@ -125,13 +125,13 @@ function redrawChart() {
     var c = document.getElementById("my-chart");
 
     c.width = w;
-    c.height = w/2;
+    c.height = w / 2;
 
     $("#chart_canvas").css("width", w);
-    $("#chart_canvas").css("height", w/2);
+    $("#chart_canvas").css("height", w / 2);
 
     var chart_canvas = document.getElementById("my-chart").getContext("2d");
-    chart= new Chart(chart_canvas, config)
+    chart = new Chart(chart_canvas, config)
 };
 
 // Utility function used to add 0 before numbers of numbers are less than 10
@@ -141,82 +141,82 @@ function minTwoDigits(n) {
 
 // Chart config 
 var config = {
-  type: 'bar',
-  data: {
-      datasets: [{
-        label: 'Page Views',
-        backgroundColor: color('rgb(78,115,223)').alpha(0.8).rgbString(),
-        borderColor: 'rgb(78,115,223)',
-        fill: false,
-        data:page_views_array,
-      },{
-        label: 'Unique Visits',
-        backgroundColor: color('rgb(28,200,138)').alpha(0.8).rgbString(),
-        borderColor: 'rgb(28,200,138)',
-        fill: false,
-        data: unique_visits_array,
-      },{
-        label: 'Returning Visits',
-        backgroundColor: color('rgb(246,194,62)').alpha(0.8).rgbString(),
-        borderColor: 'rgb(246,194,62)',
-        fill: false,
-        data: returning_visits_array,
-      },
-    ]
-  },
-  options: {
-      responsive: true,
-      title: {
-          display: true,
-          text: ''
-      },
-      scales: {
-          xAxes: [{
-            type: 'time',
-            time: {
-                parser: timeFormat,
-                unit: 'day',
-                tooltipFormat: 'll',
-                isoWeekday: true,
-                displayFormats: {
-                    day: 'll',
-                    week:'YYYY-[W]WW',
-                    month: 'MMM YYYY',
-                    year: 'YYYY'
-                }
-            },
+    type: 'bar',
+    data: {
+        datasets: [{
+            label: 'Page Views',
+            backgroundColor: color('rgb(78,115,223)').alpha(0.8).rgbString(),
+            borderColor: 'rgb(78,115,223)',
+            fill: false,
+            data: page_views_array,
+        }, {
+            label: 'Unique Visits',
+            backgroundColor: color('rgb(28,200,138)').alpha(0.8).rgbString(),
+            borderColor: 'rgb(28,200,138)',
+            fill: false,
+            data: unique_visits_array,
+        }, {
+            label: 'Returning Visits',
+            backgroundColor: color('rgb(246,194,62)').alpha(0.8).rgbString(),
+            borderColor: 'rgb(246,194,62)',
+            fill: false,
+            data: returning_visits_array,
+        }, ]
+    },
+    options: {
+        responsive: true,
+        title: {
             display: true,
-            scaleLabel: {
+            text: ''
+        },
+        scales: {
+            xAxes: [{
+                type: 'time',
+                time: {
+                    parser: timeFormat,
+                    unit: 'day',
+                    tooltipFormat: 'll',
+                    isoWeekday: true,
+                    displayFormats: {
+                        day: 'll',
+                        week: 'YYYY-[W]WW',
+                        month: 'MMM YYYY',
+                        year: 'YYYY'
+                    }
+                },
                 display: true,
-                labelString: 'Date'
-            },
-            ticks: {
-                major: {
-                    fontStyle: 'bold',
-                    fontColor: '#FF0000'
-                }
-            },
-            gridLines: {
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Date'
+                },
+                ticks: {
+                    major: {
+                        fontStyle: 'bold',
+                        fontColor: '#FF0000'
+                    }
+                },
+                gridLines: {
+                    display: true,
+                    offsetGridLines: true
+                },
+                offset: true,
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    maxTicksLimit: 5,
+                    padding: 10,
+                },
                 display: true,
-                offsetGridLines: true
-            },
-            offset: true,
-          }],
-          yAxes: [{
-            ticks: {
-                beginAtZero: true,
-                maxTicksLimit: 5,
-                padding: 10,
-            },
-            display: true,
-          }]
-      }
-  }
+            }]
+        }
+    }
 };
 
 // Initialization of Data table 
 var graphDataTable = $('#graph-data-table').DataTable({
     searching: false,
+    scrollX: false,
     data: graph_data_table_array,
     columns: [
         { "width": "40%" },
@@ -224,18 +224,23 @@ var graphDataTable = $('#graph-data-table').DataTable({
         { "width": "15%" },
         { "width": "15%" },
         { "width": "15%" },
-      ],
-    columnDefs: [ { 'type': 'date', 'targets': [0],  }],
-    order: [[ 0, 'asc' ]],
-    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
+    ],
+    columnDefs: [{ 'type': 'date', 'targets': [0], }],
+    order: [
+        [0, 'asc']
+    ],
+    lengthMenu: [
+        [10, 25, 50, -1],
+        [10, 25, 50, "All"]
+    ]
 });
 
 // Getting chart data from server
-function getGraphData(){ 
+function getGraphData() {
 
     // fromDate and toDate hold date like {'week': '15', 'year': '2020'} if data_summary_type is weekly 
     //  else like '2020-05-01'
-    if(data_summary_type == 'weekly') {
+    if (data_summary_type == 'weekly') {
 
         fromDate = {
             week: $('#graph-from-week').val(),
@@ -297,7 +302,7 @@ function fillDataToChartArrays(data) {
     returning_visits_array.length = 0
     graph_data_table_array.length = 0
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         data.forEach((key, value) => {
 
@@ -326,7 +331,7 @@ function fillDataToChartArrays(data) {
 
         });
 
-    } else if(data_summary_type == 'weekly') {
+    } else if (data_summary_type == 'weekly') {
 
         data.forEach((key, value) => {
             page_views_array.push({
@@ -357,7 +362,7 @@ function fillDataToChartArrays(data) {
             ])
         });
 
-    } else if(data_summary_type == 'monthly') {
+    } else if (data_summary_type == 'monthly') {
 
         data.forEach((key, value) => {
             // Coverting month and year to format like 2020-04 so that it can be parsed into moment object
@@ -388,7 +393,7 @@ function fillDataToChartArrays(data) {
             ])
         });
 
-    } else if(data_summary_type == 'yearly') {
+    } else if (data_summary_type == 'yearly') {
 
         data.forEach((key, value) => {
             page_views_array.push({
@@ -419,10 +424,10 @@ function fillDataToChartArrays(data) {
             ])
         });
     }
-    
+
     // reversing the graph_data_table_array array so DataTabel displays nearest date first
     graph_data_table_array.reverse()
-    
+
 }
 
 // Change chart type and values according to chart-select
@@ -431,7 +436,7 @@ $('#chart-select').on('change', function() {
     var chart_type = $('#chart-select').val();
     config.type = chart_type;
 
-    if(chart_type == 'line') {
+    if (chart_type == 'line') {
 
         config.options.scales.xAxes[0].gridLines.offsetGridLines = false;
         config.options.scales.xAxes[0].offset = false
@@ -446,7 +451,7 @@ $('#chart-select').on('change', function() {
 
     // update chart to accomodate changes
     chart.update();
-    
+
 });
 
 // Change different values on granularity change ('daily', 'monthly', etc)
@@ -455,12 +460,12 @@ $('#summary-granularity-trigger').on('change', function() {
     data_summary_type = $('#summary-granularity-trigger').val();
 
     updateAverageCounters();
-    
+
     // Reset graph-to-date to current date
     $("#graph-to-date").val(moment().toISOString().substr(0, 10));
 
     if (data_summary_type == 'daily') {
-        
+
         timeFormat = 'YYYY-MM-DD';
 
         // Reset graph-to-date to current date - 7 days
@@ -473,9 +478,9 @@ $('#summary-granularity-trigger').on('change', function() {
         config.options.scales.xAxes[0].time.unit = 'day';
 
     } else if (data_summary_type == 'weekly') {
-        
+
         timeFormat = 'YYYY-[W]WW';
-        
+
         $('#date-select-div').hide();
         $('#week-select-div').show();
 
@@ -494,7 +499,7 @@ $('#summary-granularity-trigger').on('change', function() {
 
         // Change X-axis time unit
         config.options.scales.xAxes[0].time.unit = 'month';
-        
+
     } else if (data_summary_type == 'yearly') {
 
         timeFormat = 'YYYY'
@@ -516,7 +521,7 @@ $('#summary-granularity-trigger').on('change', function() {
 });
 
 // Change dates and weeks on graph-left-jump button click
-$("#graph-left-jump").click(function(){
+$("#graph-left-jump").click(function() {
 
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
@@ -524,13 +529,13 @@ $("#graph-left-jump").click(function(){
     var new_from_date = from_date;
     var new_to_date = to_date;
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         new_from_date.setDate(new_from_date.getDate() - 7);
         new_to_date.setDate(new_to_date.getDate() - 7);
 
     } else if (data_summary_type == 'weekly') {
-        
+
         var from_week_select = $('#graph-from-week');
         var to_week_select = $('#graph-to-week');
 
@@ -538,21 +543,21 @@ $("#graph-left-jump").click(function(){
         var to_week = to_week_select.val();
 
         var new_from_week = parseInt(from_week) - 1;
-        var new_to_week = parseInt(to_week) - 1 ;
+        var new_to_week = parseInt(to_week) - 1;
 
-        if(new_from_week < 1) {
+        if (new_from_week < 1) {
 
             new_from_week = 52;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year)-1);
+            $('#graph-from-year').val(parseInt(year) - 1);
 
         }
 
-        if(new_to_week < 1) {
+        if (new_to_week < 1) {
 
             new_to_week = 52;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)-1);
+            $('#graph-to-year').val(parseInt(year) - 1);
 
         }
 
@@ -573,14 +578,15 @@ $("#graph-left-jump").click(function(){
     }
 
     $("#graph-from-date").val(new_from_date.toISOString().substr(0, 10));
-    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));4
+    $("#graph-to-date").val(new_to_date.toISOString().substr(0, 10));
+    4
 
     getGraphData();
 
 });
 
 // Change dates and weeks on graph-right-jump button click
-$("#graph-right-jump").click(function(){
+$("#graph-right-jump").click(function() {
 
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
@@ -588,13 +594,13 @@ $("#graph-right-jump").click(function(){
     var new_from_date = from_date;
     var new_to_date = to_date;
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         new_from_date.setDate(new_from_date.getDate() + 7);
         new_to_date.setDate(new_to_date.getDate() + 7);
 
     } else if (data_summary_type == 'weekly') {
-        
+
         var from_week_select = $('#graph-from-week');
         var to_week_select = $('#graph-to-week');
 
@@ -602,21 +608,21 @@ $("#graph-right-jump").click(function(){
         var to_week = to_week_select.val();
 
         var new_from_week = parseInt(from_week) + 1;
-        var new_to_week = parseInt(to_week) + 1 ;
+        var new_to_week = parseInt(to_week) + 1;
 
-        if(new_from_week > 52) {
+        if (new_from_week > 52) {
             new_from_week = 1;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year) +1);
+            $('#graph-from-year').val(parseInt(year) + 1);
         }
 
-        if(new_to_week > 52) {
+        if (new_to_week > 52) {
             new_to_week = 1;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)+1);
+            $('#graph-to-year').val(parseInt(year) + 1);
         }
 
-        if(new_to_week > moment().isoWeek()) {
+        if (new_to_week > moment().isoWeek()) {
             return;
         }
 
@@ -635,7 +641,7 @@ $("#graph-right-jump").click(function(){
 
     }
 
-    if(new_to_date > moment()) {
+    if (new_to_date > moment()) {
         return;
     }
 
@@ -647,7 +653,7 @@ $("#graph-right-jump").click(function(){
 });
 
 // Change dates and weeks on graph-left-crawl button click
-$("#graph-left-crawl").click(function(){
+$("#graph-left-crawl").click(function() {
 
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
@@ -655,13 +661,13 @@ $("#graph-left-crawl").click(function(){
     var new_from_date = from_date;
     var new_to_date = to_date;
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         new_from_date.setDate(new_from_date.getDate() - 1);
         new_to_date.setDate(new_to_date.getDate() - 1);
 
     } else if (data_summary_type == 'weekly') {
-        
+
         var from_week_select = $('#graph-from-week');
         var to_week_select = $('#graph-to-week');
 
@@ -669,18 +675,18 @@ $("#graph-left-crawl").click(function(){
         var to_week = to_week_select.val();
 
         var new_from_week = parseInt(from_week) - 1;
-        var new_to_week = parseInt(to_week) - 1 ;
+        var new_to_week = parseInt(to_week) - 1;
 
-        if(new_from_week < 1) {
+        if (new_from_week < 1) {
             new_from_week = 52;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year)-1);
+            $('#graph-from-year').val(parseInt(year) - 1);
         }
 
-        if(new_to_week < 1) {
+        if (new_to_week < 1) {
             new_to_week = 52;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)-1);
+            $('#graph-to-year').val(parseInt(year) - 1);
         }
 
         from_week_select.val(new_from_week);
@@ -699,7 +705,7 @@ $("#graph-left-crawl").click(function(){
 
     }
 
-    if(new_to_date > moment()) {
+    if (new_to_date > moment()) {
         return;
     }
 
@@ -711,7 +717,7 @@ $("#graph-left-crawl").click(function(){
 });
 
 // Change dates and weeks on graph-right-crawl button click
-$("#graph-right-crawl").click(function(){
+$("#graph-right-crawl").click(function() {
 
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
@@ -719,13 +725,13 @@ $("#graph-right-crawl").click(function(){
     var new_from_date = from_date;
     var new_to_date = to_date;
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         new_from_date.setDate(new_from_date.getDate() + 1);
         new_to_date.setDate(new_to_date.getDate() + 1);
 
     } else if (data_summary_type == 'weekly') {
-        
+
         var from_week_select = $('#graph-from-week');
         var to_week_select = $('#graph-to-week');
 
@@ -733,21 +739,21 @@ $("#graph-right-crawl").click(function(){
         var to_week = to_week_select.val();
 
         var new_from_week = parseInt(from_week) + 1;
-        var new_to_week = parseInt(to_week) + 1 ;
+        var new_to_week = parseInt(to_week) + 1;
 
-        if(new_from_week > 52) {
+        if (new_from_week > 52) {
             new_from_week = 1;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year) +1);
+            $('#graph-from-year').val(parseInt(year) + 1);
         }
 
-        if(new_to_week > 52) {
+        if (new_to_week > 52) {
             new_to_week = 1;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)+1);
+            $('#graph-to-year').val(parseInt(year) + 1);
         }
 
-        if(new_to_week > moment().isoWeek()) {
+        if (new_to_week > moment().isoWeek()) {
             return;
         }
 
@@ -766,7 +772,7 @@ $("#graph-right-crawl").click(function(){
 
     }
 
-    if(new_to_date > moment()) {
+    if (new_to_date > moment()) {
         return;
     }
 
@@ -778,7 +784,7 @@ $("#graph-right-crawl").click(function(){
 });
 
 // Change dates and weeks on graph-zoom-out button click
-$("#graph-zoom-out").click(function(){
+$("#graph-zoom-out").click(function() {
 
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
@@ -786,12 +792,12 @@ $("#graph-zoom-out").click(function(){
     var new_from_date = from_date;
     var new_to_date = to_date;
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         new_from_date.setDate(new_from_date.getDate() - 1);
         new_to_date.setDate(new_to_date.getDate() + 1);
 
-        if(new_to_date > moment()) {
+        if (new_to_date > moment()) {
 
             new_from_date.setDate(new_from_date.getDate() - 1);
             new_to_date = moment();
@@ -799,7 +805,7 @@ $("#graph-zoom-out").click(function(){
         }
 
     } else if (data_summary_type == 'weekly') {
-        
+
         var from_week_select = $('#graph-from-week');
         var to_week_select = $('#graph-to-week');
 
@@ -807,46 +813,46 @@ $("#graph-zoom-out").click(function(){
         var to_week = to_week_select.val();
 
         var new_from_week = parseInt(from_week) - 1;
-        var new_to_week = parseInt(to_week) + 1 ;
+        var new_to_week = parseInt(to_week) + 1;
 
-        if(new_to_week >= moment().isoWeek()) {
+        if (new_to_week >= moment().isoWeek()) {
 
             new_to_week = to_week;
             new_from_week -= 1;
 
         }
 
-        if(new_from_week > 52) {
+        if (new_from_week > 52) {
 
             new_from_week = 1;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year) +1);
+            $('#graph-from-year').val(parseInt(year) + 1);
 
         }
 
-        if(new_to_week > 52) {
+        if (new_to_week > 52) {
 
             new_to_week = 1;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)+1);
+            $('#graph-to-year').val(parseInt(year) + 1);
 
         }
 
 
-        if(new_from_week < 1) {
+        if (new_from_week < 1) {
 
             new_from_week = 52;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year)-1);
+            $('#graph-from-year').val(parseInt(year) - 1);
 
         }
 
 
-        if(new_to_week < 1) {
+        if (new_to_week < 1) {
 
             new_to_week = 52;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)-1);
+            $('#graph-to-year').val(parseInt(year) - 1);
 
         }
 
@@ -858,7 +864,7 @@ $("#graph-zoom-out").click(function(){
         new_from_date.setMonth(new_from_date.getMonth() - 1);
         new_to_date.setMonth(new_to_date.getMonth() + 1);
 
-        if(new_to_date > moment()) {
+        if (new_to_date > moment()) {
 
             new_from_date.setDate(new_from_date.getMonth() - 1);
             new_to_date = moment();
@@ -870,7 +876,7 @@ $("#graph-zoom-out").click(function(){
         new_from_date.setFullYear(new_from_date.getFullYear() - 1);
         new_to_date.setFullYear(new_to_date.getFullYear() + 1);
 
-        if(new_to_date > moment()) {
+        if (new_to_date > moment()) {
 
             new_from_date.setFullYear(new_from_date.getFullYear() - 1);
             new_to_date = moment();
@@ -887,7 +893,7 @@ $("#graph-zoom-out").click(function(){
 });
 
 // Change dates and weeks on graph-zoom-in button click
-$("#graph-zoom-in").click(function(){
+$("#graph-zoom-in").click(function() {
 
     var from_date = new Date($('#graph-from-date').val());
     var to_date = new Date($('#graph-to-date').val());
@@ -895,13 +901,13 @@ $("#graph-zoom-in").click(function(){
     var new_from_date = from_date;
     var new_to_date = to_date;
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
         new_from_date.setDate(new_from_date.getDate() + 1);
         new_to_date.setDate(new_to_date.getDate() - 1);
 
     } else if (data_summary_type == 'weekly') {
-        
+
         var from_week_select = $('#graph-from-week');
         var to_week_select = $('#graph-to-week');
 
@@ -909,35 +915,35 @@ $("#graph-zoom-in").click(function(){
         var to_week = to_week_select.val();
 
         var new_from_week = parseInt(from_week) + 1;
-        var new_to_week = parseInt(to_week) - 1 ;
+        var new_to_week = parseInt(to_week) - 1;
 
-        if(new_from_week > 52) {
+        if (new_from_week > 52) {
             new_from_week = 1;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year) +1);
+            $('#graph-from-year').val(parseInt(year) + 1);
         }
 
-        if(new_to_week > 52) {
+        if (new_to_week > 52) {
             new_to_week = 1;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)+1);
+            $('#graph-to-year').val(parseInt(year) + 1);
         }
 
 
-        if(new_from_week < 1) {
+        if (new_from_week < 1) {
             new_from_week = 52;
             var year = $('#graph-from-year').val();
-            $('#graph-from-year').val(parseInt(year)-1);
+            $('#graph-from-year').val(parseInt(year) - 1);
         }
 
 
-        if(new_to_week < 1) {
+        if (new_to_week < 1) {
             new_to_week = 52;
             var year = $('#graph-to-year').val();
-            $('#graph-to-year').val(parseInt(year)-1);
+            $('#graph-to-year').val(parseInt(year) - 1);
         }
 
-        if(new_from_week >= new_to_week && $('#graph-from-year').val() === $('#graph-to-year').val()) {
+        if (new_from_week >= new_to_week && $('#graph-from-year').val() === $('#graph-to-year').val()) {
             return;
         }
 
@@ -956,7 +962,7 @@ $("#graph-zoom-in").click(function(){
 
     }
 
-    if(new_from_date >= new_to_date) {
+    if (new_from_date >= new_to_date) {
         return;
     }
 
@@ -974,75 +980,75 @@ function updateAverageCounters() {
         $(this).html(data_summary_type);
     });
 
-    if(data_summary_type == 'daily') {
+    if (data_summary_type == 'daily') {
 
-        $('.average-daily').each(function () {
+        $('.average-daily').each(function() {
             $(this).show();
         });
 
-        $('.average-weekly').each(function () {
+        $('.average-weekly').each(function() {
             $(this).hide();
         });
 
-        $('.average-monthly').each(function () {
+        $('.average-monthly').each(function() {
             $(this).hide();
         });
 
-        $('.average-yearly').each(function () {
+        $('.average-yearly').each(function() {
             $(this).hide();
         });
 
-    } else if(data_summary_type == 'weekly') {
+    } else if (data_summary_type == 'weekly') {
 
-        $('.average-daily').each(function () {
+        $('.average-daily').each(function() {
             $(this).hide();
         });
 
-        $('.average-weekly').each(function () {
+        $('.average-weekly').each(function() {
             $(this).show();
         });
 
-        $('.average-monthly').each(function () {
+        $('.average-monthly').each(function() {
             $(this).hide();
         });
 
-        $('.average-yearly').each(function () {
+        $('.average-yearly').each(function() {
             $(this).hide();
         });
 
-    } else if(data_summary_type == 'monthly') {
+    } else if (data_summary_type == 'monthly') {
 
-        $('.average-daily').each(function () {
+        $('.average-daily').each(function() {
             $(this).hide();
         });
 
-        $('.average-weekly').each(function () {
+        $('.average-weekly').each(function() {
             $(this).hide();
         });
 
-        $('.average-monthly').each(function () {
+        $('.average-monthly').each(function() {
             $(this).show();
         });
 
-        $('.average-yearly').each(function () {
+        $('.average-yearly').each(function() {
             $(this).hide();
         });
-        
+
     } else {
 
-        $('.average-daily').each(function () {
+        $('.average-daily').each(function() {
             $(this).hide();
         });
 
-        $('.average-weekly').each(function () {
+        $('.average-weekly').each(function() {
             $(this).hide();
         });
 
-        $('.average-monthly').each(function () {
+        $('.average-monthly').each(function() {
             $(this).hide();
         });
 
-        $('.average-yearly').each(function () {
+        $('.average-yearly').each(function() {
             $(this).show();
         });
 
@@ -1056,7 +1062,7 @@ function downloadCSV(csv, filename) {
     var downloadLink;
 
     // CSV file
-    csvFile = new Blob([csv], {type: "text/csv"});
+    csvFile = new Blob([csv], { type: "text/csv" });
 
     // Download link
     downloadLink = document.createElement("a");
@@ -1081,14 +1087,15 @@ function downloadCSV(csv, filename) {
 function exportTableToCSV(filename) {
     var csv = [];
     var rows = document.querySelectorAll("table tr");
-    
+
     for (var i = 0; i < rows.length; i++) {
-        var row = [], cols = rows[i].querySelectorAll("td, th");
-        
-        for (var j = 0; j < cols.length; j++) 
+        var row = [],
+            cols = rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++)
             row.push(cols[j].innerText);
-        
-        csv.push(row.join(","));        
+
+        csv.push(row.join(","));
     }
 
     // Download CSV file

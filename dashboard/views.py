@@ -88,3 +88,10 @@ def graphData(request):
     json_res = {'stats': json_stats, 'avg_stats': json_avg_stats}
 
     return JsonResponse(json_res, safe=False) # sending data
+
+def events(request):
+    """
+    Renders the events page
+    """
+
+    return render(request, 'events.html')
