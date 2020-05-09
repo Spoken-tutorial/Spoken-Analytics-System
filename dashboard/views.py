@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.core import serializers
-
+from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats
 
 # Create your views here.
@@ -95,13 +95,13 @@ def events(request):
     Renders the events page
     """
 
-    today = datetime.now(tz=get_current_timezone())
+    today = datetime.today()
+    start_date = today - timedelta(days=6)
     end_date = today - timedelta(days=4)
-    start_date = start_date - timedelta(days=1)
 
     # getting event stats of 4 days ago
     # you can choose any day but difference must be of 1 day
-    event_stats = EventStats.objects.filter(date__range=(start_date, end_date))
+    event_stats = EventStats.objects.filter(date__range=(start_date, end_date)).values('event_name').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
 
     context = {
         'event_stats': event_stats,
