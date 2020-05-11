@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>Event Analysis</title>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Page Analysis : {{ event_name }} </h1>
+    </div>
+    <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Unique Visits</h6>
+            <div>
+                <select id="chart-select" style="width: 8em" class="browser-default custom-select">
+                    <option value='bar' selected>Bar Chart</option>
+                    <option value="line">Line Chart</option>
+                </select>
+            </div>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <button class="date-control" id="graph-left-jump" title="Jump Left">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" version="1.1" xml:space="preserve" width="12px" height="9px" class="svg">
+                      <g>
+                        <path style="fill:#fff;" d="M 12 7.6611 L 8.5189 4.5005 L 12 1.3389 L 10.5883 0 L 6 4.3514 L 6.179 4.5005 L 6 4.6486 L 10.5883 9 L 12 7.6611 Z"></path>
+                        <path style="fill:#fff;" d="M 6 7.6611 L 2.5189 4.5005 L 6 1.3389 L 4.5883 0 L 0 4.3514 L 0.179 4.5005 L 0 4.6486 L 4.5883 9 L 6 7.6611 Z"></path>
+                      </g>
+                    </svg>
+                  </button>
+                    <button class="date-control" id="graph-left-crawl" title="Move Left">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 13" version="1.1" xml:space="preserve" width="7px" height="13px" class="arrow">
+                      <g transform="translate(-1,1)">
+                        <path style="fill:#fff;" d="M 8.1961,7.4604 4.4026,3.8289 8.1961,0.196 6.6576,-1.3424 l -5.195,5.1713 5.195,5.17 z"></path>
+                      </g>
+                    </svg>
+                  </button>
+                    <button class="date-control" id="graph-right-crawl" title="Move Right">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 13" version="1.1" xml:space="preserve" width="7px" height="13px" class="arrow">
+                      <g transform="translate(-1.4,1)">
+                        <path style="fill:#fff;" d="M 1.4626,7.4604 5.2561,3.8289 1.4626,0.196 l 1.5385,-1.5384 5.195,5.1713 -5.195,5.17 z"></path>
+                      </g>
+                    </svg>
+                  </button>
+                    <button class="date-control" id="graph-right-jump" title="Jump Right">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" version="1.1" xml:space="preserve" width="12px" height="9px" class="svg">
+                      <g transform="matrix(-1,0,0,1,12,0)">
+                        <path style="fill:#fff;" d="M 12 7.6611 L 8.5189 4.5005 L 12 1.3389 L 10.5883 0 L 6 4.3514 L 6.179 4.5005 L 6 4.6486 L 10.5883 9 L 12 7.6611 Z"></path>
+                        <path style="fill:#fff;" d="M 6 7.6611 L 2.5189 4.5005 L 6 1.3389 L 4.5883 0 L 0 4.3514 L 0.179 4.5005 L 0 4.6486 L 4.5883 9 L 6 7.6611 Z"></path>
+                      </g>
+                    </svg>
+                  </button>
+                </div>
+                <div class="col-md-2">
+                    <button class="date-control" id="graph-zoom-out" title="Zoom Out">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" version="1.1" xml:space="preserve" width="10px" height="10px">
+                      <g>
+                        <rect style="fill:#fff;" x="0" y="4" width="10" height="2"></rect>
+                      </g>
+                    </svg>
+                  </button>
+                    <button class="date-control" id="graph-zoom-in" title="Zoom In">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" version="1.1" xml:space="preserve" width="10px" height="10px">
+                      <g>
+                        <rect style="fill:#fff;" x="0" y="4" width="10" height="2"></rect>
+                        <rect style="fill:#fff;" x="4" y="0" width="2" height="10"></rect>
+                      </g>
+                    </svg>
+                  </button>
+                </div>
+                <div class="col-md-7" style="background: #4e73df; color: #fff; height: 30px;">
+                    <div id="date-select-div" class="row">
+                        <div class="col-md-5" style="padding:0px; margin: 3px 3px;">
+                            <input class="form-control" id="graph-from-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
+                        </div>
+                        <div class="col-md-2" style="text-align: center; padding-top: 3px; margin-left: -6px">
+                            -
+                        </div>
+                        <div class="col-md-5" style="padding:0px; margin: 3px 0px 0px -3px;">
+                            <input class="form-control" id="graph-to-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-area">
+                <canvas id="event-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/demo/custom-event-analysis.js' %}"></script>
+{% endblock %}

@@ -1,5 +1,9 @@
+// JS for Event Analysis Page
+
+// Array to store data to data table
 var data_table_array = []
 
+// Data tabel config
 var eventsDataTable = $('#events-data-table').DataTable({
     searching: false,
     scrollX: false,
@@ -16,6 +20,7 @@ var eventsDataTable = $('#events-data-table').DataTable({
     ]
 });
 
+// Initialization of date selects
 $(document).ready(function() {
     $('#event-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
     $('#event-to-date').val(moment().toISOString().substr(0, 10));

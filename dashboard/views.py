@@ -123,9 +123,21 @@ def eventsData(request):
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # getting events stats from database
     event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
 
     # Converting data to json object
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
     return JsonResponse(json_res, safe=False)
+
+def eventAnalysis(request, event_name):
+    """
+    Renders the event analysis page
+    From users perspective events are 'pages'
+    """
+    context = {
+        'event_name': event_name,
+    }
+    return render(request, 'event_analysis.html', context)
+

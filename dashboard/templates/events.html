@@ -8,9 +8,6 @@
         <h1 class="h3 mb-0 text-gray-800">Pages</h1>
     </div>
     <div class="card shadow mb-4">
-        <!-- <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary"></h6>
-        </div> -->
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered display no-wrap" id="events-data-table" width="100%" cellspacing="0">
@@ -37,7 +34,11 @@
                                 <span class="text-primary text-uppercase">{{ stats.event_name }}</span>
                                 <br>{{ stats.path_info }}
                             </td>
-                            <td>{{ stats.unique_visits }}</td>
+                            <td>
+                                {{ stats.unique_visits }}
+                                <br>
+                                <a href="{% url 'event-analysis' event_name=stats.event_name %}">Page Analysis</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
