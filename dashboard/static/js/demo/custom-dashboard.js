@@ -121,6 +121,7 @@ function redrawChart() {
         chart.destroy();
 
     }
+
     var w = $("#chart-area").width();
     var c = document.getElementById("my-chart");
 
@@ -285,7 +286,7 @@ function getGraphData() {
             // Call to redraw function to redraw the chart
             redrawChart();
 
-            // Clearing the DataTable and adding row with new data
+            // Clearing the DataTable and adding rows with new data
             graphDataTable.clear().rows.add(graph_data_table_array).draw();
         },
         error: function(err) {

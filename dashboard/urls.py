@@ -3,8 +3,12 @@ from django.conf.urls import url
 from dashboard import views
 
 urlpatterns = [
+    # Serves dashboard
     path('', views.index, name="index"),
-    # To serve daily data to graph at dashboard
+    # Serves data to graph at dashboard
     path('graph_data/', views.graphData, name="graph-data"),
-    path('events', views.events, name="events")
+    # Serves events page
+    path('events', views.events, name="events"),
+    # Serves data for data table at events page
+    path('events_data/', views.eventsData, name="events-data"),
 ]

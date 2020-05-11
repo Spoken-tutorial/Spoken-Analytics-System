@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from django.utils.timezone import get_current_timezone
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats
 
@@ -29,8 +30,11 @@ def graphData(request):
     """
     Suppy data to graph for visualization
     """
+    """
+    Suppy data to graph for visualization
+    """
 
-    data = json.loads(request.body) # Fetch data from request
+    data = json.loads(request.body) # Extract data from request
 
     data_summary_type = data['data_summary_type']
 
@@ -101,10 +105,27 @@ def events(request):
 
     # getting event stats of 4 days ago
     # you can choose any day but difference must be of 1 day
-    event_stats = EventStats.objects.filter(date__range=(start_date, end_date)).values('event_name').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
+    event_stats = EventStats.objects.filter(date__range=(start_date, end_date)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
 
     context = {
         'event_stats': event_stats,
     }
 
     return render(request, 'events.html', context)
+
+def eventsData(request):
+    """
+    Suppy data to data table of events page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+
+    from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
+    to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
+
+    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
+
+    # Converting data to json object
+    json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
+
+    return JsonResponse(json_res, safe=False)
