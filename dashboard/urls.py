@@ -12,5 +12,7 @@ urlpatterns = [
     # Serves data for data table at events page
     re_path('^events_data/$', views.eventsData, name="events-data"),
     # Serves event analysis page
-    re_path('^event_analysis/(?P<event_name>[\w.]+)/$', views.eventAnalysis, name="event-analysis")
+    re_path('^event_analysis/(?P<event_name>[\w.]+)/$', views.eventAnalysis, name="event-analysis"),
+    # Serves data to event analysis page
+    re_path('^event_graph_data/$', views.eventAnalysisGraphData, name="event-analysis-graph-data"),
 ]

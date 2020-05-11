@@ -30,9 +30,6 @@ def graphData(request):
     """
     Suppy data to graph for visualization
     """
-    """
-    Suppy data to graph for visualization
-    """
 
     data = json.loads(request.body) # Extract data from request
 
@@ -129,7 +126,7 @@ def eventsData(request):
     # Converting data to json object
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
-    return JsonResponse(json_res, safe=False)
+    return JsonResponse(json_res, safe=False) # sending data
 
 def eventAnalysis(request, event_name):
     """
@@ -141,3 +138,21 @@ def eventAnalysis(request, event_name):
     }
     return render(request, 'event_analysis.html', context)
 
+def eventAnalysisGraphData(request):
+    """
+    Suppy data to event analysis graph for visualization
+    """
+
+    data = json.loads(request.body) # Extract data from request
+
+    event_name = data['event_name']
+    from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
+    to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
+
+    # getting events stats from database
+    event_stats = EventStats.objects.filter(event_name=event_name).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
+
+    # Converting data to json object
+    json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
+
+    return JsonResponse(json_res, safe=False) # sending data

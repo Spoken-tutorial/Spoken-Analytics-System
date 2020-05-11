@@ -5,7 +5,7 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Page Analysis : {{ event_name }} </h1>
+        <h1 class="h3 mb-0 text-gray-800">Page Analysis : <span id="event-name">{{ event_name }}</span> </h1>
     </div>
     <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
@@ -73,18 +73,18 @@
                 <div class="col-md-7" style="background: #4e73df; color: #fff; height: 30px;">
                     <div id="date-select-div" class="row">
                         <div class="col-md-5" style="padding:0px; margin: 3px 3px;">
-                            <input class="form-control" id="graph-from-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
+                            <input class="form-control" id="graph-from-date" style="width: inherit; height: 25px;" type="date" onChange='getEventData()'>
                         </div>
                         <div class="col-md-2" style="text-align: center; padding-top: 3px; margin-left: -6px">
                             -
                         </div>
                         <div class="col-md-5" style="padding:0px; margin: 3px 0px 0px -3px;">
-                            <input class="form-control" id="graph-to-date" style="width: inherit; height: 25px;" type="date" onChange='getGraphData()'>
+                            <input class="form-control" id="graph-to-date" style="width: inherit; height: 25px;" type="date" onChange='getEventData()'>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="chart-area">
+            <div class="chart-area" style="height: 25em;">
                 <canvas id="event-chart"></canvas>
             </div>
         </div>

@@ -1,9 +1,9 @@
 // JS for Event Analysis Page
 
-// Array to store data to data table
+// Array to store data of data table
 var data_table_array = []
 
-// Data tabel config
+// Data table config
 var eventsDataTable = $('#events-data-table').DataTable({
     searching: false,
     scrollX: false,
@@ -22,15 +22,17 @@ var eventsDataTable = $('#events-data-table').DataTable({
 
 // Initialization of date selects
 $(document).ready(function() {
+
     $('#event-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
     $('#event-to-date').val(moment().toISOString().substr(0, 10));
+
 });
 
 // Getting chart data from server
 function getEventsData() {
 
-    fromDate = $('#event-from-date').val()
-    toDate = $('#event-to-date').val()
+    fromDate = $('#event-from-date').val();
+    toDate = $('#event-to-date').val();
 
     $.ajax({
         type: "POST",
@@ -55,7 +57,7 @@ function getEventsData() {
             data.forEach((key, value) => {
                 data_table_array.push([
                     '<span class="text-primary text-uppercase">' + key.event_name + '</span>' + '<br>' + key.path_info,
-                    key.unique_visits,
+                    key.unique_visits + '<br><a class="text-primary link" href="/dashboard/event_analysis/' + key.event_name + '"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>',
                 ])
             });
 

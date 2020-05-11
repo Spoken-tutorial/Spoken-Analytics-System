@@ -256,8 +256,8 @@ function getGraphData() {
 
     } else {
 
-        fromDate = $('#graph-from-date').val()
-        toDate = $('#graph-to-date').val()
+        fromDate = $('#graph-from-date').val();
+        toDate = $('#graph-to-date').val();
 
     }
 
@@ -444,7 +444,7 @@ $('#chart-select').on('change', function() {
 
     } else {
 
-        // Offset the gradline in case of bar chart
+        // Offset the gridline in case of bar chart
         config.options.scales.xAxes[0].gridLines.offsetGridLines = true;
         config.options.scales.xAxes[0].offset = true
 
