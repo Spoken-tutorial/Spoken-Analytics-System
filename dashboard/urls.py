@@ -15,4 +15,6 @@ urlpatterns = [
     re_path('^event_analysis/(?P<event_name>[\w.]+)/$', views.eventAnalysis, name="event-analysis"),
     # Serves data to event analysis page
     re_path('^event_graph_data/$', views.eventAnalysisGraphData, name="event-analysis-graph-data"),
+    # Serves report page
+    re_path('^reports/$', views.reports, name="reports")
 ]

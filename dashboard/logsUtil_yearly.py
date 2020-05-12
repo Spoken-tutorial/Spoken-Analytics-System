@@ -12,6 +12,8 @@ Terms:
 import datetime
 from dashboard.models import Log, YearlyStats
 
+print(datetime.datetime.now())
+
 years = [] # Stores all years for which data is present
 
 logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'year': {'$year': '$datetime'}}}}])
@@ -75,3 +77,5 @@ for year in years:
     yearly_stats.unique_visitors = len(unique_visitors)
     
     yearly_stats.save() # saving the calculations to database
+
+print(datetime.datetime.now())

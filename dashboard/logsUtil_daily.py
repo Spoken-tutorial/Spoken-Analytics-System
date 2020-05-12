@@ -17,6 +17,8 @@ dates = [] # Stores all dates for which data is present
 
 logs = Log.objects.all() # Getting all the logs
 
+print(datetime.datetime.now())
+
 # Calculating number of days of which data is present
 for log in logs:
     if log.datetime.date() not in dates:
@@ -71,3 +73,5 @@ for _date in dates:
     daily_stats.unique_visitors = len(unique_visitors)
     
     daily_stats.save() # saving the calculations to database
+
+print(datetime.datetime.now())

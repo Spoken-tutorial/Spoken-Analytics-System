@@ -156,3 +156,6 @@ def eventAnalysisGraphData(request):
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
     return JsonResponse(json_res, safe=False) # sending data
+
+def reports(request):
+    return render(request, 'reports.html')

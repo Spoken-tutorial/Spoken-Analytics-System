@@ -13,6 +13,8 @@ import datetime
 from dashboard.models import Log, MonthlyStats
 from calendar import monthrange
 
+print(datetime.datetime.now())
+
 months = [] # Stores all months for which data is present
 
 logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'month': {'$month': '$datetime'}, 'year': { '$year': '$datetime' }}}}])
@@ -78,3 +80,5 @@ for month in months:
     monthly_stats.unique_visitors = len(unique_visitors)
     
     monthly_stats.save() # saving the calculations to database
+
+print(datetime.datetime.now())
