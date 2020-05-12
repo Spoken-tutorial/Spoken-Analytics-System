@@ -6,6 +6,8 @@ var color = Chart.helpers.color; // chart.js colors
 
 var chart; // chart variable
 
+var data_table_array = [] // array to store values of data table
+
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
@@ -20,6 +22,25 @@ $(document).ready(function() {
 
     getEventData();
 
+});
+
+// Initialization of Data table 
+var eventDataTable = $('#event-data-table').DataTable({
+    searching: false,
+    scrollX: false,
+    data: data_table_array,
+    columns: [
+        { "width": "75%" },
+        { "width": "25%" },
+    ],
+    columnDefs: [{ 'type': 'date', 'targets': [0], }],
+    order: [
+        [0, 'asc']
+    ],
+    lengthMenu: [
+        [10, 25, 50, -1],
+        [10, 25, 50, "All"]
+    ]
 });
 
 // Chart config 
@@ -126,16 +147,30 @@ function getEventData() {
             // Parsing the data
             data = JSON.parse(data);
 
-            config.data.datasets[0].data = []
+            // Discarding previous data from arrays
+            config.data.datasets[0].data.length = 0
+            data_table_array.length = 0
 
-            // Inserting data to data_table_array
+            // Inserting data to data_table_array and graph_data_array
             data.forEach((key, value) => {
+
                 config.data.datasets[0].data.push({
                     'x': moment(key.date).format(timeFormat),
                     'y': key.unique_visits,
-                })
+                });
+
+                data_table_array.push([
+                    moment(key.date).format('dddd MMMM Do YYYY'),
+                    key.unique_visits,
+                ]);
             });
 
+            data_table_array.reverse();
+
+            // Clearing the DataTable and adding rows with new data
+            eventDataTable.clear().rows.add(data_table_array).draw();
+
+            // Redrawing chart after data updation
             redrawChart();
 
         },
