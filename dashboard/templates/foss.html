@@ -1,42 +1,41 @@
 {% extends 'base.html' %} {% load static %} {% block title %}
-<title>Pages</title>
+<title>Reports</title>
 {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Pages</h1>
+        <h1 class="h3 mb-0 text-gray-800">Reports > Popular Foss</h1>
     </div>
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered display no-wrap" id="events-data-table" width="100%" cellspacing="0">
+                <table class="table table-bordered display no-wrap" id="foss-data-table" width="100%" cellspacing="0">
                     <div id="date-select-div" style="float: right; margin-top: 1.2em;">
                         <div style="display: inline-flex">
-                            <input class="form-control form-control-sm" id="event-from-date" type="date" style="width: 10em" onchange="getEventsData()">
+                            <!-- <label for="foss-from-date" style="font-size: 1.5em;">From:</label> -->
+                            <input class="form-control form-control-sm" id="foss-from-date" type="date" style="width: 10em" onchange="getFossData()">
                         </div>
                         -
                         <div style="display: inline-flex">
-                            <input class="form-control form-control-sm" id="event-to-date" type="date" style="width: 10em" onchange="getEventsData()">
+                            <!-- <label for="foss-to-date" style="font-size: 1.5em;">To:</label> -->
+                            <input class="form-control form-control-sm" id="foss-to-date" type="date" style="width: 10em" onchange="getFossData()">
                         </div>
                     </div>
                     <thead>
                         <tr>
-                            <th>Page</th>
+                            <th>Foss</th>
                             <th>Unique Visits</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for stats in event_stats %}
+                        {% for foss in foss_stats %}
                         <tr>
                             <td>
-                                <span class="text-primary text-uppercase">{{ stats.event_name }}</span>
-                                <br>{{ stats.path_info }}
+                                <span class="text-primary text-uppercase">{{ foss.foss_name }}</span>
                             </td>
                             <td>
-                                {{ stats.unique_visits }}
-                                <br>
-                                <a class="text-primary link" href="{% url 'event-analysis' event_name=stats.event_name %}"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>
+                                {{ foss.unique_visits }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -45,10 +44,9 @@
             </div>
         </div>
     </div>
-
 </div>
 <!-- /.container-fluid -->
 
 {% endblock %} {% block custom_js %}
-<script src="{% static 'js/demo/custom-events.js' %}"></script>
+<script src="{% static 'js/demo/custom-foss.js' %}"></script>
 {% endblock %}

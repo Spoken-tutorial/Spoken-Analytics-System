@@ -160,11 +160,15 @@ def reports(request):
     """
     Renders the reports page
     """
+    return render(request, 'reports.html')
+
+def foss(request):
+    """
+    Renders the foss page
+    """
 
     today = datetime.today()
     day_before = today - timedelta(days=1)
-
-    print("page", today, day_before)
 
     # getting foss stats of 1 day
     foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
@@ -173,7 +177,8 @@ def reports(request):
         'foss_stats': foss_stats,
     }
 
-    return render(request, 'reports.html', context)
+    return render(request, 'foss.html', context)
+
 
 def fossData(request):
     """
@@ -184,9 +189,6 @@ def fossData(request):
 
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
-
-
-    print('ajax', from_date, to_date)
 
     # getting foss stats from database
     foss_stats = FossStats.objects.filter(date__range=(from_date, to_date)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))

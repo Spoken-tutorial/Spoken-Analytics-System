@@ -5,42 +5,322 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Reports > Popular Foss</h1>
+        <h1 class="h3 mb-0 text-gray-800">Reports</h1>
     </div>
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered display no-wrap" id="foss-data-table" width="100%" cellspacing="0">
-                    <div id="date-select-div" style="float: right; margin-top: 1.2em;">
-                        <div style="display: inline-flex">
-                            <!-- <label for="foss-from-date" style="font-size: 1.5em;">From:</label> -->
-                            <input class="form-control form-control-sm" id="foss-from-date" type="date" style="width: 10em" onchange="getFossData()">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Traffic from locations</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="location-state" data-toggle="tab" href="#state" role="tab" aria-controls="home" aria-selected="true">State</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="location-city" data-toggle="tab" href="#city" role="tab" aria-controls="profile" aria-selected="false">City</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="state" role="tabpanel" aria-labelledby="home-tab">
+                            <div style="padding: 1em;">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Maharashtra
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 44.3%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Tamil Nadu
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 33%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Gujrat
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 30%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        West Bengal
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Andhra Pradesh
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Karnatka
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Madhya Pradesh
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Goa
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Haryana
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Uttar Pradesh
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        -
-                        <div style="display: inline-flex">
-                            <!-- <label for="foss-to-date" style="font-size: 1.5em;">To:</label> -->
-                            <input class="form-control form-control-sm" id="foss-to-date" type="date" style="width: 10em" onchange="getFossData()">
+                        <div class="tab-pane fade" id="city" role="tabpanel" aria-labelledby="profile-tab">
+                            <div style="padding: 1em;">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Pune
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 44.3%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Chennai
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 33%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Mumbai
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 30%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Kolkata
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Hydrabad
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Bengluru
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Coimbatore
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Assagao
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Navi Mumbai
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        Nagpur
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
+                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        44.3%
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <thead>
-                        <tr>
-                            <th>Foss</th>
-                            <th>Unique Visits</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for foss in foss_stats %}
-                        <tr>
-                            <td>
-                                <span class="text-primary text-uppercase">{{ foss.foss_name }}</span>
-                            </td>
-                            <td>
-                                {{ foss.unique_visits }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Traffic on Foss</h6>
+                </div>
+                <div class="card-body">
+
+                </div>
             </div>
         </div>
     </div>
