@@ -1,15 +1,51 @@
 {% extends 'base.html' %} {% load static %} {% block title %}
-<title>Event Analysis</title>
+<title>Reports</title>
 {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Reports</h1>
+        <h1 class="h3 mb-0 text-gray-800">Reports > Popular Foss</h1>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered display no-wrap" id="foss-data-table" width="100%" cellspacing="0">
+                    <div id="date-select-div" style="float: right">
+                        <div style="display: inline-flex">
+                            <label for="foss-from-date" style="font-size: 1.5em;">From:</label>
+                            <input id="foss-from-date" type="date" style="width: 10em" onchange="getFossData()">
+                        </div>
+                        <div style="display: inline-flex">
+                            <label for="foss-to-date" style="font-size: 1.5em;">To:</label>
+                            <input id="foss-to-date" type="date" style="width: 10em" onchange="getFossData()">
+                        </div>
+                    </div>
+                    <thead>
+                        <tr>
+                            <th>Foss</th>
+                            <th>Unique Visits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foss in foss_stats %}
+                        <tr>
+                            <td>
+                                <span class="text-primary text-uppercase">{{ foss.foss_name }}</span>
+                            </td>
+                            <td>
+                                {{ foss.unique_visits }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 <!-- /.container-fluid -->
 
 {% endblock %} {% block custom_js %}
-<script src="{% static 'js/demo/custom-event-analysis.js' %}"></script>
+<script src="{% static 'js/demo/custom-reports.js' %}"></script>
 {% endblock %}

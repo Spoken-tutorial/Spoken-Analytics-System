@@ -6,34 +6,35 @@ Terms:
     Unique visits: unique visit is counted if user visits the site for the first time or he/she revisit it after 30 minutes.
 """
 import datetime
-from dashboard.models import Log, EventStats
+import re
+from dashboard.models import Log, FossStats
 from django.utils.timezone import get_current_timezone
 
 dates = [] # Stores all dates for which data is present
-events = [] # Stores all events for which data is present
+foss = [] # Stores all events for which data is present
 
 today = datetime.datetime.now(tz=get_current_timezone())
 month_ago = today - datetime.timedelta(days=30)
 
-logs = Log.objects.filter(datetime__range=(month_ago, today)) # Getting the logs
+# logs = Log.objects.filter(datetime__range=(month_ago, today)) # Getting the logs
+logs = Log.objects.all() # Getting the logs
 
 # Calculating number of days of which data is present
 for log in logs:
+    foss_name = re.split('/', log.path_info)
     if log.datetime.date() not in dates:
         dates.append(log.datetime.date())
-    if (log.event_name, log.path_info ) not in events:
-        events.append((log.event_name, log.path_info ))
+    if foss_name[2] not in foss:
+        foss.append(foss_name[2])
 
-for event in events:
-
-    stats = []
+for foss_name in foss:
 
     for _date in dates:
 
         today_min = datetime.datetime.combine(_date, datetime.time.min) # Days min datetime
         today_max = datetime.datetime.combine(_date, datetime.time.max) # Days max datetime
 
-        daily_logs = Log.objects.filter(event_name=event[0]).filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
+        daily_logs = Log.objects.filter(path_info__contains=foss_name).filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
 
         unique_visitors = [] # Stores unique ip addresses
 
@@ -62,9 +63,8 @@ for event in events:
                             unique_visits += 1
         
         # saving the events stats
-        event_stats = EventStats()
-        event_stats.date = _date
-        event_stats.event_name = event[0]
-        event_stats.path_info = event[1]
-        event_stats.unique_visits = unique_visits
-        event_stats.save()
+        foss_stats = FossStats()
+        foss_stats.date = _date
+        foss_stats.foss_name = foss_name
+        foss_stats.unique_visits = unique_visits
+        foss_stats.save()

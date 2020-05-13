@@ -12,6 +12,8 @@ Terms:
 import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats
 
+print(datetime.datetime.now())
+
 weeks = [] # Stores week number and year
 
 logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'woy': {'$isoWeek': '$datetime'}, 'year': { '$year': '$datetime' }}}}]) # woy = week of year
@@ -74,3 +76,6 @@ for week in weeks:
     weekly_stats.unique_visitors = len(unique_visitors)
     
     weekly_stats.save() # saving the calculations to database
+
+
+print(datetime.datetime.now())

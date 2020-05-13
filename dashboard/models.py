@@ -114,3 +114,13 @@ class EventStats(models.Model):
         return "Event Stats"
 
     objects = models.DjongoManager()
+
+class FossStats(models.Model):
+    foss_name = models.CharField (max_length=100)
+    date = models.DateTimeField()
+    unique_visits = models.IntegerField()
+
+    def __str__(self):
+        return "Foss Stats"
+
+    objects = models.DjongoManager()

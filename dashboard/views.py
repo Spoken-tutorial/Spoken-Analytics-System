@@ -9,7 +9,7 @@ from django.utils.timezone import get_current_timezone
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
-from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats, FossStats
 
 # Create your views here.
 def index(request):
@@ -97,12 +97,11 @@ def events(request):
     """
 
     today = datetime.today()
-    start_date = today - timedelta(days=6)
-    end_date = today - timedelta(days=4)
+    day_before = today - timedelta(days=1)
 
     # getting event stats of 4 days ago
     # you can choose any day but difference must be of 1 day
-    event_stats = EventStats.objects.filter(date__range=(start_date, end_date)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
+    event_stats = EventStats.objects.filter(date__range=(day_before, today)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
 
     context = {
         'event_stats': event_stats,
@@ -158,4 +157,41 @@ def eventAnalysisGraphData(request):
     return JsonResponse(json_res, safe=False) # sending data
 
 def reports(request):
-    return render(request, 'reports.html')
+    """
+    Renders the reports page
+    """
+
+    today = datetime.today()
+    day_before = today - timedelta(days=1)
+
+    print("page", today, day_before)
+
+    # getting foss stats of 1 day
+    foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
+
+    context = {
+        'foss_stats': foss_stats,
+    }
+
+    return render(request, 'reports.html', context)
+
+def fossData(request):
+    """
+    Suppy data to data table of reports page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+
+    from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
+    to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
+
+
+    print('ajax', from_date, to_date)
+
+    # getting foss stats from database
+    foss_stats = FossStats.objects.filter(date__range=(from_date, to_date)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
+
+    # Converting data to json object
+    json_res = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
+
+    return JsonResponse(json_res, safe=False) # sending data
