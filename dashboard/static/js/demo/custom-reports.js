@@ -28,7 +28,7 @@ $(document).ready(function() {
 
 });
 
-// Getting chart data from server
+// Getting table data from server
 function getFossData() {
 
     fromDate = $('#foss-from-date').val();

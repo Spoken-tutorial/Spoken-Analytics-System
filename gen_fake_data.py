@@ -13,7 +13,7 @@ from dateutil import tz
 from django_populate import Faker
 from dashboard.models import Log
 
-num_rows = 10000 # number of rows to insert
+num_rows = 300000 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
