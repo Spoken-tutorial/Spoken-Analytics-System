@@ -23,5 +23,8 @@ urlpatterns = [
 
     # redirect /dashboard/* URLs to dashboard/urls.py for processing
     path('dashboard/', include('dashboard.urls')),
+
+    # logs_api
+    path('logs_api/', include('logs_api.urls', namespace='logs_api')),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # to serve static files
