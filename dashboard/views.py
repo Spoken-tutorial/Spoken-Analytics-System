@@ -169,14 +169,22 @@ def getLocationStats(request):
 
     region_stats = RegionStats.objects.all().order_by('-page_views')[0:10]
     city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
+    foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     total_page_views = Log.objects.all().count()
+    total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))
 
     json_region_stats = serializers.serialize('json', region_stats)
-
     json_city_stats = serializers.serialize('json', city_stats)
+    json_foss_stats = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
 
-    json_res = {'region_stats': json_region_stats, 'city_stats': json_city_stats, 'total_page_views': total_page_views}
+    json_res = {
+        'region_stats': json_region_stats,
+        'city_stats': json_city_stats, 
+        'total_page_views': total_page_views,
+        'foss_stats': json_foss_stats,
+        'total_foss_page_views': total_foss_page_views['page_views__sum']
+    }
 
     return JsonResponse(json_res, safe=False)
 
