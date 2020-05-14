@@ -16,18 +16,21 @@ foss = [] # Stores all events for which data is present
 today = datetime.datetime.now(tz=get_current_timezone())
 month_ago = today - datetime.timedelta(days=30)
 
-# logs = Log.objects.filter(datetime__range=(month_ago, today)) # Getting the logs
-logs = Log.objects.all() # Getting the logs
+logs = Log.objects.filter(datetime__range=(month_ago, today)) # Getting the logs
 
 # Calculating number of days of which data is present
 for log in logs:
-    foss_name = re.split('/', log.path_info)
-    if log.datetime.date() not in dates:
-        dates.append(log.datetime.date())
-    if foss_name[2] not in foss:
-        foss.append(foss_name[2])
+    if log.path_info.find('/watch/') != -1:
+        foss_name = re.split('/', log.path_info)
+        if log.datetime.date() not in dates:
+            dates.append(log.datetime.date())
+        if foss_name[2] not in foss:
+            foss.append(foss_name[2])
 
 for foss_name in foss:
+
+    if foss_name == '':
+        continue
 
     for _date in dates:
 

@@ -21,8 +21,8 @@ logs = Log.objects.filter(datetime__range=(month_ago, today)) # Getting the logs
 for log in logs:
     if log.datetime.date() not in dates:
         dates.append(log.datetime.date())
-    if (log.event_name, log.path_info ) not in events:
-        events.append((log.event_name, log.path_info ))
+    if log.event_name not in events:
+        events.append(log.event_name)
 
 for event in events:
 
@@ -33,7 +33,7 @@ for event in events:
         today_min = datetime.datetime.combine(_date, datetime.time.min) # Days min datetime
         today_max = datetime.datetime.combine(_date, datetime.time.max) # Days max datetime
 
-        daily_logs = Log.objects.filter(event_name=event[0]).filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
+        daily_logs = Log.objects.filter(event_name=event).filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
 
         unique_visitors = [] # Stores unique ip addresses
 
@@ -64,7 +64,6 @@ for event in events:
         # saving the events stats
         event_stats = EventStats()
         event_stats.date = _date
-        event_stats.event_name = event[0]
-        event_stats.path_info = event[1]
+        event_stats.event_name = event
         event_stats.unique_visits = unique_visits
         event_stats.save()

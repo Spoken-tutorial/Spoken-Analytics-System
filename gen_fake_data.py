@@ -13,7 +13,7 @@ from dateutil import tz
 from django_populate import Faker
 from dashboard.models import Log
 
-num_rows = 300000 # number of rows to insert
+num_rows = 100000 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
@@ -57,17 +57,28 @@ languages = ["Arabic", "Assamese""Bengali", "Bhojpuri", "Bodo", "Dogri", "Englis
 "Nepali", "Oriya", "Persian", "Punjabi", "Rajasthani", "Sanskrit", "Santhali", "Sindhi", "Spanish", "Tamil", 
 "Telugu", "Thai", "Urdu",]
 
+states_uts = [ "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+ "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+ "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal", 
+ "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman & Diu", "The Government of NCT of Delhi"
+ "Jammu & Kashmir", "Ladakh", "Lakshadweep", "Puducherry"]
+
+cities = ["Mumbai", "Delhi", "Bengaluru", "Ahmedabad", "Hyderabad", "Chennai", "Kolkata", "Pune", "Jaipur", "Surat", "Lucknow", 
+"Kanpur", "Nagpur", "Patna", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Vadodara", "Firozabad", "Ludhiana", "Rajkot", "Agra", 
+"Siliguri", "Nashik", "Faridabad", "Patiala", "Meerut", "Kalyan-Dombivali", "Vasai-Virar", "Varanasi", "Srinagar", "Dhanbad", 
+"Jodhpur", "Amritsar", "Raipur", "Allahabad", "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Madurai", "Guwahati", 
+"Chandigarh", "Hubli-Dharwad", "Amroha", "Moradabad", "Gurgaon", "Aligarh", "Solapur"]
+
 
 def randomData():
-    # path_info = lambda x: populator.generator.uri_path(deep=None)
-    visited_by = lambda x: populator.generator.user_name()
+    visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
     method = lambda x: random.choice(["GET", "POST"])
-    city = lambda x: populator.generator.city()
-    region = lambda x: populator.generator.state()
+    city = lambda x: random.choice(cities)
+    region = lambda x: random.choice(states_uts)
     country = lambda x: populator.generator.country()
-    ip_address = lambda x: "127.0." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255))
+    ip_address = lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255))
     event_name = lambda x: random.choice(event_names)
-    path_info = lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages)
+    path_info = lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths)
     data = {
         'path_info': path_info,
         'visited_by': visited_by,
@@ -79,8 +90,7 @@ def randomData():
         'region': region,
         'country': country,
         'ip_address':  ip_address,
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-30d', end_date='+18d', tzinfo=india_tz),
-        'first_time_visit': lambda x: random.choice(["True", "False"]),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+16d', tzinfo=india_tz),
     }
     return data
 

@@ -10,7 +10,7 @@ class Log(models.Model):
     visited_by = models.CharField (max_length=100, blank=False)
     ip_address = models.GenericIPAddressField(null=False)
     country = models.CharField (max_length=100, blank=False)
-    state_code = models.CharField (max_length=5, blank=False)
+    region = models.CharField (max_length=5, blank=False)
     city = models.CharField (max_length=100, blank=False)
     datetime = models.DateTimeField()
     
@@ -37,6 +37,7 @@ class AverageStats(models.Model):
     average_yearly_unique_visits = models.IntegerField()
     average_yearly_first_time_visits = models.IntegerField()
     average_yearly_returning_visits = models.IntegerField()
+    total_page_views = models.IntegerField()
     
     def __str__(self):
         return "Average Stats Object"
@@ -105,7 +106,7 @@ class YearlyStats(models.Model):
     objects = models.DjongoManager()
 
 class EventStats(models.Model):
-    event_name = models.CharField (max_length=100, blank=False)
+    event_name = models.CharField(max_length=100, blank=False)
     path_info = models.CharField (max_length=200)
     date = models.DateTimeField()
     unique_visits = models.IntegerField()
@@ -116,11 +117,29 @@ class EventStats(models.Model):
     objects = models.DjongoManager()
 
 class FossStats(models.Model):
-    foss_name = models.CharField (max_length=100)
+    foss_name = models.CharField(max_length=100)
     date = models.DateTimeField()
     unique_visits = models.IntegerField()
 
     def __str__(self):
         return "Foss Stats"
+
+    objects = models.DjongoManager()
+
+class RegionStats(models.Model):
+    region = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Region Stats"
+
+    objects = models.DjongoManager()
+
+class CityStats(models.Model):
+    city = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "City Stats"
 
     objects = models.DjongoManager()

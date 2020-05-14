@@ -1,14 +1,14 @@
 """
 This script calculates the average stats from different collections
 """
-from dashboard.models import DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
+from dashboard.models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 
 # Fetching data from collections
 daily_stats = DailyStats.objects.all() 
 weekly_stats = WeeklyStats.objects.all()
 monthly_stats = MonthlyStats.objects.all()
 yearly_stats = YearlyStats.objects.all()
-
+all_logs = Log.objects.all()
 
 # Variables to store stats
 total_records = 0
@@ -117,5 +117,6 @@ avg_stats.average_yearly_unique_visits = average_yearly_unique_visits
 avg_stats.average_yearly_first_time_visits = average_yearly_first_time_visits
 avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
 
+avg_stats.total_page_views = len(all_logs)
 # Saving the object
 avg_stats.save()
