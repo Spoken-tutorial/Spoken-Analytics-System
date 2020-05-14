@@ -69,5 +69,6 @@ for foss_name in foss:
         foss_stats = FossStats()
         foss_stats.date = _date
         foss_stats.foss_name = foss_name
+        foss_stats.page_views = len(daily_logs)
         foss_stats.unique_visits = unique_visits
         foss_stats.save()

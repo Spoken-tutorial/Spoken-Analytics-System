@@ -9,7 +9,7 @@ from django.utils.timezone import get_current_timezone
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
-from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats, FossStats
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats, FossStats, RegionStats, CityStats
 
 # Create your views here.
 def index(request):
@@ -161,6 +161,24 @@ def reports(request):
     Renders the reports page
     """
     return render(request, 'reports.html')
+
+def getLocationStats(request):
+    """
+    Suppy data to reports page
+    """
+
+    region_stats = RegionStats.objects.all().order_by('-page_views')[0:10]
+    city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
+
+    total_page_views = Log.objects.all().count()
+
+    json_region_stats = serializers.serialize('json', region_stats)
+
+    json_city_stats = serializers.serialize('json', city_stats)
+
+    json_res = {'region_stats': json_region_stats, 'city_stats': json_city_stats, 'total_page_views': total_page_views}
+
+    return JsonResponse(json_res, safe=False)
 
 def foss(request):
     """

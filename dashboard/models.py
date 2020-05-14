@@ -119,6 +119,7 @@ class EventStats(models.Model):
 class FossStats(models.Model):
     foss_name = models.CharField(max_length=100)
     date = models.DateTimeField()
+    page_views = models.IntegerField()
     unique_visits = models.IntegerField()
 
     def __str__(self):

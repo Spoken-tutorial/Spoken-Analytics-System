@@ -17,6 +17,8 @@ urlpatterns = [
     re_path('^event_graph_data/$', views.eventAnalysisGraphData, name="event-analysis-graph-data"),
     # Serves report page
     re_path('^reports/$', views.reports, name="reports"),
+    # Serves location stats
+    re_path('^location_stats/$', views.getLocationStats, name="location-stats"),
     # Serves foss page
     re_path('^foss/$', views.foss, name="foss"),
     # Serves data for data table at foss page
