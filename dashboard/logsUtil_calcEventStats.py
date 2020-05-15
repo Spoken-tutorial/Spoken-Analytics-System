@@ -65,5 +65,6 @@ for event in events:
         event_stats = EventStats()
         event_stats.date = _date
         event_stats.event_name = event
+        event_stats.page_views = len(daily_logs)
         event_stats.unique_visits = unique_visits
         event_stats.save()

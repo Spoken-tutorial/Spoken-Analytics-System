@@ -109,6 +109,7 @@ class EventStats(models.Model):
     event_name = models.CharField(max_length=100, blank=False)
     path_info = models.CharField (max_length=200)
     date = models.DateTimeField()
+    page_views = models.IntegerField()
     unique_visits = models.IntegerField()
 
     def __str__(self):

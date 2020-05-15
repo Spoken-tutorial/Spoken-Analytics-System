@@ -97,7 +97,7 @@ def events(request):
     """
 
     today = datetime.today()
-    day_before = today - timedelta(days=1)
+    day_before = today - timedelta(days=2)
 
     # getting event stats of 4 days ago
     # you can choose any day but difference must be of 1 day
@@ -162,31 +162,38 @@ def reports(request):
     """
     return render(request, 'reports.html')
 
-def getLocationStats(request):
+def getReportsStats(request):
     """
     Suppy data to reports page
     """
 
+    # Getting data from various tables
     region_stats = RegionStats.objects.all().order_by('-page_views')[0:10]
     city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    events_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     total_page_views = Log.objects.all().count()
     total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))
+    total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
 
+    # Converting data to json format
     json_region_stats = serializers.serialize('json', region_stats)
     json_city_stats = serializers.serialize('json', city_stats)
     json_foss_stats = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
+    json_event_stats = json.dumps(list(events_stats), cls=DjangoJSONEncoder)
 
     json_res = {
         'region_stats': json_region_stats,
         'city_stats': json_city_stats, 
         'total_page_views': total_page_views,
         'foss_stats': json_foss_stats,
-        'total_foss_page_views': total_foss_page_views['page_views__sum']
+        'total_foss_page_views': total_foss_page_views['page_views__sum'],
+        'events_stats': json_event_stats,
+        'total_events_page_views': total_events_page_views['page_views__sum'],
     }
 
-    return JsonResponse(json_res, safe=False)
+    return JsonResponse(json_res, safe=False) # sending data
 
 def foss(request):
     """
