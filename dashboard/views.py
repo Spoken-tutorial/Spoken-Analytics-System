@@ -201,7 +201,7 @@ def foss(request):
     """
 
     today = datetime.today()
-    day_before = today - timedelta(days=1)
+    day_before = today - timedelta(days=2)
 
     # getting foss stats of 1 day
     foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))

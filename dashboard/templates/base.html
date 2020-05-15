@@ -46,7 +46,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'index' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -55,11 +55,18 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Nav Item - Charts -->
+            <!-- Nav Item - Events -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'events' %}">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-folder"></i>
                     <span>Pages</span></a>
+            </li>
+
+            <!-- Nav Item - Foss -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'foss' %}">
+                    <i class="fas fa-fw fa-video"></i>
+                    <span>Foss</span></a>
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -81,7 +88,7 @@
                     </div>
                 </div>
             </li> -->
-            <!-- Nav Item - Tables -->
+            <!-- Nav Item - Reports -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'reports' %}">
                     <i class="fas fa-fw fa-table"></i>
@@ -277,7 +284,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2019</span>
+                        <span>Copyright &copy; Spoken Tutorials 2020</span>
                     </div>
                 </div>
             </footer>
@@ -324,7 +331,7 @@
     <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
+    <script src="{% static '/js/sb-admin-2.js' %}"></script>
 
     <!-- Required for chart.js -->
     <script src="{% static '/vendor/moment/moment.js' %}"></script>>
@@ -344,8 +351,19 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 
-    <!-- Page level custom scripts -->
-    <!-- <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script> -->
+    <script>
+        // Function to make nav-link active
+        $(function() {
+            var current = location.pathname;
+            $('li a').each(function() {
+                var $this = $(this);
+                // if the current path is like this link, make it active
+                if ($this.attr('href') == current) {
+                    $this.parent().addClass('active');
+                }
+            })
+        });
+    </script>
 
     {% block custom_js %} {% endblock %}
 

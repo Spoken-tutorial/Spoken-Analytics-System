@@ -26,6 +26,8 @@ $(document).ready(function() {
     $('#event-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
     $('#event-to-date').val(moment().toISOString().substr(0, 10));
 
+    getEventsData();
+
 });
 
 // Getting chart data from server
