@@ -120,7 +120,7 @@ def eventsData(request):
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
     # getting events stats from database
-    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
+    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
 
     # Converting data to json object
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
@@ -230,3 +230,30 @@ def fossData(request):
     json_res = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
 
     return JsonResponse(json_res, safe=False) # sending data
+
+def locationReport(request):
+    """
+    Renders the location stats page
+    """
+    # Getting data from various tables
+    region_stats = RegionStats.objects.all().order_by('-page_views')
+    city_stats = CityStats.objects.all().order_by('-page_views')
+
+    total_page_views = Log.objects.all().count()
+
+    r_stats = []
+    c_stats = []
+
+    # Preparing data to be sent to template
+    for stat in region_stats:
+        r_stats.append({'region' : stat.region, 'page_views': int(stat.page_views), 'percentage': round((stat.page_views/total_page_views) * 100, 2)})
+    
+    for stat in city_stats:
+        c_stats.append({'city' : stat.city, 'page_views': int(stat.page_views), 'percentage': round((stat.page_views/total_page_views) * 100, 2)})
+
+    context = {
+        'region_stats': r_stats,
+        'city_stats': c_stats
+    }
+
+    return render(request, 'location_report.html', context)

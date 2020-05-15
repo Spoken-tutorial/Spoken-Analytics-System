@@ -10,7 +10,7 @@
 #tile-1 .nav-tabs {
     position: relative;
     border: none!important;
-    background-color: #fff;
+    background-color: #f8f9fc;
 }
 
 #tile-1 .nav-tabs li {
@@ -43,7 +43,7 @@
 }
 
 #tile-1 .nav-tabs .active {
-    background-color: #f8f9fc!important;
+    background-color: #fff!important;
     border: none!important;
     color: #4e73df!important;
 }
@@ -60,7 +60,7 @@
 #tile-2 .nav-tabs {
     position: relative;
     border: none!important;
-    background-color: #fff;
+    background-color: #f8f9fc;
 }
 
 #tile-2 .nav-tabs li {
@@ -93,7 +93,7 @@
 }
 
 #tile-2 .nav-tabs .active {
-    background-color: #f8f9fc!important;
+    background-color: #fff!important;
     border: none!important;
     color: #4e73df!important;
 }

@@ -23,4 +23,6 @@ urlpatterns = [
     re_path('^foss/$', views.foss, name="foss"),
     # Serves data for data table at foss page
     re_path('^foss_data/$', views.fossData, name="foss-data"),
+    # Serves location report page
+    re_path('^location_report/$', views.locationReport, name="location-report"),
 ]
