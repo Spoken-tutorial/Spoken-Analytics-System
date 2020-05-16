@@ -20,7 +20,14 @@ def save_website_log (request):
 
     try:
         data = {}
-        data['browser_info'] = request.POST.get('browser_info')  # request.META['HTTP_USER_AGENT']
+        data['referer'] = request.POST.get('referer')
+        data['browser_name'] = request.POST.get('browser_name')
+        data['browser_version'] = request.POST.get('browser_version')
+        data['os_name'] = request.POST.get('os_name')
+        data['os_version'] = request.POST.get('os_version')
+        data['platform'] = request.POST.get('platform')
+        data['vendor'] = request.POST.get('vendor')
+
         # data['event_name'] = EVENT_NAME_DICT[key]['name']
         data['url_name'] = request.POST.get('url_name')
         data['visited_by'] = request.POST.get('visited_by')  # request.user.username if request.user.is_authenticated else 'anonymous'
