@@ -25,4 +25,6 @@ urlpatterns = [
     re_path('^foss_data/$', views.fossData, name="foss-data"),
     # Serves location report page
     re_path('^location_report/$', views.locationReport, name="location-report"),
+    # Serves came from activity page
+    re_path('^came_from_activity/$', views.cameFromActivity, name="came-from-activity"),
 ]

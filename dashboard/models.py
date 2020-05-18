@@ -145,3 +145,13 @@ class CityStats(models.Model):
         return "City Stats"
 
     objects = models.DjongoManager()
+
+class CameFromActivity(models.Model):
+    datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=300)
+    entry_page = models.CharField(max_length=300)
+
+    def __str__(self):
+        return "Came From Activity Model"
+
+    objects = models.DjongoManager()

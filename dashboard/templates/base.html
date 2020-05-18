@@ -70,24 +70,24 @@
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <!-- <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Recent Activity</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Visitor Activity</a>
+                        <!-- <a class="collapse-item" href="#">Visitor Activity</a>
                         <a class="collapse-item" href="#">Visitor Paths</a>
                         <a class="collapse-item" href="#">Page View Activity</a>
-                        <a class="collapse-item" href="#">Keyword Activity</a>
-                        <a class="collapse-item" href="#">Came From Activity</a>
-                        <a class="collapse-item" href="#">Download Activity</a>
+                        <a class="collapse-item" href="#">Keyword Activity</a> -->
+                        <a class="collapse-item" href="{% url 'came-from-activity' %}">Came From Activity</a>
+                        <!-- <a class="collapse-item" href="#">Download Activity</a>
                         <a class="collapse-item" href="#">Exit Link Activity</a>
-                        <a class="collapse-item" href="#">Visitor Map</a>
+                        <a class="collapse-item" href="#">Visitor Map</a> -->
                     </div>
                 </div>
-            </li> -->
+            </li>
             <!-- Nav Item - Reports -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'reports' %}">

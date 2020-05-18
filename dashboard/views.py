@@ -7,11 +7,11 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from pytz import timezone
-from django.utils.timezone import get_current_timezone
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
-from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats, FossStats, RegionStats, CityStats
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -287,3 +287,17 @@ def locationReport(request):
     }
 
     return render(request, 'location_report.html', context)
+
+def cameFromActivity(request):
+    """
+    Renders the came from activity page
+    """
+
+    # retrieving data from database
+    obj = CameFromActivity.objects.all().order_by('-datetime')[0:150]
+
+    context = {
+        'came_from_activity': obj
+    }
+    
+    return render(request, 'came_from_activity.html', context)

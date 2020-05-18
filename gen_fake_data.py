@@ -11,9 +11,9 @@ import dateutil.parser
 
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log
+from dashboard.models import Log, CameFromActivity
 
-num_rows = 100000 # number of rows to insert
+num_rows = 1000 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
@@ -31,7 +31,7 @@ paths = ["/watch/", "/cdcontent/", "/tutorial-search/", "/news/", "/accounts/log
 "/accounts/register/", "/software-training/", "/software-training/training-planner/", "/software-training/student-batch/", 
 "/software-training/select-participants/", "/software-training/resource-center/", "/participant/login/", "/statistics/", 
 "/statistics/training/", "/statistics/pmmmnmtt/fdp/", "/statistics/tutorial-content/", "/statistics/online-test/", 
-"/statistics/academic-center/", "home"]
+"/statistics/academic-center/", "/home/"]
 
 foss = ["Aakash Business Tool", "Advance C", "Advanced Cpp", "Applications of GeoGebra", "Arduino", "ASCEND", 
 "Avogadro", "BASH", "Biogas Plant", "Biopython", "Blender", "BOSS Linux", "C", "C and Cpp", "CellDesigner", 
@@ -69,33 +69,52 @@ cities = ["Mumbai", "Delhi", "Bengaluru", "Ahmedabad", "Hyderabad", "Chennai", "
 "Jodhpur", "Amritsar", "Raipur", "Allahabad", "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada", "Madurai", "Guwahati", 
 "Chandigarh", "Hubli-Dharwad", "Amroha", "Moradabad", "Gurgaon", "Aligarh", "Solapur"]
 
+referrer = ["android-app://com.google.android.gm"
+, "https://classroom.google.com/c/MTI0OTg2NTkwOTA0/p/MTAzMzY0NDEyNjkw/details"
+, "https://www.rediffmail.com/cgi-bin/red.cgi?red=https://spoken-tutorial.org/accounts/confirm/KfEBaC9oE8pPAprokOTcmPasTpSR2fnnr/kp.poongodi&isImage=0&BlockImage=0&rediffng=0&rdf=UXQFaAJqXzRTaVJpCzwKNwcLA28KMFgtU3sAZA==&rogue=557fc65d8f3a43d67cd809d8f7d8b60d4b446fc5"
+, "https://classroom.google.com/u/1/c/MTAyNzM2MzQ2NjY0"
+, "https://storage.googleapis.com/uniquecourses/online.html"
+, "android-app://com.google.android.googlequicksearchbox/"
+, "http://etcm.ticollege.org/cms1/course/view.php?id=9"
+, "https://classroom.google.com/c/MTI0OTg2NTkwOTA0/p/MTAzMzY0NDEyNjk2/details"
+, "android-app://com.google.android.gm/"
+, "https://mail.google.com/mail/u/0/"
+, "https://classroom.google.com/u/0/c/MTI1NTA0MDMzNzk3"]
+
+# def randomData():
+#     visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
+#     method = lambda x: random.choice(["GET", "POST"])
+#     city = lambda x: random.choice(cities)
+#     region = lambda x: random.choice(states_uts)
+#     country = lambda x: populator.generator.country()
+#     ip_address = lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255))
+#     event_name = lambda x: random.choice(event_names)
+#     path_info = lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths)
+#     data = {
+#         'path_info': path_info,
+#         'visited_by': visited_by,
+#         'browser_info' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
+#         'request_data' : '{data: request_data}',
+#         'method': method,
+#         'event_name': event_name,
+#         'city': city,
+#         'region': region,
+#         'country': country,
+#         'ip_address':  ip_address,
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+16d', tzinfo=india_tz),
+#     }
+#     return data
 
 def randomData():
-    visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
-    method = lambda x: random.choice(["GET", "POST"])
-    city = lambda x: random.choice(cities)
-    region = lambda x: random.choice(states_uts)
-    country = lambda x: populator.generator.country()
-    ip_address = lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255))
-    event_name = lambda x: random.choice(event_names)
-    path_info = lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths)
     data = {
-        'path_info': path_info,
-        'visited_by': visited_by,
-        'browser_info' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-        'request_data' : '{data: request_data}',
-        'method': method,
-        'event_name': event_name,
-        'city': city,
-        'region': region,
-        'country': country,
-        'ip_address':  ip_address,
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+16d', tzinfo=india_tz),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+6d', tzinfo=india_tz),
+        'referrer': lambda x: random.choice(referrer),
+        'entry_page': lambda x: random.choice(paths)
     }
     return data
 
 # Adding data to populator object
-populator.addEntity(Log, num_rows, randomData())
+populator.addEntity(CameFromActivity, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
