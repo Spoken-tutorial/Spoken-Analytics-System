@@ -17,7 +17,7 @@ total_unique_visits = 0
 total_first_time_visits = 0
 total_returning_visits = 0
 
-# Calculating stats
+# Calculating average daily stats
 for stats in daily_stats:
     total_records += 1
     total_page_views += stats.page_views
@@ -38,7 +38,7 @@ total_unique_visits = 0
 total_first_time_visits = 0
 total_returning_visits = 0
 
-# Calculating stats
+# Calculating average weekly stats
 for stats in weekly_stats:
     total_records += 1
     total_page_views += stats.page_views
@@ -59,7 +59,7 @@ total_unique_visits = 0
 total_first_time_visits = 0
 total_returning_visits = 0
 
-# Calculating stats
+# Calculating average monthly stats
 for stats in monthly_stats:
     total_records += 1
     total_page_views += stats.page_views
@@ -80,7 +80,7 @@ total_unique_visits = 0
 total_first_time_visits = 0
 total_returning_visits = 0
 
-# Calculating stats
+# Calculating average yearly stats
 for stats in yearly_stats:
     total_records += 1
     total_page_views += stats.page_views

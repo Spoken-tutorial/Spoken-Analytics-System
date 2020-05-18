@@ -1,15 +1,20 @@
 import json
 
+from django.conf import settings
 from django.db import connections
 from bson.json_util import dumps
 from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+from pytz import timezone
 from django.utils.timezone import get_current_timezone
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats, FossStats, RegionStats, CityStats
+
+# get current timezone 
+tz = timezone(settings.TIME_ZONE)
 
 # Create your views here.
 def index(request):
@@ -61,6 +66,10 @@ def graphData(request):
         from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
         to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+
     # extracting data on basis of granuality (weekly, monthly, etc)
     if data_summary_type == 'daily':
         
@@ -99,6 +108,10 @@ def events(request):
     today = datetime.today()
     day_before = today - timedelta(days=2)
 
+    # make datetimes timezone aware
+    today = tz.localize(today)
+    day_before = tz.localize(day_before)
+
     # getting event stats of 4 days ago
     # you can choose any day but difference must be of 1 day
     event_stats = EventStats.objects.filter(date__range=(day_before, today)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
@@ -118,7 +131,11 @@ def eventsData(request):
 
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
-
+    
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+    
     # getting events stats from database
     event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
 
@@ -147,6 +164,10 @@ def eventAnalysisGraphData(request):
     event_name = data['event_name']
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
 
     # getting events stats from database
     event_stats = EventStats.objects.filter(event_name=event_name).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
@@ -202,6 +223,10 @@ def foss(request):
 
     today = datetime.today()
     day_before = today - timedelta(days=2)
+    
+    # make datetimes timezone aware
+    today = tz.localize(today)
+    day_before = tz.localize(day_before)
 
     # getting foss stats of 1 day
     foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
@@ -223,6 +248,10 @@ def fossData(request):
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+
     # getting foss stats from database
     foss_stats = FossStats.objects.filter(date__range=(from_date, to_date)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
 
@@ -241,6 +270,7 @@ def locationReport(request):
 
     total_page_views = Log.objects.all().count()
 
+    # variables to store stats
     r_stats = []
     c_stats = []
 

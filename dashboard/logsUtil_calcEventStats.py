@@ -8,12 +8,20 @@ Terms:
 import datetime
 from dashboard.models import Log, EventStats
 from django.utils.timezone import get_current_timezone
+from pytz import timezone
+from django.conf import settings
+
+tz = timezone(settings.TIME_ZONE)
 
 dates = [] # Stores all dates for which data is present
 events = [] # Stores all events for which data is present
 
-today = datetime.datetime.now(tz=get_current_timezone())
+today = datetime.datetime.now()
 month_ago = today - datetime.timedelta(days=30)
+
+# make datetimes timezone aware
+today = tz.localize(today)
+month_ago = tz.localize(month_ago)
 
 logs = Log.objects.filter(datetime__range=(month_ago, today)) # Getting the logs
 
@@ -32,6 +40,10 @@ for event in events:
 
         today_min = datetime.datetime.combine(_date, datetime.time.min) # Days min datetime
         today_max = datetime.datetime.combine(_date, datetime.time.max) # Days max datetime
+
+        # make datetimes timezone aware
+        today_min = tz.localize(today_min)
+        today_max = tz.localize(today_max)
 
         daily_logs = Log.objects.filter(event_name=event).filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
 

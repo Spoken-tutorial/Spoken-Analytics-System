@@ -11,13 +11,14 @@ Terms:
 """
 import datetime
 from dashboard.models import Log, DailyStats
+from pytz import timezone
+from django.conf import settings
 
+tz = timezone(settings.TIME_ZONE)
 
 dates = [] # Stores all dates for which data is present
 
 logs = Log.objects.all() # Getting all the logs
-
-print(datetime.datetime.now())
 
 # Calculating number of days of which data is present
 for log in logs:
@@ -29,6 +30,10 @@ for _date in dates:
 
     today_min = datetime.datetime.combine(_date, datetime.time.min) # Days min datetime
     today_max = datetime.datetime.combine(_date, datetime.time.max) # Days max datetime
+
+    # make datetimes timezone aware
+    today_min = tz.localize(today_min)
+    today_max = tz.localize(today_max)
 
     daily_logs = Log.objects.filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
 
@@ -73,5 +78,3 @@ for _date in dates:
     daily_stats.unique_visitors = len(unique_visitors)
     
     daily_stats.save() # saving the calculations to database
-
-print(datetime.datetime.now())

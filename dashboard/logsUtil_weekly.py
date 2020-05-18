@@ -11,8 +11,10 @@ Terms:
 """
 import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats
+from pytz import timezone
+from django.conf import settings
 
-print(datetime.datetime.now())
+tz = timezone(settings.TIME_ZONE)
 
 weeks = [] # Stores week number and year
 
@@ -31,6 +33,10 @@ for week in weeks:
     week_min = datetime.datetime.strptime(current_week + '-1', '%G-W%V-%u') # this week starting date and time
     week_max = datetime.datetime.strptime(next_week + '-1', '%G-W%V-%u') # this week ending date and time
 
+    # make datetimes timezone aware
+    week_min = tz.localize(week_min)
+    week_max = tz.localize(week_max)
+    
     weekly_logs = Log.objects.filter(datetime__range=(week_min, week_max)).order_by('datetime') # Getting data of the week from log collection
 
     unique_visitors = [] # Stores unique ip addresses
@@ -76,6 +82,3 @@ for week in weeks:
     weekly_stats.unique_visitors = len(unique_visitors)
     
     weekly_stats.save() # saving the calculations to database
-
-
-print(datetime.datetime.now())
