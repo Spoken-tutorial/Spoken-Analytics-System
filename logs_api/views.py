@@ -43,6 +43,8 @@ def save_website_log (request):
         data['country'] = request.POST.get ('country')
         data['region'] = request.POST.get ('region')
         data['city'] = request.POST.get ('city')
+        data['latitude'] = request.POST.get ('latitude')
+        data['longitude'] = request.POST.get ('longitude')
         # enqueue job in the redis queue named 'tasks3'
         redis_client.rpush('tasks3', json.dumps(data))
 
