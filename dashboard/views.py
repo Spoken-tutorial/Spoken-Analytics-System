@@ -11,7 +11,7 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
-from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -315,3 +315,17 @@ def downloadActivity(request):
     }
     
     return render(request, 'download_activity.html', context)
+
+def exitLinkActivity(request):
+    """
+    Renders the exit link activity page
+    """
+
+    # retrieving data from database
+    obj = ExitLinkActivity.objects.all().order_by('-datetime')[0:150]
+
+    context = {
+        'exit_link_activity': obj
+    }
+    
+    return render(request, 'exit_link_activity.html', context)

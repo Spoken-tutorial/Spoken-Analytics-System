@@ -29,4 +29,6 @@ urlpatterns = [
     re_path('^came_from_activity/$', views.cameFromActivity, name="came-from-activity"),
     # Serves download activity page
     re_path('^download_activity/$', views.downloadActivity, name="download-activity"),
+    # Serves exit link activity page
+    re_path('^exit_link_activity/$', views.exitLinkActivity, name="exit-link-activity"),
 ]

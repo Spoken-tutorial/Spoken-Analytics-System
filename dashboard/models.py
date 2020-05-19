@@ -165,3 +165,13 @@ class DownloadActivity(models.Model):
         return "Download Activity Model"
 
     objects = models.DjongoManager()
+
+class ExitLinkActivity(models.Model):
+    datetime = models.DateTimeField()
+    exit_link_clicked = models.CharField(max_length=300)
+    exit_page = models.CharField(max_length=300)
+
+    def __str__(self):
+        return "Exit Link Activity Model"
+
+    objects = models.DjongoManager()

@@ -1,0 +1,53 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>Exit Link Activity</title>
+{% endblock %} {% block content %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Exit Link Activity</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered display no-wrap" id="download-activity-data-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Exit Link Clicked</th>
+                            <th>Exit Page</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in exit_link_activity %}
+                        <tr>
+                            <td>
+                                {{ activity.datetime|date:'Y-m-d' }}
+                            </td>
+                            <td>
+                                {{ activity.datetime|date:'H:i:s' }}
+                            </td>
+                            <td>
+                                <a href="{{ activity.exit_link_clicked }}" style="text-decoration: none; color: blue">{{ activity.exit_link_clicked }}</a>
+                            </td>
+                            <td>
+                                <a href="https://spoken-tutorial.org{{ activity.exit_page }}">{{ activity.exit_page }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-download-activity.js' %}"></script>
+{% endblock %}

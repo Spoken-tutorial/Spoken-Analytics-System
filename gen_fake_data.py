@@ -11,7 +11,7 @@ import dateutil.parser
 
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log, CameFromActivity, DownloadActivity
+from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity
 
 num_rows = 1000 # number of rows to insert
 
@@ -148,6 +148,35 @@ clicked_from = ["https://spoken-tutorial.org/tutorial-search/?search_foss=Arduin
 "https://spoken-tutorial.org/watch/Moodle Learning Management System/Categories in Moodle/English/"
 ]
 
+exit_links = ["https://statcounter.com/p5528933/?guest=1", 
+"https://googleresearch.blogspot.in/2015/03/announcing-google-mooc-focused-research.html", 
+"https://googleresearch.blogspot.in/2015/03/announcing-google-mooc-focused-research.html", 
+"https://www.youtube.com/user/SpokenTutorialIITB/", 
+"https://www.youtube.com/user/SpokenTutorialIITB/", 
+"mailto:contact@spoken-tutorial.org", 
+"mailto:contact@spoken-tutorial.org", 
+"https://fossee.in/fellowship/2020", 
+"https://fossee.in/fellowship/2020", 
+"https://fossee.in/fellowship/2020", 
+"https://fossee.in/fellowship/2020", 
+"http://application.reimagine-education.com/the-winners-individual/2015/132/2193b0ae3841f24da1464d4b6b70ee0f/Indian Institute of Technology Bombay", 
+"http://application.reimagine-education.com/the-winners-individual/2015/132/2193b0ae3841f24da1464d4b6b70ee0f/Indian Institute of Technology Bombay", 
+"https://statcounter.com/p5528933/?guest=1", 
+"https://python.fossee.in/", 
+"https://python.fossee.in/", 
+"https://creativecommons.org/licenses/by-sa/4.0/", 
+"https://googleresearch.blogspot.in/2015/03/announcing-google-mooc-focused-research.html"]
+
+exit_pages = ["https://spoken-tutorial.org/cdcontent/", 
+"https://spoken-tutorial.org/", 
+"https://spoken-tutorial.org/software-training/test/verify-test-certificate/", 
+"https://spoken-tutorial.org/stfellowship2020/", 
+"https://spoken-tutorial.org/", 
+"https://spoken-tutorial.org/keyword-search/", 
+"https://spoken-tutorial.org/cdcontent/", 
+"https://spoken-tutorial.org/", 
+"https://spoken-tutorial.org/participant/index/?category=2"]
+
 # For Logs Model
 # def randomData():
 #     visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
@@ -183,16 +212,25 @@ clicked_from = ["https://spoken-tutorial.org/tutorial-search/?search_foss=Arduin
 #     return data
 
 # For DownloadActivityModel
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+#         'download_link': lambda x: random.choice(download_links),
+#         'clicked_from': lambda x: random.choice(clicked_from)
+#     }
+#     return data
+
+# For ExitLinkActivityModel
 def randomData():
     data = {
         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'download_link': lambda x: random.choice(download_links),
-        'clicked_from': lambda x: random.choice(clicked_from)
+        'exit_link_clicked': lambda x: random.choice(exit_links),
+        'exit_page': lambda x: random.choice(exit_pages)
     }
     return data
 
 # Adding data to populator object
-populator.addEntity(DownloadActivity, num_rows, randomData())
+populator.addEntity(ExitLinkActivity, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
