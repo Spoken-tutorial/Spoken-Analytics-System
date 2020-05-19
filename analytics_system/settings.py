@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djgeojson',
+    'leaflet',
     'dashboard',
 ]
 
@@ -136,3 +138,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (20.5937, 78.9629),
+    'DEFAULT_ZOOM': 4,
+}

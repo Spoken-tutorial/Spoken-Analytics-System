@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from djongo import models
+from djgeojson.fields import PointField
 
 # Create your models here.
 class Log(models.Model):
@@ -175,3 +176,12 @@ class ExitLinkActivity(models.Model):
         return "Exit Link Activity Model"
 
     objects = models.DjongoManager()
+
+class VisitorSpot(models.Model):
+    datetime = models.DateTimeField()
+    geom = PointField()
+    ip_address = models.GenericIPAddressField()
+
+    @property
+    def popupContent(self):
+      return '<span/>{}</span>'.format(self.ip_address)

@@ -31,4 +31,6 @@ urlpatterns = [
     re_path('^download_activity/$', views.downloadActivity, name="download-activity"),
     # Serves exit link activity page
     re_path('^exit_link_activity/$', views.exitLinkActivity, name="exit-link-activity"),
+    # Serves visitor map page
+    re_path('^visitor_map/$', views.visitorMap, name="visitor-map"),
 ]
