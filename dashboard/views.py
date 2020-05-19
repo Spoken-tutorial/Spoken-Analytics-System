@@ -336,7 +336,7 @@ def visitorMap(request):
     """
 
     # retriving data from database
-    obj = VisitorSpot.objects.all()
+    obj = VisitorSpot.objects.all().order_by('-datetime')[0:10]
 
     context = {
         'visitor_spots': obj,

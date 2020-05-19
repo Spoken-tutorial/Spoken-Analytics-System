@@ -11,9 +11,9 @@ import dateutil.parser
 
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity
+from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
 
-num_rows = 1000 # number of rows to insert
+num_rows = 10 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
@@ -202,7 +202,7 @@ exit_pages = ["https://spoken-tutorial.org/cdcontent/",
 #     }
 #     return data
 
-# For CameFromActivityModel
+# For CameFromActivity Model
 # def randomData():
 #     data = {
 #         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+6d', tzinfo=india_tz),
@@ -211,7 +211,7 @@ exit_pages = ["https://spoken-tutorial.org/cdcontent/",
 #     }
 #     return data
 
-# For DownloadActivityModel
+# For DownloadActivity Model
 # def randomData():
 #     data = {
 #         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
@@ -220,17 +220,26 @@ exit_pages = ["https://spoken-tutorial.org/cdcontent/",
 #     }
 #     return data
 
-# For ExitLinkActivityModel
+# For ExitLinkActivity Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+#         'exit_link_clicked': lambda x: random.choice(exit_links),
+#         'exit_page': lambda x: random.choice(exit_pages)
+#     }
+#     return data
+
+# For VisitorSpot Model
 def randomData():
     data = {
         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'exit_link_clicked': lambda x: random.choice(exit_links),
-        'exit_page': lambda x: random.choice(exit_pages)
+        'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
+        'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator. local_latlng(country_code='IN', coords_only=True)][::-1] }
     }
     return data
 
 # Adding data to populator object
-populator.addEntity(ExitLinkActivity, num_rows, randomData())
+populator.addEntity(VisitorSpot, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
