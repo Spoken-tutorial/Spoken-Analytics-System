@@ -11,7 +11,7 @@ import dateutil.parser
 
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log, CameFromActivity
+from dashboard.models import Log, CameFromActivity, DownloadActivity
 
 num_rows = 1000 # number of rows to insert
 
@@ -81,6 +81,74 @@ referrer = ["android-app://com.google.android.gm"
 , "https://mail.google.com/mail/u/0/"
 , "https://classroom.google.com/u/0/c/MTI1NTA0MDMzNzk3"]
 
+download_links = ["https://spoken-tutorial.org/media/videos/85/Arduino-Brochure-English.pdf", 
+"https://spoken-tutorial.org/media/videos/85/Arduino-Brochure-English.pdf",
+"https://spoken-tutorial.org/media/videos/14/1373/resources/Numbering-Equations-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/14/1373/resources/Numbering-Equations-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/50/1254/resources/Lists-and-its-Operations-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/50/1254/resources/Lists-and-its-Operations-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/97/965/resources/Admin-dashboard-Slides.zip",
+"https://spoken-tutorial.org/media/videos/97/965/resources/Admin-dashboard-Slides.zip",
+"https://process.spoken-tutorial.org/images/9/95/Test_Instruction_for_Participants.pdf",
+"https://process.spoken-tutorial.org/images/9/95/Test_Instruction_for_Participants.pdf",
+"https://spoken-tutorial.org/media/videos/29/24/resources/Conditional-Branching-Slides.zip",
+"https://spoken-tutorial.org/media/videos/29/24/resources/Conditional-Branching-Slides.zip",
+"https://spoken-tutorial.org/media/videos/14/11/resources/Equations-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/14/11/resources/Equations-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/50/1253/resources/Data-types-and-Factors-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/50/1253/resources/Data-types-and-Factors-Assignment.pdf",
+"https://process.spoken-tutorial.org/images/9/95/Test_Instruction_for_Participants.pdf",
+"https://process.spoken-tutorial.org/images/9/95/Test_Instruction_for_Participants.pdf",
+"https://spoken-tutorial.org/media/videos/97/983/resources/Categories-in-Moodle-Assignment.txt",
+"https://spoken-tutorial.org/media/videos/50/1252/resources/Merging-and-Importing-Data-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/50/1252/resources/Merging-and-Importing-Data-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/97/983/resources/Categories-in-Moodle-Assignment.txt",
+"https://spoken-tutorial.org/media/videos/25/64/resources/If-Statement-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/25/64/resources/If-Statement-Codefiles.zip",
+"https://process.spoken-tutorial.org/images/9/95/Test_Instruction_for_Participants.pdf",
+"https://process.spoken-tutorial.org/images/9/95/Test_Instruction_for_Participants.pdf",
+"https://spoken-tutorial.org/media/videos/14/1410/resources/Writing-Style-Files-in-LaTeX-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/14/1410/resources/Writing-Style-Files-in-LaTeX-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/14/11/resources/Equations-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/14/11/resources/Equations-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/50/1251/resources/Operations-on-Matrices-and-Data-Frames-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/50/1251/resources/Operations-on-Matrices-and-Data-Frames-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/21/19/resources/File-System-Slides.zip",
+"https://spoken-tutorial.org/media/videos/21/19/resources/File-System-Slides.zip",
+"https://spoken-tutorial.org/media/videos/89/Python-3.4.3-Instruction-Sheet-English.pdf",
+"https://spoken-tutorial.org/media/videos/89/Python-3.4.3-Instruction-Sheet-English.pdf",
+"https://spoken-tutorial.org/media/videos/50/1250/resources/Creating-Matrices-using-Data-Frames-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/50/1250/resources/Creating-Matrices-using-Data-Frames-Assignment.pdf",
+"https://spoken-tutorial.org/media/videos/29/15/resources/Matrix-Operations-Slides.zip",
+"https://spoken-tutorial.org/media/videos/29/15/resources/Matrix-Operations-Slides.zip",
+"https://spoken-tutorial.org/media/videos/14/1411/resources/Indic-Language-Typesetting-in-LaTeX-Codefiles.zip",
+"https://spoken-tutorial.org/media/videos/14/1411/resources/Indic-Language-Typesetting-in-LaTeX-Codefiles.zip"]
+
+clicked_from = ["https://spoken-tutorial.org/tutorial-search/?search_foss=Arduino&search_language=English", 
+"https://spoken-tutorial.org/tutorial-search/?search_foss=Arduino&search_language=English", 
+"https://spoken-tutorial.org/watch/LaTeX/Numbering Equations/English/", 
+"https://spoken-tutorial.org/watch/LaTeX/Numbering Equations/English/", 
+"https://spoken-tutorial.org/watch/R/Lists and its Operations/English/", 
+"https://spoken-tutorial.org/watch/R/Lists and its Operations/English/", 
+"https://spoken-tutorial.org/watch/Moodle Learning Management System/Admin dashboard/English/", 
+"https://spoken-tutorial.org/watch/Moodle Learning Management System/Admin dashboard/English/", 
+"https://spoken-tutorial.org/testimonials/media/", 
+"https://spoken-tutorial.org/testimonials/media/", 
+"https://spoken-tutorial.org/watch/Scilab/Conditional Branching/English/", 
+"https://spoken-tutorial.org/watch/Scilab/Conditional Branching/English/", 
+"https://spoken-tutorial.org/watch/LaTeX/Equations/English/", 
+"https://spoken-tutorial.org/watch/LaTeX/Equations/English/", 
+"https://spoken-tutorial.org/watch/R/Data types and Factors/English/", 
+"https://spoken-tutorial.org/watch/R/Data types and Factors/English/", 
+"https://spoken-tutorial.org/participant/index/?category=2", 
+"https://spoken-tutorial.org/participant/index/?category=2", 
+"https://spoken-tutorial.org/watch/Moodle Learning Management System/Categories in Moodle/English/", 
+"https://spoken-tutorial.org/watch/R/Merging and Importing Data/English/", 
+"https://spoken-tutorial.org/watch/R/Merging and Importing Data/English/", 
+"https://spoken-tutorial.org/watch/Moodle Learning Management System/Categories in Moodle/English/"
+]
+
+# For Logs Model
 # def randomData():
 #     visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
 #     method = lambda x: random.choice(["GET", "POST"])
@@ -105,16 +173,26 @@ referrer = ["android-app://com.google.android.gm"
 #     }
 #     return data
 
+# For CameFromActivityModel
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+6d', tzinfo=india_tz),
+#         'referrer': lambda x: random.choice(referrer),
+#         'entry_page': lambda x: random.choice(paths)
+#     }
+#     return data
+
+# For DownloadActivityModel
 def randomData():
     data = {
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+6d', tzinfo=india_tz),
-        'referrer': lambda x: random.choice(referrer),
-        'entry_page': lambda x: random.choice(paths)
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+        'download_link': lambda x: random.choice(download_links),
+        'clicked_from': lambda x: random.choice(clicked_from)
     }
     return data
 
 # Adding data to populator object
-populator.addEntity(CameFromActivity, num_rows, randomData())
+populator.addEntity(DownloadActivity, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()

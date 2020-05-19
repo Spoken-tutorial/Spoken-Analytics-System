@@ -1,4 +1,6 @@
-var cameFromActivityDataTable = $('#came-from-activity-data-table').DataTable({
+// JS for download activity page
+
+var downloadActivityDataTable = $('#download-activity-data-table').DataTable({
     searching: false,
     scrollX: false,
     columns: [

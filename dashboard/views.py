@@ -11,7 +11,7 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
-from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -301,3 +301,17 @@ def cameFromActivity(request):
     }
     
     return render(request, 'came_from_activity.html', context)
+
+def downloadActivity(request):
+    """
+    Renders the download activity page
+    """
+
+    # retrieving data from database
+    obj = DownloadActivity.objects.all().order_by('-datetime')[0:150]
+
+    context = {
+        'download_activity': obj
+    }
+    
+    return render(request, 'download_activity.html', context)

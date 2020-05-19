@@ -155,3 +155,13 @@ class CameFromActivity(models.Model):
         return "Came From Activity Model"
 
     objects = models.DjongoManager()
+
+class DownloadActivity(models.Model):
+    datetime = models.DateTimeField()
+    download_link = models.CharField(max_length=300)
+    clicked_from = models.CharField(max_length=300)
+
+    def __str__(self):
+        return "Download Activity Model"
+
+    objects = models.DjongoManager()
