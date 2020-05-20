@@ -11,7 +11,8 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
-from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
+from .models import VisitorSpot, PageViewActivity
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -343,3 +344,18 @@ def visitorMap(request):
     }
     
     return render(request, 'visitor_map.html', context)
+
+def pageViewActivity(request):
+    """
+    Renders the page view activity page
+    """
+
+    # retriving data from database
+    obj = PageViewActivity.objects.all().order_by('-datetime')[0:25]
+
+    context = {
+        'page_view_activity': obj,
+    }
+    
+    return render(request, 'page_view_activity.html', context)
+

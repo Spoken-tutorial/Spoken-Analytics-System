@@ -77,10 +77,10 @@
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <!-- <a class="collapse-item" href="#">Visitor Activity</a>
-                        <a class="collapse-item" href="#">Visitor Paths</a>
-                        <a class="collapse-item" href="#">Page View Activity</a>
-                        <a class="collapse-item" href="#">Keyword Activity</a> -->
+                        <!-- <a class="collapse-item" href="#">Visitor Activity</a> -->
+                        <!-- <a class="collapse-item" href="#">Visitor Paths</a> -->
+                        <a class="collapse-item" href="{% url 'page-view-activity' %}">Page View Activity</a>
+                        <!-- <a class="collapse-item" href="#">Keyword Activity</a> -->
                         <a class="collapse-item" href="{% url 'came-from-activity' %}">Came From Activity</a>
                         <a class="collapse-item" href="{% url 'download-activity' %}">Download Activity</a>
                         <a class="collapse-item" href="{% url 'exit-link-activity' %}">Exit Link Activity</a>

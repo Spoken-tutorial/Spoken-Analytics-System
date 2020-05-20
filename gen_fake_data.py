@@ -11,9 +11,9 @@ import dateutil.parser
 
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
+from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot, PageViewActivity
 
-num_rows = 10 # number of rows to insert
+num_rows = 1000 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
@@ -167,15 +167,23 @@ exit_links = ["https://statcounter.com/p5528933/?guest=1",
 "https://creativecommons.org/licenses/by-sa/4.0/", 
 "https://googleresearch.blogspot.in/2015/03/announcing-google-mooc-focused-research.html"]
 
-exit_pages = ["https://spoken-tutorial.org/cdcontent/", 
+pages = ["https://spoken-tutorial.org/cdcontent/", 
 "https://spoken-tutorial.org/", 
 "https://spoken-tutorial.org/software-training/test/verify-test-certificate/", 
 "https://spoken-tutorial.org/stfellowship2020/", 
-"https://spoken-tutorial.org/", 
 "https://spoken-tutorial.org/keyword-search/", 
 "https://spoken-tutorial.org/cdcontent/", 
-"https://spoken-tutorial.org/", 
 "https://spoken-tutorial.org/participant/index/?category=2"]
+
+browsers = ["Firefox 76.0", "Chrome for Android", "Chrome 83.0", "Chrome 81.0", "Samsung Internet 11.2", "Opera 68.0"]
+
+os = ["Linux", "Android", "Win7", "Win10"]
+
+resolutions = ["1525x858", "360x760", "1440x900", "360x780", "393x851", "412x892", "393x851", "360x640", "1536x864"]
+
+languages = ["en-gb", "en-us"]
+
+isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Airtel", "Andhra Pradesh State FiberNet Limited"]
 
 # For Logs Model
 # def randomData():
@@ -225,21 +233,39 @@ exit_pages = ["https://spoken-tutorial.org/cdcontent/",
 #     data = {
 #         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
 #         'exit_link_clicked': lambda x: random.choice(exit_links),
-#         'exit_page': lambda x: random.choice(exit_pages)
+#         'exit_page': lambda x: random.choice(pages)
 #     }
 #     return data
 
 # For VisitorSpot Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
+#         'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator. local_latlng(country_code='IN', coords_only=True)][::-1] }
+#     }
+#     return data
+
+# For PageViewActivity Model
 def randomData():
     data = {
         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+        'browser': lambda x: random.choice(browsers),
+        'os': lambda x: random.choice(os),
+        'screen_res': lambda x: random.choice(resolutions),
+        'city': lambda x: random.choice(cities),
+        'region': lambda x: random.choice(states_uts),
+        'country': 'India',
+        'language': lambda x: random.choice(languages),
         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-        'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator. local_latlng(country_code='IN', coords_only=True)][::-1] }
+        'isp': lambda x: random.choice(isp),
+        'page_url': lambda x: random.choice(pages),
+        'referrer': lambda x: random.choice(referrer),
     }
     return data
 
 # Adding data to populator object
-populator.addEntity(VisitorSpot, num_rows, randomData())
+populator.addEntity(PageViewActivity, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
