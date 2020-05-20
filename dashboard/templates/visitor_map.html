@@ -10,6 +10,8 @@
 {% block custom_css %} 
 
 {% leaflet_css %}
+
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 <link href="{% static 'css/custom-visitor-map.css' %}" rel="stylesheet">
 
 {% endblock %} 
@@ -30,6 +32,7 @@
 <!-- /.container-fluid -->
 
 {% endblock %} {% block custom_js %} {% leaflet_js %}
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
 <script type="text/javascript">
 
     var collection = {{ visitor_spots | geojsonfeature:"popupContent" | safe }};
@@ -41,8 +44,11 @@
     }
 
     function map_init(map, options) {
+
+
         L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
         L.geoJson(collection, {onEachFeature: onEachFeature}).addTo(map);
+        map.addControl(new L.Control.Fullscreen());
     }
 </script>
 <script src="{% static 'js/custom/custom-visitor-map.js' %}"></script>
