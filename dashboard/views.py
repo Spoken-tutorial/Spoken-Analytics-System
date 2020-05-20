@@ -12,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
-from .models import VisitorSpot, PageViewActivity, VisitorActivity
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -373,3 +373,16 @@ def visitorActivity(request):
     
     return render(request, 'visitor_activity.html', context)
 
+def visitorPath(request):
+    """
+    Renders the visitor paths page
+    """
+
+    # retriving data from database
+    obj = VisitorPath.objects.all().order_by('-datetime')[0:25]
+
+    context = {
+        'visitor_path': obj,
+    }
+    
+    return render(request, 'visitor_paths.html', context)

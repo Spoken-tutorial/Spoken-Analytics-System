@@ -228,3 +228,31 @@ class VisitorActivity(models.Model):
         return "Visitor Activity Model"
 
     objects = models.DjongoManager()
+
+class Path(models.Model):
+    datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=300)
+    page_url = models.CharField(max_length=300)
+    
+    class Meta:
+        abstract = True
+
+class VisitorPath(models.Model):
+    datetime = models.DateTimeField()
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    ip_address = models.GenericIPAddressField()
+    isp = models.CharField(max_length=100)
+    visit_num = models.IntegerField()
+    screen_res = models.CharField(max_length=20)
+    browser = models.CharField(max_length=100)
+    os = models.CharField(max_length=100)
+    path = models.ArrayField(
+        model_container=Path,
+    )
+
+    def __str__(self):
+        return "Visitor Path Model"
+
+    objects = models.DjongoManager()

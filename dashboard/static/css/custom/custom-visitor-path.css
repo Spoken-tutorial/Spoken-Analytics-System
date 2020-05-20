@@ -1,0 +1,17 @@
+.no-padding {
+    padding: 0px;
+}
+
+table.table td {
+    padding: 0px;
+}
+
+.info-row {
+    font-size: 16px;
+    margin-left: 0px;
+    background: #4e73df22;
+}
+
+.paths {
+    padding: 20px;
+}
