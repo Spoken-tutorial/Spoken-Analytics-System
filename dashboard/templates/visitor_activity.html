@@ -1,0 +1,114 @@
+{% extends 'base.html' %} {% load static %} {% load mathfilters %} {% block title %}
+<title>Visitor Activity</title>
+{% endblock %} {% block custom_css %}
+
+<link href="{% static 'css/custom/custom-visitor-activity.css' %}" rel="stylesheet"> {% endblock %} {% block content %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Visitor Activity</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered display no-wrap row-border" id="visitor-activity-data-table" width="100%" cellspacing="0">
+                    <thead style="visibility: collapse">
+                        <th></th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        {% for activity in visitor_activity %}
+                        <tr>
+                            <td>
+                                <dl>
+                                    <dt>
+                                        Page Views:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.page_views }}
+                                    </dd>
+                                    <dt>
+                                        Latest Page View:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.latest_page_view|date:'j M Y H:i:s' }}
+                                    </dd>
+                                    <dt>
+                                        Visit Length:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.visit_length_sec|intdiv:60 }} min {{ activity.visit_length_sec|mod:60 }} sec
+                                    </dd>
+                                    <dt>
+                                        Resolution:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.screen_res }}
+                                    </dd>
+                                    <dt>
+                                        System:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.browser }}
+                                        <br> {{ activity.os }}
+                                    </dd>
+                                </dl>
+                            </td>
+                            <td>
+                                <dl>
+                                    <dt>
+                                        Total Visits:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.total_visits }}
+                                    </dd>
+                                    <dt>
+                                        Location:
+                                    </dt>
+                                    <dd>
+                                        {{ activity.city }}, {{ activity.region }}, {{ activity.country }}
+                                    </dd>
+                                    <dt>
+                                        IP Address:
+                                    </dt>
+                                    <dd>
+                                        <span style="color: red">{{ activity.isp }} </span>({{ activity.ip_address }})
+                                    </dd>
+                                    <dt>
+                                        Referring URL:
+                                    </dt>
+                                    <dd>
+                                        <a href="{{ activity.referrer }}" style="text-decoration: none; color: green">{{ activity.referrer }}</a>
+                                    </dd>
+                                    <dt>
+                                        Entry Page:
+                                    </dt>
+                                    <dd>
+                                        <a href="{{ activity.entry_page }}" style="text-decoration: none; color: blue">{{ activity.entry_page }}</a>
+                                    </dd>
+                                    <dt>
+                                        Latest Page:
+                                    </dt>
+                                    <dd>
+                                        <a href="{{ activity.latest_page }}" style="text-decoration: none; color: blue">{{ activity.latest_page }}</a>
+                                    </dd>
+                                </dl>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-visitor-activity.js' %}"></script>
+{% endblock %}

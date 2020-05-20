@@ -205,3 +205,26 @@ class PageViewActivity(models.Model):
         return "Page View Activity Model"
 
     objects = models.DjongoManager()
+
+class VisitorActivity(models.Model):
+    page_views = models.IntegerField()
+    total_visits = models.IntegerField()
+    latest_page_view = models.DateTimeField()
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    visit_length_sec = models.IntegerField()
+    ip_address = models.GenericIPAddressField()
+    isp = models.CharField(max_length=100)
+    screen_res = models.CharField(max_length=20)
+    browser = models.CharField(max_length=100)
+    os = models.CharField(max_length=100)
+    referrer = models.CharField(max_length=300)
+    entry_page = models.CharField(max_length=300)
+    latest_page = models.CharField(max_length=300)
+    visit_page = models.CharField(max_length=300)
+
+    def __str__(self):
+        return "Visitor Activity Model"
+
+    objects = models.DjongoManager()
