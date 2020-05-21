@@ -12,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
-from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -400,4 +400,29 @@ def keywordActivity(request):
     }
     
     return render(request, 'keyword_activity.html', context)
+
+def magnify(request):
+    """
+    Renders the magnify page
+    """
+
+    # Gettign IP address from request object
+    ip = request.GET.get('ip', '')
+
+    # If ip address was provided find its info else set it to "unavailabel"
+    if ip == '':
+        visitor_info = "unavailable"
+    else:
+        visitor_info = VisitorInfo.objects.order_by('-datetime').filter(ip_address=ip).first()
+
+        if visitor_info == None:
+            visitor_info = "unavailable"
+
+    context = {
+        'ip_address': ip,
+        'visitor_info': visitor_info
+    }
+    
+    return render(request, 'magnify.html', context)
+
 

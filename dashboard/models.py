@@ -268,3 +268,27 @@ class KeywordActivity(models.Model):
         return "Keyword Activity Model"
 
     objects = models.DjongoManager()
+
+class VisitorInfo(models.Model):
+    datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=300)
+    browser = models.CharField(max_length=100)
+    ip_address = models.GenericIPAddressField()
+    os = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    screen_res = models.CharField(max_length=20)
+    returning_visits = models.IntegerField()
+    javascript = models.BooleanField()
+    visit_length_sec = models.IntegerField()
+    isp = models.CharField(max_length=100)
+    path = models.ArrayField(
+        model_container=Path,
+    )
+
+    def __str__(self):
+        return "Visitor Info Model"
+
+    objects = models.DjongoManager()
+    

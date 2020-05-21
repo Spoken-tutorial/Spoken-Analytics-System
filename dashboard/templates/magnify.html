@@ -1,0 +1,120 @@
+{% extends 'base.html' %} {% load static %} {% load mathfilters %} {% block title %}
+<title>Magnify</title>
+{% endblock %} {% block custom_css %}
+
+<link href="{% static 'css/custom/custom-magnify.css' %}" rel="stylesheet"> {% endblock %} {% block content %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Magnify IP Address {{ ip_address }}</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            {% if visitor_info == 'unavailable' %}
+            <div>This visitor does not exist or is no longer present in your log.</div>
+            {% else %}
+            <table class="" id="magnify-table">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            <h4 class="text-primary">Visitor Analysis & System Spec</h4>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Referring URL:</th>
+                        <td colspan="4" class="">
+                            <div style="color: green;" class="">{{ visitor_info.referrer }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Browser:</th>
+                        <td>{{ visitor_info.browser }}</td>
+                    </tr>
+                    <tr>
+                        <th>IP Address:</th>
+                        <td>{{ visitor_info.ip_address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td>{{ visitor_info.city }}, {{ visitor_info.region }}, {{ visitor_info.country }}</td>
+                    </tr>
+                    <tr>
+                        <th>Returning Visits:</th>
+                        <td>{{ visitor_info.returning_visits }}</td>
+                    </tr>
+                    <tr>
+                        <th>Visit Length:</th>
+                        <td>{{ visitor_info.visit_length_sec|intdiv:60 }} min {{ activity.visit_length_sec|mod:60 }} sec</td>
+                    </tr>
+                    <tr>
+                        <th>OS/Platform:</th>
+                        <td>{{ visitor_info.os }}</td>
+                    </tr>
+                    <tr>
+                        <th>Resolution:</th>
+                        <td>{{ visitor_info.screen_res }}</td>
+                    </tr>
+                    <tr>
+                        <th>Javascript:</th>
+                        <td>{{ visitor_info.javascript }}</td>
+                    </tr>
+                    <tr>
+                        <th>ISP:</th>
+                        <td>{{ visitor_info.isp }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <hr>
+            <br>
+            <div class="paths">
+                <h4 class="text-primary">Navigation Path</h4>
+                <div class="row h4">
+                    <div class="col-md-2">
+                        Date
+                    </div>
+                    <div class="col-md-2">
+                        Time
+                    </div>
+                    <div class="col-md-8">
+                        WebPage
+                    </div>
+                </div>
+                {% for path in visitor_info.path %}
+                <div class="row">
+                    <div class="col-md-4">
+
+                    </div>
+                    <div class="col-md-8">
+                        <a href="{{ activity.referrer }}" style="text-decoration: none; color: green">{{ path.referrer }}</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        {{ path.datetime | date:'j M' }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ path.datetime | date:'H:i:s' }}
+                    </div>
+                    <div class="col-md-8">
+                        <a href="{{ activity.page_url }}" style="text-decoration: none;">{{ path.page_url }}</a>
+                    </div>
+                </div>
+                <br> {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-magnify.js' %}"></script>
+{% endblock %}
