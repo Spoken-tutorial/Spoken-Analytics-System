@@ -13,6 +13,7 @@ class Log(models.Model):
     country = models.CharField (max_length=100, blank=False)
     region = models.CharField (max_length=5, blank=False)
     city = models.CharField (max_length=100, blank=False)
+    isp = models.CharField (max_length=100)
     datetime = models.DateTimeField()
     
     def __str__(self):
@@ -291,4 +292,13 @@ class VisitorInfo(models.Model):
         return "Visitor Info Model"
 
     objects = models.DjongoManager()
-    
+
+
+class ISPStats(models.Model):
+    isp = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "ISP Stats"
+
+    objects = models.DjongoManager()

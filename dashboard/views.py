@@ -12,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
-from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo, ISPStats
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -192,23 +192,29 @@ def getReportsStats(request):
     # Getting data from various tables
     region_stats = RegionStats.objects.all().order_by('-page_views')[0:10]
     city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
+    isp_stats = ISPStats.objects.all().order_by('-page_views')[0:10]
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     events_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
+    # total page views (needed to find percentage of page views)
     total_page_views = Log.objects.all().count()
     total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))
     total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
+    total_isp_page_views = ISPStats.objects.aggregate(Sum('page_views'))
 
     # Converting data to json format
     json_region_stats = serializers.serialize('json', region_stats)
     json_city_stats = serializers.serialize('json', city_stats)
+    json_isp_stats = serializers.serialize('json', isp_stats)
     json_foss_stats = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
     json_event_stats = json.dumps(list(events_stats), cls=DjangoJSONEncoder)
 
     json_res = {
         'region_stats': json_region_stats,
-        'city_stats': json_city_stats, 
+        'city_stats': json_city_stats,  
         'total_page_views': total_page_views,
+        'isp_stats': json_isp_stats,
+        'total_isp_page_views': total_isp_page_views['page_views__sum'],
         'foss_stats': json_foss_stats,
         'total_foss_page_views': total_foss_page_views['page_views__sum'],
         'events_stats': json_event_stats,

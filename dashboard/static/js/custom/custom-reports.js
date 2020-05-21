@@ -43,6 +43,8 @@ $(document).ready(function() {
             region_stats = JSON.parse(data.region_stats);
             city_stats = JSON.parse(data.city_stats);
             total_page_views = JSON.parse(data.total_page_views);
+            isp_stats = JSON.parse(data.isp_stats);
+            total_isp_page_views = JSON.parse(data.total_isp_page_views);
             foss_stats = JSON.parse(data.foss_stats);
             total_foss_page_views = JSON.parse(data.total_foss_page_views);
             events_stats = JSON.parse(data.events_stats);
@@ -52,6 +54,7 @@ $(document).ready(function() {
 
             var region_table = $("#region-table tbody");
             var city_table = $("#city-table tbody");
+            var isp_table = $('#isp-table tbody');
             var foss_table = $("#foss-table tbody");
             var events_table = $("#events-table tbody");
 
@@ -61,6 +64,10 @@ $(document).ready(function() {
 
             city_stats.forEach((key, value) => {
                 city_table.append("<tr><td>" + key.fields.city + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_page_views) * 100).toFixed(2) + "%</td></tr>");
+            });
+
+            isp_stats.forEach((key, value) => {
+                isp_table.append("<tr><td>" + key.fields.isp + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_isp_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_isp_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
 
             foss_stats.forEach((key, value) => {

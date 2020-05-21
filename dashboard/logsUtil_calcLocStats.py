@@ -1,5 +1,5 @@
 """
-This script takes logs from the dashboard_dailystats collection, calculates no of page loads from different locations.
+This script takes logs from the dashboard_log collection, calculates no of page loads from different locations.
 """
 import datetime
 from dashboard.models import Log, RegionStats, CityStats
