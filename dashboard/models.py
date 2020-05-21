@@ -256,3 +256,15 @@ class VisitorPath(models.Model):
         return "Visitor Path Model"
 
     objects = models.DjongoManager()
+
+
+class KeywordActivity(models.Model):
+    datetime = models.DateTimeField()
+    name = models.CharField(max_length=100)
+    search_query = models.CharField(max_length=300)
+    entry_page = models.CharField(max_length=300)
+
+    def __str__(self):
+        return "Keyword Activity Model"
+
+    objects = models.DjongoManager()

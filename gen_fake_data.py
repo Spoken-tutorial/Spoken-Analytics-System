@@ -12,7 +12,7 @@ import dateutil.parser
 from dateutil import tz
 from django_populate import Faker
 from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
-from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath
+from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity
 
 num_rows = 1000 # number of rows to insert
 
@@ -289,24 +289,34 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     return data
 
 # For VisitorPath Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+#         'city': lambda x: random.choice(cities),
+#         'region': lambda x: random.choice(states_uts),
+#         'country': 'India',
+#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
+#         'isp': lambda x: random.choice(isp),
+#         'visit_num':  lambda x: random.randint(1, 10),
+#         'screen_res': lambda x: random.choice(resolutions),
+#         'browser': lambda x: random.choice(browsers),
+#         'os': lambda x: random.choice(os),
+#         'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
+#     }
+#     return data
+
+# For KeywordActivity Model
 def randomData():
     data = {
         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'city': lambda x: random.choice(cities),
-        'region': lambda x: random.choice(states_uts),
-        'country': 'India',
-        'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-        'isp': lambda x: random.choice(isp),
-        'visit_num':  lambda x: random.randint(1, 10),
-        'screen_res': lambda x: random.choice(resolutions),
-        'browser': lambda x: random.choice(browsers),
-        'os': lambda x: random.choice(os),
-        'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
+        'name': lambda x: random.choice(['www.google.com', 'www.google.co.in', 'google.com']),
+        'search_query': '(Keywords Unavailable)',
+        'entry_page': lambda x: random.choice(paths)
     }
     return data
 
 # Adding data to populator object
-populator.addEntity(VisitorPath, num_rows, randomData())
+populator.addEntity(KeywordActivity, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()

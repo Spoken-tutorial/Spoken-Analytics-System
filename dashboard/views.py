@@ -12,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
-from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -386,3 +386,18 @@ def visitorPath(request):
     }
     
     return render(request, 'visitor_paths.html', context)
+
+def keywordActivity(request):
+    """
+    Renders the keyword activity page
+    """
+
+    # retriving data from database
+    obj = KeywordActivity.objects.all().order_by('-datetime')[0:25]
+
+    context = {
+        'keyword_activity': obj,
+    }
+    
+    return render(request, 'keyword_activity.html', context)
+

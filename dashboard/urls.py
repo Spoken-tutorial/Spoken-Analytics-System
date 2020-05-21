@@ -39,4 +39,6 @@ urlpatterns = [
     re_path('^visitor_activity/$', views.visitorActivity, name="visitor-activity"),
     # Serves visitor paths page
     re_path('^visitor_path/$', views.visitorPath, name="visitor-path"),
+    # Serves keyword activity page
+    re_path('^kayword_activity/$', views.keywordActivity, name="keyword-activity"),
 ]
