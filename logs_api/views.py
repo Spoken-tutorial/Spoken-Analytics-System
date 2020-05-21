@@ -4,17 +4,11 @@ import json
 import math
 
 from django.shortcuts import render
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .utils import update_tutorial_progress
 
-
-# configurations for redis
-redis_client = redis.Redis(
-    host = 'localhost',
-    port = 6379,
-    db = 0
-)
+from analytics_system import MONGO_CLIENT, REDIS_CLIENT
 
 @csrf_exempt
 def save_website_log (request):
@@ -46,17 +40,12 @@ def save_website_log (request):
         data['latitude'] = request.POST.get ('latitude')
         data['longitude'] = request.POST.get ('longitude')
         # enqueue job in the redis queue named 'tasks3'
-        redis_client.rpush('tasks3', json.dumps(data))
+        REDIS_CLIENT.rpush('tasks3', json.dumps(data))
 
     except Exception as e:
         print("Log Exception " + str(e))
     
     return HttpResponse(status=200)
-
-
-# Create and configure the pymongo client
-from pymongo import MongoClient
-MONGO_CLIENT = MongoClient()
 
 
 # TODO: don't let users make their own post requests to this view. Remove CSRF exempt
