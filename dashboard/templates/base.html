@@ -85,6 +85,11 @@
                         <a class="collapse-item" href="{% url 'download-activity' %}">Download Activity</a>
                         <a class="collapse-item" href="{% url 'exit-link-activity' %}">Exit Link Activity</a>
                         <a class="collapse-item" href="{% url 'visitor-map' %}">Visitor Map</a>
+                        <div id="ip-lookup-button" class="collapse-item" onclick="showIPInput()">Lookup IP Address</div>
+                        <form action="/magnify" id="ip-input" style="display: none;">
+                            <input class="form-control form-control-sm" name="ip" type="text" placeholder="eg. 203.0.210.54" style="width: 80%; margin-left: 23px;display: inline;" pattern="\s*\d{1,3}.\d{1,3}.(\d{1,3}|\*).(\d{1,3}|\*)\s*">
+                            <button class="fa fa-search" style="display: inline; margin-left: -32px; background: transparent; border: none;" type="submit"></button>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -363,6 +368,12 @@
                 }
             })
         });
+
+
+        function showIPInput() {
+            $('#ip-lookup-button').hide();
+            $('#ip-input').show().select();
+        }
     </script>
 
     {% block custom_js %} {% endblock %}
