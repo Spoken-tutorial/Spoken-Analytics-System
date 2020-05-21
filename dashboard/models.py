@@ -302,3 +302,44 @@ class ISPStats(models.Model):
         return "ISP Stats"
 
     objects = models.DjongoManager()
+
+class BrowserStats(models.Model):
+    datetime = models.DateTimeField()
+    browser_type = models.CharField(max_length=100) # Mobile, Chrome, Firefox, Edge, etc
+    name = models.CharField(max_length=100) # Samsung Internet 11.2, Opera 44.1, Chrome for Android, etc
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Browser Stats"
+
+    objects = models.DjongoManager()
+
+class PlatformStats(models.Model):
+    datetime = models.DateTimeField()
+    platform = models.CharField(max_length=100) # PC, Mobile, Tablet, etc
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Platform Stats"
+
+    objects = models.DjongoManager()
+
+class ScreenStats(models.Model):
+    datetime = models.DateTimeField()
+    resolution = models.CharField(max_length=100) # 1280x720, 1280x768, etc
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Screen Stats"
+
+    objects = models.DjongoManager()
+
+class OSStats(models.Model):
+    datetime = models.DateTimeField()
+    os = models.CharField(max_length=100) # Android, IOS, Windows 10, Linux, etc
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "OS Stats"
+
+    objects = models.DjongoManager()

@@ -132,6 +132,96 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">System</h6>
+                </div>
+                <div class="card-body" style="padding: 0px; height:28em">
+                    <div class="tile-3" id="tile-3">
+                        <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <div class="slider"></div>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="browser-tab" data-toggle="tab" href="#browser" role="tab" aria-controls="browser" aria-selected="true">Browser</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="platform-tab" data-toggle="tab" href="#platform" role="tab" aria-controls="platform" aria-selected="false">Platform</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="screen-tab" data-toggle="tab" href="#screen" role="tab" aria-controls="screen" aria-selected="true">Screen</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="os-tab" data-toggle="tab" href="#os" role="tab" aria-controls="os" aria-selected="true">OS</a>
+                            </li>
+                        </ul>
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="browser" role="tabpanel" aria-labelledby="browser-tab">
+                                <div>
+                                    <table class="table" id="browser-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="platform" role="tabpanel" aria-labelledby="platform-tab">
+                                <div>
+                                    <table class="table" id="platform-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="screen" role="tabpanel" aria-labelledby="screen-tab">
+                                <div>
+                                    <table class="table" id="screen-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="os" role="tabpanel" aria-labelledby="os-tab">
+                                <div>
+                                    <table class="table" id="os-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'location-report' %}">
+                        <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
 </div>
 <!-- /.container-fluid -->
 

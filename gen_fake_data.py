@@ -13,6 +13,7 @@ from dateutil import tz
 from django_populate import Faker
 from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
 from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo, ISPStats
+from dashboard.models import BrowserStats, PlatformStats, ScreenStats, OSStats
 
 num_rows = 1000 # number of rows to insert
 
@@ -336,15 +337,26 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     return data
 
 # For ISPStats Model
+# def randomData():
+#     data = {
+#         'isp': lambda x: random.choice(isp),
+#         'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
+#     }
+#     return data
+
+# For BrowserStats Model
 def randomData():
     data = {
-        'isp': lambda x: random.choice(isp),
-        'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+        'browser_type': lambda x: random.choice(['Mobile Browsers', 'Chrome', 'Firefox', 'Edge', 'Opera', 'Other']),
+        'name': lambda x: random.choice(browsers),
+        'page_views': lambda x: random.randint(0, 1000),
     }
     return data
 
+
 # Adding data to populator object
-populator.addEntity(ISPStats, 1, randomData())
+populator.addEntity(BrowserStats, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
