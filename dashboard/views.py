@@ -13,7 +13,7 @@ from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
 from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
-from .models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats
+from .models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -203,8 +203,7 @@ def getReportsStats(request):
     
     sources_stats = SourcesStats.objects.aggregate(Sum('referrer_page_views'),Sum('search_page_views'),Sum('direct_page_views'))
     came_from_stats = CameFromStats.objects.values('referrer').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
-
-    print
+    exit_link_stats = ExitLinkStats.objects.values('exit_link').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     # total page views (needed to find percentage of page views)
     total_page_views = Log.objects.all().count()
@@ -224,7 +223,9 @@ def getReportsStats(request):
     json_browser_stats = json.dumps(list(browser_stats), cls=DjangoJSONEncoder)
     json_platform_stats = json.dumps(list(platform_stats), cls=DjangoJSONEncoder)
     json_os_stats = json.dumps(list(os_stats), cls=DjangoJSONEncoder)
+
     json_came_from_stats = json.dumps(list(came_from_stats), cls=DjangoJSONEncoder)
+    json_exit_link_stats = json.dumps(list(exit_link_stats), cls=DjangoJSONEncoder)
 
     json_res = {
         'region_stats': json_region_stats,
@@ -245,6 +246,7 @@ def getReportsStats(request):
 
         'sources_stats': sources_stats,
         'came_from_stats': json_came_from_stats,
+        'exit_link_stats': json_exit_link_stats,
     }
 
     return JsonResponse(json_res, safe=False) # sending data

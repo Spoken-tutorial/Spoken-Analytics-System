@@ -74,6 +74,7 @@ config = {
             backgroundColor: "rgb(255,255,255)",
             bodyFontColor: "#858796",
             borderColor: '#dddfeb',
+            titleFontColor: '#000',
             borderWidth: 1,
             xPadding: 15,
             yPadding: 15,
@@ -88,7 +89,10 @@ config = {
                     var percentage = parseFloat((currentValue / total * 100).toFixed(1));
                     return ' (' + percentage + '%)';
                 },
-            }
+                title: function(tooltipItem, data) {
+                    return data.labels[tooltipItem[0].index];
+                },
+            },
         },
         legend: {
             display: true
@@ -181,6 +185,7 @@ $(document).ready(function() {
 
             sources_stats = data.sources_stats;
             came_from_stats = JSON.parse(data.came_from_stats);
+            exit_link_stats = JSON.parse(data.exit_link_stats);
 
             var region_table = $("#region-table tbody");
             var city_table = $("#city-table tbody");
@@ -193,6 +198,7 @@ $(document).ready(function() {
             var os_table = $('#os-table tbody');
 
             var came_from_table = $('#came-from-table tbody');
+            var exit_link_table = $('#exit-link-table tbody')
 
             region_stats.forEach((key, value) => {
                 region_table.append("<tr><td>" + key.fields.region + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_page_views) * 100).toFixed(2) + "%</td></tr>");
@@ -229,6 +235,11 @@ $(document).ready(function() {
             came_from_stats.forEach((key, value) => {
                 came_from_table.append("<tr><td>" + key.referrer.trunc(50) + "<td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
             });
+
+            exit_link_stats.forEach((key, value) => {
+                exit_link_table.append("<tr><td>" + key.exit_link.trunc(50) + "<td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
+            });
+
 
             // Change pie chart dataset
             config.data.datasets[0].data = [parseInt(sources_stats.referrer_page_views__sum), parseInt(sources_stats.search_page_views__sum), parseInt(sources_stats.direct_page_views__sum)];

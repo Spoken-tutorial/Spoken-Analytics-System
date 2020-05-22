@@ -344,3 +344,14 @@ class CameFromStats(models.Model):
         return "Came From Stats Model"
 
     objects = models.DjongoManager()
+
+
+class ExitLinkStats(models.Model):
+    datetime = models.DateTimeField()
+    exit_link = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Exit Link Stats Model"
+
+    objects = models.DjongoManager()
