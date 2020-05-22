@@ -293,16 +293,6 @@ class VisitorInfo(models.Model):
 
     objects = models.DjongoManager()
 
-
-class ISPStats(models.Model):
-    isp = models.CharField(max_length=100)
-    page_views = models.IntegerField()
-
-    def __str__(self):
-        return "ISP Stats"
-
-    objects = models.DjongoManager()
-
 class BrowserStats(models.Model):
     datetime = models.DateTimeField()
     browser_type = models.CharField(max_length=100) # Mobile, Chrome, Firefox, Edge, etc
@@ -316,21 +306,11 @@ class BrowserStats(models.Model):
 
 class PlatformStats(models.Model):
     datetime = models.DateTimeField()
-    platform = models.CharField(max_length=100) # PC, Mobile, Tablet, etc
+    platform = models.CharField(max_length=100) # Desktop, Mobile, Tablet, etc
     page_views = models.IntegerField()
 
     def __str__(self):
         return "Platform Stats"
-
-    objects = models.DjongoManager()
-
-class ScreenStats(models.Model):
-    datetime = models.DateTimeField()
-    resolution = models.CharField(max_length=100) # 1280x720, 1280x768, etc
-    page_views = models.IntegerField()
-
-    def __str__(self):
-        return "Screen Stats"
 
     objects = models.DjongoManager()
 
