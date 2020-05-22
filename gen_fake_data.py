@@ -12,8 +12,8 @@ import dateutil.parser
 from dateutil import tz
 from django_populate import Faker
 from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
-from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo, ISPStats
-from dashboard.models import BrowserStats, PlatformStats, ScreenStats, OSStats
+from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
+from dashboard.models import BrowserStats, PlatformStats, OSStats
 
 num_rows = 1000 # number of rows to insert
 
@@ -345,18 +345,27 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     return data
 
 # For BrowserStats Model
+# def randomData():
+    # data = {
+    #     'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+    #     'browser_type': lambda x: random.choice(['Mobile Browsers', 'Chrome', 'Firefox', 'Edge', 'Opera', 'Other']),
+    #     'name': lambda x: random.choice(browsers),
+    #     'page_views': lambda x: random.randint(0, 1000),
+    # }
+    # return data
+
+# For PlatformStats Model
 def randomData():
     data = {
         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'browser_type': lambda x: random.choice(['Mobile Browsers', 'Chrome', 'Firefox', 'Edge', 'Opera', 'Other']),
-        'name': lambda x: random.choice(browsers),
-        'page_views': lambda x: random.randint(0, 1000),
+        'platform': lambda x: random.choice(['Desktop', 'Mobile', 'Tablet']),
+        'page_views': lambda x: random.randint(1, 1000),
     }
     return data
 
 
 # Adding data to populator object
-populator.addEntity(BrowserStats, num_rows, randomData())
+populator.addEntity(PlatformStats, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
