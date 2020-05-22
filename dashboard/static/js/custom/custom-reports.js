@@ -68,6 +68,8 @@ $(document).ready(function() {
             total_browser_page_views = JSON.parse(data.total_browser_page_views);
             platform_stats = JSON.parse(data.platform_stats);
             total_platform_page_views = JSON.parse(data.total_platform_page_views);
+            os_stats = JSON.parse(data.os_stats);
+            total_os_page_views = JSON.parse(data.total_os_page_views);
 
             var region_table = $("#region-table tbody");
             var city_table = $("#city-table tbody");
@@ -77,6 +79,7 @@ $(document).ready(function() {
 
             var browser_table = $('#browser-table tbody');
             var platform_table = $('#platform-table tbody');
+            var os_table = $('#os-table tbody');
 
             region_stats.forEach((key, value) => {
                 region_table.append("<tr><td>" + key.fields.region + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_page_views) * 100).toFixed(2) + "%</td></tr>");
@@ -104,6 +107,10 @@ $(document).ready(function() {
 
             platform_stats.forEach((key, value) => {
                 platform_table.append("<tr><td>" + key.platform + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_platform_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_platform_page_views) * 100).toFixed(2) + "%</td></tr>");
+            });
+
+            os_stats.forEach((key, value) => {
+                os_table.append("<tr><td>" + key.os + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_os_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_os_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
         },
         error: function(err) {

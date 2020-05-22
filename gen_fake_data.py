@@ -355,17 +355,26 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
     # return data
 
 # For PlatformStats Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+#         'platform': lambda x: random.choice(['Desktop', 'Mobile', 'Tablet']),
+#         'page_views': lambda x: random.randint(1, 1000),
+#     }
+#     return data
+
+# For OSStats Model
 def randomData():
     data = {
         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'platform': lambda x: random.choice(['Desktop', 'Mobile', 'Tablet']),
+        'os': lambda x: random.choice(['Android', 'iOS', 'Win10', 'Win7', 'Win8.1', 'OSX']),
         'page_views': lambda x: random.randint(1, 1000),
     }
     return data
 
 
 # Adding data to populator object
-populator.addEntity(PlatformStats, num_rows, randomData())
+populator.addEntity(OSStats, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()

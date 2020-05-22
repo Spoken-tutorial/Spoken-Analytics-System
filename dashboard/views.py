@@ -199,6 +199,7 @@ def getReportsStats(request):
 
     browser_stats = BrowserStats.objects.values('browser_type').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    os_stats = OSStats.objects.values('os').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     # total page views (needed to find percentage of page views)
     total_page_views = Log.objects.all().count()
@@ -206,6 +207,7 @@ def getReportsStats(request):
     total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
     total_browser_page_views = BrowserStats.objects.aggregate(Sum('page_views'))
     total_platform_page_views = PlatformStats.objects.aggregate(Sum('page_views'))
+    total_os_page_views = OSStats.objects.aggregate(Sum('page_views'))
 
     # Converting data to json format
     json_region_stats = serializers.serialize('json', region_stats)
@@ -216,6 +218,7 @@ def getReportsStats(request):
 
     json_browser_stats = json.dumps(list(browser_stats), cls=DjangoJSONEncoder)
     json_platform_stats = json.dumps(list(platform_stats), cls=DjangoJSONEncoder)
+    json_os_stats = json.dumps(list(os_stats), cls=DjangoJSONEncoder)
 
     json_res = {
         'region_stats': json_region_stats,
@@ -230,7 +233,9 @@ def getReportsStats(request):
         'browser_stats': json_browser_stats,
         'total_browser_page_views': total_browser_page_views['page_views__sum'],
         'platform_stats': json_platform_stats,
-        'total_platform_page_views': total_platform_page_views['page_views__sum']
+        'total_platform_page_views': total_platform_page_views['page_views__sum'],
+        'os_stats': json_os_stats,
+        'total_os_page_views': total_os_page_views['page_views__sum'],
     }
 
     return JsonResponse(json_res, safe=False) # sending data
