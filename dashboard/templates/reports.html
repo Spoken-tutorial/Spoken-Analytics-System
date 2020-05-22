@@ -1,11 +1,12 @@
 {% extends 'base.html' %} {% load static %} {% block title %}
 <title>Reports</title>
-{% endblock %} {% block content %}
+{% block custom_css %}
+<link href="{% static 'css/custom/custom-reports.css' %}" rel="stylesheet"> {% endblock %} {% endblock %} {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Reports</h1>
+        <h1 class="h3 mb-0 text-primary">Reports</h1>
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -13,320 +14,218 @@
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Traffic from locations</h6>
                 </div>
-                <div class="card-body">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="location-state" data-toggle="tab" href="#state" role="tab" aria-controls="home" aria-selected="true">State</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="location-city" data-toggle="tab" href="#city" role="tab" aria-controls="profile" aria-selected="false">City</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="state" role="tabpanel" aria-labelledby="home-tab">
-                            <div style="padding: 1em;">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Maharashtra
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 44.3%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Tamil Nadu
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 33%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Gujrat
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 30%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        West Bengal
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Andhra Pradesh
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Karnatka
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Madhya Pradesh
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Goa
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Haryana
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Uttar Pradesh
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
+                <div class="card-body" style="padding: 0px; height:28em">
+                    <div class="tile-1" id="tile-1">
+                        <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <div class="slider"></div>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="regions-tab" data-toggle="tab" href="#regions" role="tab" aria-controls="home" aria-selected="true">State/Region</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="cities-tab" data-toggle="tab" href="#cities" role="tab" aria-controls="profile" aria-selected="false">City</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="isp-tab" data-toggle="tab" href="#isp" role="tab" aria-controls="isp" aria-selected="true">ISP</a>
+                            </li>
+                        </ul>
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="regions" role="tabpanel" aria-labelledby="home-tab">
+                                <div>
+                                    <table class="table" id="region-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade" id="city" role="tabpanel" aria-labelledby="profile-tab">
-                            <div style="padding: 1em;">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Pune
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 44.3%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
+                            <div class="tab-pane fade" id="cities" role="tabpanel" aria-labelledby="profile-tab">
+                                <div>
+                                    <table class="table" id="city-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Chennai
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 33%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Mumbai
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 30%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Kolkata
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Hydrabad
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Bengluru
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Coimbatore
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Assagao
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Navi Mumbai
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        Nagpur
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="progress progress-sm mb-2" style="margin-top: 0.7em;">
-                                            <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="44.3" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        44.3%
-                                    </div>
+                            </div>
+                            <div class="tab-pane fade" id="isp" role="tabpanel" aria-labelledby="profile-tab">
+                                <div>
+                                    <table class="table" id="isp-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'location-report' %}">
+                        <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
+                    </a>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Traffic on Foss</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Traffic on Foss and Pages</h6>
                 </div>
-                <div class="card-body">
-
+                <div class="card-body" style="padding: 0px; height:28em">
+                    <div class="tile-2" id="tile-2">
+                        <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <div class="slider"></div>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#foss" role="tab" aria-controls="home" aria-selected="true">Foss</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#events" role="tab" aria-controls="profile" aria-selected="false">Pages</a>
+                            </li>
+                        </ul>
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="foss" role="tabpanel" aria-labelledby="home-tab">
+                                <div>
+                                    <table class="table" id="foss-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="profile-tab">
+                                <div>
+                                    <table class="table" id="events-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">System</h6>
+                </div>
+                <div class="card-body" style="padding: 0px; height:28em">
+                    <div class="tile-3" id="tile-3">
+                        <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <div class="slider"></div>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="browser-tab" data-toggle="tab" href="#browser" role="tab" aria-controls="browser" aria-selected="true">Browser</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="platform-tab" data-toggle="tab" href="#platform" role="tab" aria-controls="platform" aria-selected="false">Platform</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="screen-tab" data-toggle="tab" href="#screen" role="tab" aria-controls="screen" aria-selected="true">Screen</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="os-tab" data-toggle="tab" href="#os" role="tab" aria-controls="os" aria-selected="true">OS</a>
+                            </li>
+                        </ul>
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="browser" role="tabpanel" aria-labelledby="browser-tab">
+                                <div>
+                                    <table class="table" id="browser-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="platform" role="tabpanel" aria-labelledby="platform-tab">
+                                <div>
+                                    <table class="table" id="platform-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="screen" role="tabpanel" aria-labelledby="screen-tab">
+                                <div>
+                                    <table class="table" id="screen-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="os" role="tabpanel" aria-labelledby="os-tab">
+                                <div>
+                                    <table class="table" id="os-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 30%;">
+                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 10%;">
+                                        </colgroup>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'location-report' %}">
+                        <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
         </div>
     </div>
 </div>
 <!-- /.container-fluid -->
 
+
 {% endblock %} {% block custom_js %}
-<script src="{% static 'js/demo/custom-reports.js' %}"></script>
+<script src="{% static 'js/custom/custom-reports.js' %}"></script>
 {% endblock %}

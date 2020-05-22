@@ -11,8 +11,10 @@ Terms:
 """
 import datetime
 from dashboard.models import Log, YearlyStats
+from pytz import timezone
+from django.conf import settings
 
-print(datetime.datetime.now())
+tz = timezone(settings.TIME_ZONE)
 
 years = [] # Stores all years for which data is present
 
@@ -33,6 +35,10 @@ for year in years:
     current_year_min_time = datetime.datetime.combine(current_year_start, datetime.time.min)
     current_year_max_time = datetime.datetime.combine(current_year_end, datetime.time.max)
     
+    # make datetimes timezone aware
+    current_year_min_time = tz.localize(current_year_min_time)
+    current_year_max_time = tz.localize(current_year_max_time)
+
     monthly_logs = Log.objects.filter(datetime__range=(current_year_min_time, current_year_max_time)).order_by('datetime') # Getting data of the date from log collection
 
     unique_visitors = [] # Stores unique ip addresses

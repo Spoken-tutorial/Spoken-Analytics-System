@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djgeojson',
+    'leaflet',
+    'mathfilters',
     'dashboard',
     'corsheaders',
     'logs_api',
@@ -151,3 +154,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 SAVE_LOGS_WITH_CELERY = True
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (20.5937, 78.9629),
+    'DEFAULT_ZOOM': 4,
+}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>Location Report</title>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Reports > Location</h1>
+        <select id="location-select" class="custom-select form-control-sm" style="width: 10em">
+            <option value="region" selected>State/Region</option>
+            <option value="city">City</option>
+        </select>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive" id="region-table">
+                <table class="table table-bordered display no-wrap" id="region-report-table" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col span="1" style="width: 30%;">
+                        <col span="1" style="width: 30%;">
+                        <col span="1" style="width: 40%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>State/Region</th>
+                            <th>Page Views</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in region_stats %}
+                        <tr>
+                            <td>{{ stat.region }} </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.5em;">
+                                            <div class="progress-bar " role="progressbar " style="width: {{ stat.percentage }}% " aria-valuemin="0 " aria-valuemax="10 "></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ stat.percentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" id="city-table" style="display: none;">
+                <table class="table table-bordered display no-wrap" id="city-report-table" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col span="1" style="width: 30%;">
+                        <col span="1" style="width: 30%;">
+                        <col span="1" style="width: 40%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>Page Views</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in city_stats %}
+                        <tr>
+                            <td>{{ stat.city }} </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.5em;">
+                                            <div class="progress-bar " role="progressbar " style="width: {{ stat.percentage }}% " aria-valuemin="0 " aria-valuemax="10 "></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ stat.percentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-location-report.js' %} "></script>
+{% endblock %}

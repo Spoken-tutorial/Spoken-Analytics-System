@@ -12,8 +12,10 @@ Terms:
 import datetime
 from dashboard.models import Log, MonthlyStats
 from calendar import monthrange
+from pytz import timezone
+from django.conf import settings
 
-print(datetime.datetime.now())
+tz = timezone(settings.TIME_ZONE)
 
 months = [] # Stores all months for which data is present
 
@@ -34,6 +36,10 @@ for month in months:
 
     current_month_min_time = datetime.datetime.combine(current_month_start, datetime.time.min)
     current_month_max_time = datetime.datetime.combine(current_month_end, datetime.time.max)
+
+    # make datetimes timezone aware
+    current_month_min_time = tz.localize(current_month_min_time)
+    current_month_max_time = tz.localize(current_month_max_time)
     
     monthly_logs = Log.objects.filter(datetime__range=(current_month_min_time, current_month_max_time)).order_by('datetime') # Getting data of the date from log collection
 
@@ -80,5 +86,3 @@ for month in months:
     monthly_stats.unique_visitors = len(unique_visitors)
     
     monthly_stats.save() # saving the calculations to database
-
-print(datetime.datetime.now())

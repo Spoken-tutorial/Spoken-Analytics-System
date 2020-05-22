@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-    <!-- Your custom styles (optional) -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <!-- Custom styles for this page -->
     <link href="{% static 'vendor/datatables/datatables.bootstrap4.min.css' %}" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% block custom_css %} {% endblock %}
 
 </head>
 
@@ -46,7 +46,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'index' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
@@ -55,11 +55,18 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Nav Item - Charts -->
+            <!-- Nav Item - Events -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'events' %}">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-folder"></i>
                     <span>Pages</span></a>
+            </li>
+
+            <!-- Nav Item - Foss -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'foss' %}">
+                    <i class="fas fa-fw fa-video"></i>
+                    <span>Foss</span></a>
             </li>
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -70,18 +77,23 @@
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#">Visitor Activity</a>
-                        <a class="collapse-item" href="#">Visitor Paths</a>
-                        <a class="collapse-item" href="#">Page View Activity</a>
-                        <a class="collapse-item" href="#">Keyword Activity</a>
-                        <a class="collapse-item" href="#">Came From Activity</a>
-                        <a class="collapse-item" href="#">Download Activity</a>
-                        <a class="collapse-item" href="#">Exit Link Activity</a>
-                        <a class="collapse-item" href="#">Visitor Map</a>
+                        <a class="collapse-item" href="{% url 'visitor-activity' %}">Visitor Activity</a>
+                        <a class="collapse-item" href="{% url 'visitor-path' %}">Visitor Paths</a>
+                        <a class="collapse-item" href="{% url 'page-view-activity' %}">Page View Activity</a>
+                        <a class="collapse-item" href="{% url 'keyword-activity' %}">Keyword Activity</a>
+                        <a class="collapse-item" href="{% url 'came-from-activity' %}">Came From Activity</a>
+                        <a class="collapse-item" href="{% url 'download-activity' %}">Download Activity</a>
+                        <a class="collapse-item" href="{% url 'exit-link-activity' %}">Exit Link Activity</a>
+                        <a class="collapse-item" href="{% url 'visitor-map' %}">Visitor Map</a>
+                        <div id="ip-lookup-button" class="collapse-item" onclick="showIPInput()">Lookup IP Address</div>
+                        <form action="{% url 'magnify' %}" method="GET" id="ip-input" style="display: none;">
+                            <input class="form-control form-control-sm" name="ip" type="text" placeholder="eg. 203.0.210.54" style="width: 80%; margin-left: 23px;display: inline;" pattern="\s*\d{1,3}.\d{1,3}.(\d{1,3}|\*).(\d{1,3}|\*)\s*">
+                            <button class="fa fa-search" style="display: inline; margin-left: -32px; background: transparent; border: none;" type="submit"></button>
+                        </form>
                     </div>
                 </div>
             </li>
-            <!-- Nav Item - Tables -->
+            <!-- Nav Item - Reports -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'reports' %}">
                     <i class="fas fa-fw fa-table"></i>
@@ -111,7 +123,7 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
-                    <h2>Spoken Analytics</h2>
+                    <h2 class="font-weight-bold text-primary text-uppercase" style="margin-bottom: 0;">Spoken Analytics</h2>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -120,7 +132,7 @@
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-search fa-fw"></i>
-                            </a>
+                            </a>margin-bottom: 0;
                             <!-- Dropdown - Messages -->
                             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                                 <form class="form-inline mr-auto w-100 navbar-search">
@@ -137,13 +149,11 @@
                         </li>
 
                         <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        <!-- <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
                                 <span class="badge badge-danger badge-counter">3+</span>
                             </a>
-                            <!-- Dropdown - Alerts -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                                 <h6 class="dropdown-header">
                                     Alerts Center
@@ -183,16 +193,14 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
                             </div>
-                        </li>
+                        </li> -->
 
                         <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
+                        <!-- <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">7</span>
                             </a>
-                            <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
                                 <h6 class="dropdown-header">
                                     Message Center
@@ -240,18 +248,18 @@
                                 </a>
                                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
                             </div>
-                        </li>
+                        </li> -->
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
-                                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                            <a class="nav-link dropdown-toggle" href=Summary Stats "#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Login</span>
+                                <!-- <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60"> -->
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                            <!-- <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profile
                                 </a>
@@ -265,7 +273,7 @@
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
                                 </a>
-                            </div>
+                            </div> -->
                         </li>
 
                     </ul>
@@ -281,7 +289,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2019</span>
+                        <span>Copyright &copy; Spoken Tutorials 2020</span>
                     </div>
                 </div>
             </footer>
@@ -328,7 +336,7 @@
     <script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="{% static '/js/sb-admin-2.min.js' %}"></script>
+    <script src="{% static '/js/sb-admin-2.js' %}"></script>
 
     <!-- Required for chart.js -->
     <script src="{% static '/vendor/moment/moment.js' %}"></script>>
@@ -348,8 +356,25 @@
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 
-    <!-- Page level custom scripts -->
-    <!-- <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script> -->
+    <script>
+        // Function to make nav-link active
+        $(function() {
+            var current = location.pathname;
+            $('li a').each(function() {
+                var $this = $(this);
+                // if the current path is like this link, make it active
+                if ($this.attr('href') == current) {
+                    $this.parent().addClass('active');
+                }
+            })
+        });
+
+
+        function showIPInput() {
+            $('#ip-lookup-button').hide();
+            $('#ip-input').show().select();
+        }
+    </script>
 
     {% block custom_js %} {% endblock %}
 

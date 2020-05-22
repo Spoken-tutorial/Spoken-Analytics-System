@@ -1,4 +1,4 @@
-// JS for Event Analysis Page
+// JS for Event Page
 
 // Array to store data of data table
 var data_table_array = []
@@ -8,8 +8,9 @@ var eventsDataTable = $('#events-data-table').DataTable({
     searching: false,
     scrollX: false,
     columns: [
-        { "width": "75%" },
-        { "width": "25%" },
+        { "width": "65%" },
+        { "width": "15%" },
+        { "width": "20%" },
     ],
     order: [
         [1, 'desc']
@@ -25,6 +26,8 @@ $(document).ready(function() {
 
     $('#event-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
     $('#event-to-date').val(moment().toISOString().substr(0, 10));
+
+    getEventsData();
 
 });
 
@@ -57,9 +60,12 @@ function getEventsData() {
             data.forEach((key, value) => {
                 data_table_array.push([
                     '<span class="text-primary text-uppercase">' + key.event_name + '</span>' + '<br>' + key.path_info,
-                    key.unique_visits + '<br><a class="text-primary link" href="/dashboard/event_analysis/' + key.event_name + '"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>',
+                    key.unique_visits,
+                    '<a class="text-primary link" href="/dashboard/event_analysis/' + key.event_name + '"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>',
                 ])
             });
+
+            console.log(data_table_array);
 
             // Clearing the DataTable and adding rows with new data
             eventsDataTable.clear().rows.add(data_table_array).draw();

@@ -1,0 +1,15 @@
+.table-bordered td {
+    border: none;
+    border-top: 1px solid #dee2e6;
+}
+
+dt {
+    float: left;
+    /* padding-right: 6em; */
+}
+
+dd {
+    padding-left: 10em;
+    min-width: 14em;
+    margin-bottom: 0px;
+}

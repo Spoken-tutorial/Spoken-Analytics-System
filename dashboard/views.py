@@ -1,15 +1,22 @@
 import json
 
+from django.conf import settings
 from django.db import connections
 from bson.json_util import dumps
 from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import datetime, timedelta
-from django.utils.timezone import get_current_timezone
+from pytz import timezone
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
-from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats, EventStats, FossStats
+from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo, ISPStats
+from .models import BrowserStats, PlatformStats, ScreenStats, OSStats
+
+# get current timezone 
+tz = timezone(settings.TIME_ZONE)
 
 # Create your views here.
 def index(request):
@@ -61,6 +68,10 @@ def graphData(request):
         from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
         to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+
     # extracting data on basis of granuality (weekly, monthly, etc)
     if data_summary_type == 'daily':
         
@@ -97,7 +108,11 @@ def events(request):
     """
 
     today = datetime.today()
-    day_before = today - timedelta(days=1)
+    day_before = today - timedelta(days=2)
+
+    # make datetimes timezone aware
+    today = tz.localize(today)
+    day_before = tz.localize(day_before)
 
     # getting event stats of 4 days ago
     # you can choose any day but difference must be of 1 day
@@ -118,9 +133,13 @@ def eventsData(request):
 
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
-
+    
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+    
     # getting events stats from database
-    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
+    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
 
     # Converting data to json object
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
@@ -148,6 +167,10 @@ def eventAnalysisGraphData(request):
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+
     # getting events stats from database
     event_stats = EventStats.objects.filter(event_name=event_name).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
 
@@ -162,13 +185,67 @@ def reports(request):
     """
     return render(request, 'reports.html')
 
+def getReportsStats(request):
+    """
+    Suppy data to reports page
+    """
+
+    # Getting data from various tables
+    region_stats = RegionStats.objects.all().order_by('-page_views')[0:10]
+    city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
+    isp_stats = ISPStats.objects.all().order_by('-page_views')[0:10]
+
+    foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    events_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+
+    browser_stats = BrowserStats.objects.values('browser_type').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+
+    # total page views (needed to find percentage of page views)
+    total_page_views = Log.objects.all().count()
+    total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))
+    total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
+    total_isp_page_views = ISPStats.objects.aggregate(Sum('page_views'))
+    total_browser_page_views = BrowserStats.objects.aggregate(Sum('page_views'))
+
+    # Converting data to json format
+    json_region_stats = serializers.serialize('json', region_stats)
+    json_city_stats = serializers.serialize('json', city_stats)
+    json_isp_stats = serializers.serialize('json', isp_stats)
+
+    json_foss_stats = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
+    json_event_stats = json.dumps(list(events_stats), cls=DjangoJSONEncoder)
+
+    json_browser_stats = json.dumps(list(browser_stats), cls=DjangoJSONEncoder)
+
+    json_res = {
+        'region_stats': json_region_stats,
+        'city_stats': json_city_stats,  
+        'total_page_views': total_page_views,
+        'isp_stats': json_isp_stats,
+        'total_isp_page_views': total_isp_page_views['page_views__sum'],
+
+        'foss_stats': json_foss_stats,
+        'total_foss_page_views': total_foss_page_views['page_views__sum'],
+        'events_stats': json_event_stats,
+        'total_events_page_views': total_events_page_views['page_views__sum'],
+
+        'browser_stats': json_browser_stats,
+        'total_browser_page_views': total_browser_page_views['page_views__sum'],
+    }
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 def foss(request):
     """
     Renders the foss page
     """
 
     today = datetime.today()
-    day_before = today - timedelta(days=1)
+    day_before = today - timedelta(days=2)
+    
+    # make datetimes timezone aware
+    today = tz.localize(today)
+    day_before = tz.localize(day_before)
 
     # getting foss stats of 1 day
     foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
@@ -190,6 +267,10 @@ def fossData(request):
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
+    # make datetimes timezone aware
+    from_date = tz.localize(from_date)
+    to_date = tz.localize(to_date)
+
     # getting foss stats from database
     foss_stats = FossStats.objects.filter(date__range=(from_date, to_date)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
 
@@ -197,3 +278,169 @@ def fossData(request):
     json_res = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
 
     return JsonResponse(json_res, safe=False) # sending data
+
+def locationReport(request):
+    """
+    Renders the location stats page
+    """
+    # Getting data from various tables
+    region_stats = RegionStats.objects.all().order_by('-page_views')
+    city_stats = CityStats.objects.all().order_by('-page_views')
+
+    total_page_views = Log.objects.all().count()
+
+    # variables to store stats
+    r_stats = []
+    c_stats = []
+
+    # Preparing data to be sent to template
+    for stat in region_stats:
+        r_stats.append({'region' : stat.region, 'page_views': int(stat.page_views), 'percentage': round((stat.page_views/total_page_views) * 100, 2)})
+    
+    for stat in city_stats:
+        c_stats.append({'city' : stat.city, 'page_views': int(stat.page_views), 'percentage': round((stat.page_views/total_page_views) * 100, 2)})
+
+    context = {
+        'region_stats': r_stats,
+        'city_stats': c_stats
+    }
+
+    return render(request, 'location_report.html', context)
+
+def cameFromActivity(request):
+    """
+    Renders the came from activity page
+    """
+
+    # retrieving data from database
+    obj = CameFromActivity.objects.all().order_by('-datetime')[0:150]
+
+    context = {
+        'came_from_activity': obj
+    }
+    
+    return render(request, 'came_from_activity.html', context)
+
+def downloadActivity(request):
+    """
+    Renders the download activity page
+    """
+
+    # retrieving data from database
+    obj = DownloadActivity.objects.all().order_by('-datetime')[0:150]
+
+    context = {
+        'download_activity': obj
+    }
+    
+    return render(request, 'download_activity.html', context)
+
+def exitLinkActivity(request):
+    """
+    Renders the exit link activity page
+    """
+
+    # retrieving data from database
+    obj = ExitLinkActivity.objects.all().order_by('-datetime')[0:150]
+
+    context = {
+        'exit_link_activity': obj
+    }
+    
+    return render(request, 'exit_link_activity.html', context)
+
+def visitorMap(request):
+    """
+    Renders the visitor map page
+    """
+
+    # retriving data from database
+    obj = VisitorSpot.objects.all().order_by('-datetime')[0:10]
+
+    context = {
+        'visitor_spots': obj,
+    }
+    
+    return render(request, 'visitor_map.html', context)
+
+def pageViewActivity(request):
+    """
+    Renders the page view activity page
+    """
+
+    # retriving data from database
+    obj = PageViewActivity.objects.all().order_by('-datetime')[0:25]
+
+    context = {
+        'page_view_activity': obj,
+    }
+    
+    return render(request, 'page_view_activity.html', context)
+
+def visitorActivity(request):
+    """
+    Renders the visitor activity page
+    """
+
+    # retriving data from database
+    obj = VisitorActivity.objects.all().order_by('-latest_page_view')[0:25]
+
+    context = {
+        'visitor_activity': obj,
+    }
+    
+    return render(request, 'visitor_activity.html', context)
+
+def visitorPath(request):
+    """
+    Renders the visitor paths page
+    """
+
+    # retriving data from database
+    obj = VisitorPath.objects.all().order_by('-datetime')[0:25]
+
+    context = {
+        'visitor_path': obj,
+    }
+    
+    return render(request, 'visitor_paths.html', context)
+
+def keywordActivity(request):
+    """
+    Renders the keyword activity page
+    """
+
+    # retriving data from database
+    obj = KeywordActivity.objects.all().order_by('-datetime')[0:25]
+
+    context = {
+        'keyword_activity': obj,
+    }
+    
+    return render(request, 'keyword_activity.html', context)
+
+def magnify(request):
+    """
+    Renders the magnify page
+    """
+
+    # Gettign IP address from request object
+    ip = request.GET.get('ip', '')
+
+    # If ip address was provided find its info else set it to "unavailabel"
+    if ip == '':
+        visitor_info = "unavailable"
+    else:
+        visitor_info = VisitorInfo.objects.order_by('-datetime').filter(ip_address=ip).first()
+
+        if visitor_info == None:
+            visitor_info = "unavailable"
+
+    context = {
+        'ip_address': ip,
+        'visitor_info': visitor_info
+    }
+    
+    return render(request, 'magnify.html', context)
+
+

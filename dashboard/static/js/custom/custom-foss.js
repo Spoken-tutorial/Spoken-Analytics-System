@@ -1,4 +1,4 @@
-// JS for Event Analysis Page
+// JS for Foss Page
 
 // Array to store data of data table
 var data_table_array = []

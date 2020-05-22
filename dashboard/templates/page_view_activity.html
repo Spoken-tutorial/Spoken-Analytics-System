@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>Page View Activity</title>
+{% endblock %} {% block content %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Page View Activity</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered display no-wrap" id="page-view-activity-data-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>System</th>
+                            <th>Location/Language</th>
+                            <th>Host Name/Web Page/Referrer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in page_view_activity %}
+                        <tr>
+                            <td>
+                                {{ activity.datetime|date:'Y-m-d' }}
+                            </td>
+                            <td>
+                                {{ activity.datetime|date:'H:i:s' }}
+                            </td>
+                            <td>
+                                {{ activity.browser }}
+                                <br> {{ activity.os }}
+                                <br> {{ activity.screen_res }}
+                            </td>
+                            <td>
+                                {{ activity.city }},
+                                <br> {{ activity.region }},
+                                <br> {{ activity.country }} / {{ activity.language }}
+                            </td>
+                            <td>
+                                <span style="color: red">{{ activity.isp }} </span>({{ activity.ip_address }})
+                                <br> <a href="{{ activity.page_url }}" style="text-decoration: none; color: blue">{{ activity.page_url }}</a>
+                                <br> <a href="{{ activity.referrer }}" style="text-decoration: none; color: green">{{ activity.referrer }}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-page-view-activity.js' %}"></script>
+{% endblock %}
