@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 from .config import *
+from celery.schedules import crontab
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -152,6 +153,7 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
 CELERY_IMPORTS = (
     'dashboard.logsUtil_calcAvg',
     'dashboard.logsUtil_calcEventStats',
@@ -163,6 +165,50 @@ CELERY_IMPORTS = (
     'dashboard.logsUtil_weekly',
     'dashboard.logsUtil_yearly',
 )
+
+# Other Celery settings
+CELERY_BEAT_SCHEDULE = {
+    'daily': {
+        'task': 'dashboard.logsUtil_daily.daily',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'weekly': {
+        'task': 'dashboard.logsUtil_weekly.weekly',
+        'schedule': crontab(minute=0, hour=0, day_of_week='sun'),  # execute every Sunday, at 12am
+    },
+    'monthly': {
+        'task': 'dashboard.logsUtil_monthly.monthly',
+        'schedule': crontab(minute=0, hour=0, day_of_month='1'),  # execute on the first day of every month,
+                                                                  # at 12am
+    },
+    'yearly': {
+        'task': 'dashboard.logsUtil_yearly.yearly',
+        'schedule': crontab(minute=0, hour=0, day_of_month='1', month_of_year='1'),  # execute on 1st Jan,
+                                                                                     # at 12am every year.
+    },
+    'calc_avg': {
+        'task': 'dashboard.logsUtil_calcAvg.calc_avg',
+        'schedule': crontab(minute=0, hour=0),  # everyday at 12am.
+    },
+    'calc_event_stats': {
+        'task': 'dashboard.logsUtil_calcEventStats.calc_event_stats',
+        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    },
+    'calc_foss_stats': {
+        'task': 'dashboard.logsUtil_calcFossStats.calc_foss_stats',
+        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    },
+    'calc_ISP': {
+        'task': 'dashboard.logsUtil_calcISP.calc_ISP',
+        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    },
+    'calc_loc_stats': {
+        'task': 'dashboard.logsUtil_calcLocStats.calc_loc_stats',
+        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    },
+}
+
+
 
 SAVE_LOGS_WITH_CELERY = True
 

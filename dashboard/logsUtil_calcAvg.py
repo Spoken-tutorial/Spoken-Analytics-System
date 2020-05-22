@@ -9,7 +9,7 @@ from celery import shared_task
 # into a method of Task class. This lets us use self.retry for retrying
 # failed tasks. Currently we are not retrying failed tasks.
 @shared_task(bind=True)
-def calc_avg ():
+def calc_avg (self):
     # Fetching data from collections
     daily_stats = DailyStats.objects.all() 
     weekly_stats = WeeklyStats.objects.all()

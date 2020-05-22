@@ -17,7 +17,7 @@ from celery import shared_task
 # into a method of Task class. This lets us use self.retry for retrying
 # failed tasks. Currently we are not retrying failed tasks.
 @shared_task(bind=True)
-def calc_event_stats ():
+def calc_event_stats (self):
     tz = timezone(settings.TIME_ZONE)
 
     dates = [] # Stores all dates for which data is present

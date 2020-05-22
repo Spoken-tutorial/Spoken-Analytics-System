@@ -10,7 +10,7 @@ from celery import shared_task
 # into a method of Task class. This lets us use self.retry for retrying
 # failed tasks. Currently we are not retrying failed tasks.
 @shared_task(bind=True)
-def calc_loc_stats ():
+def calc_loc_stats (self):
     city_stats = Log.objects.values('city').order_by('city').annotate(count=Count('city'))
 
     for stats in city_stats:

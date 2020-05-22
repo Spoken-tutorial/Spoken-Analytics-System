@@ -10,3 +10,9 @@ pip install django-cors-headers
 
 - Run the Django server on port 8001 ~ ```python manage.py runserver 127.0.0.1:8001```
 - The views defined in *logs_api/views.py* define the API methods for tutorial progress logs.
+
+
+# Celery beats for cron jobs
+
+Run celery -A analytics_system beat -l INFO  
+
