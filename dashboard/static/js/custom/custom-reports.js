@@ -38,6 +38,86 @@ var actPosition2 = $("#tile-3 .nav-tabs .active").position();
 
 $("#tile-3 .slider").css({ "left": +actPosition2.left, "width": actWidth2 });
 
+//For tile-4
+$("#tile-4 .nav-tabs a").click(function() {
+    var position = $(this).parent().position();
+    var width = $(this).parent().width();
+    $("#tile-4 .slider").css({ "left": +position.left, "width": width });
+});
+
+var actWidth2 = $("#tile-4 .nav-tabs").find(".active").parent("li").width();
+var actPosition2 = $("#tile-4 .nav-tabs .active").position();
+
+$("#tile-4 .slider").css({ "left": +actPosition2.left, "width": actWidth2 });
+
+// Set new default font family and font color to mimic Bootstrap's default styling
+Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+Chart.defaults.global.defaultFontColor = '#858796';
+
+var chart;
+
+// Pie chart config
+config = {
+    type: 'doughnut',
+    data: {
+        labels: ["Referring Websites", "Search Traffic", "Direct Traffic"],
+        datasets: [{
+            data: [10, 20, 70],
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var dataset = data.datasets[tooltipItem.datasetIndex];
+                    var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                    var total = meta.total;
+                    var currentValue = dataset.data[tooltipItem.index];
+                    var percentage = parseFloat((currentValue / total * 100).toFixed(1));
+                    return ' (' + percentage + '%)';
+                },
+            }
+        },
+        legend: {
+            display: true
+        },
+        cutoutPercentage: 80,
+    },
+}
+
+// Function used to redraw chart after datasets chage
+function drawChart() {
+    //if we already have a chart destroy it then carry on as normal
+    if (chart) {
+
+        chart.destroy();
+
+    }
+
+    var w = $(".chart-pie").width();
+    var c = document.getElementById("sourcesPieChart");
+
+    c.width = w;
+    c.height = w / 2;
+
+    $("#chart_canvas").css("width", w);
+    $("#chart_canvas").css("height", w / 2);
+
+    var chart_canvas = document.getElementById("sourcesPieChart").getContext("2d");
+    chart = new Chart(chart_canvas, config)
+};
 
 // Ajax get data of reports
 $(document).ready(function() {
@@ -70,6 +150,8 @@ $(document).ready(function() {
             total_platform_page_views = JSON.parse(data.total_platform_page_views);
             os_stats = JSON.parse(data.os_stats);
             total_os_page_views = JSON.parse(data.total_os_page_views);
+
+            sources_stats = data.sources_stats;
 
             var region_table = $("#region-table tbody");
             var city_table = $("#city-table tbody");
@@ -112,6 +194,11 @@ $(document).ready(function() {
             os_stats.forEach((key, value) => {
                 os_table.append("<tr><td>" + key.os + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_os_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_os_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
+
+            // Change pie chart dataset
+            config.data.datasets[0].data = [parseInt(sources_stats.referrer_page_views__sum), parseInt(sources_stats.search_page_views__sum), parseInt(sources_stats.direct_page_views__sum)];
+
+            drawChart()
         },
         error: function(err) {
             $(".fa-spinner").hide();

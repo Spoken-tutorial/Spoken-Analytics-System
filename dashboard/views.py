@@ -13,7 +13,7 @@ from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
 from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
-from .models import BrowserStats, PlatformStats, OSStats
+from .models import BrowserStats, PlatformStats, OSStats, SourcesStats
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -200,6 +200,7 @@ def getReportsStats(request):
     browser_stats = BrowserStats.objects.values('browser_type').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     os_stats = OSStats.objects.values('os').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    sources_stats = SourcesStats.objects.aggregate(Sum('referrer_page_views'),Sum('search_page_views'),Sum('direct_page_views'))
 
     # total page views (needed to find percentage of page views)
     total_page_views = Log.objects.all().count()
@@ -236,6 +237,8 @@ def getReportsStats(request):
         'total_platform_page_views': total_platform_page_views['page_views__sum'],
         'os_stats': json_os_stats,
         'total_os_page_views': total_os_page_views['page_views__sum'],
+
+        'sources_stats': sources_stats,
     }
 
     return JsonResponse(json_res, safe=False) # sending data

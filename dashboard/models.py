@@ -323,3 +323,14 @@ class OSStats(models.Model):
         return "OS Stats"
 
     objects = models.DjongoManager()
+
+class SourcesStats(models.Model):
+    datetime = models.DateTimeField()
+    referrer_page_views = models.IntegerField()
+    search_page_views = models.IntegerField()
+    direct_page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Sources Stats"
+
+    objects = models.DjongoManager()

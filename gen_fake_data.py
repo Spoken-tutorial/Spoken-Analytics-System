@@ -13,7 +13,7 @@ from dateutil import tz
 from django_populate import Faker
 from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
 from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
-from dashboard.models import BrowserStats, PlatformStats, OSStats
+from dashboard.models import BrowserStats, PlatformStats, OSStats, SourcesStats
 
 num_rows = 1000 # number of rows to insert
 
@@ -372,9 +372,20 @@ def randomData():
     }
     return data
 
+# For SourcesStats Model
+def randomData():
+    data = {
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
+        'referrer_page_views': lambda x: random.randint(1, 1000),
+        'search_page_views': lambda x: random.randint(1, 1000),
+        'direct_page_views': lambda x: random.randint(1, 1000),
+        'total_page_views': lambda x: random.randint(1, 3000),
+    }
+    return data
+
 
 # Adding data to populator object
-populator.addEntity(OSStats, num_rows, randomData())
+populator.addEntity(SourcesStats, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()
