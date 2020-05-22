@@ -58,7 +58,7 @@ var chart;
 
 // Pie chart config
 config = {
-    type: 'doughnut',
+    type: 'pie',
     data: {
         labels: ["Referring Websites", "Search Traffic", "Direct Traffic"],
         datasets: [{
@@ -77,7 +77,7 @@ config = {
             borderWidth: 1,
             xPadding: 15,
             yPadding: 15,
-            displayColors: false,
+            displayColors: true,
             caretPadding: 10,
             callbacks: {
                 label: function(tooltipItem, data) {
@@ -93,7 +93,7 @@ config = {
         legend: {
             display: true
         },
-        cutoutPercentage: 80,
+        cutoutPercentage: 50,
     },
 }
 
@@ -118,6 +118,34 @@ function drawChart() {
     var chart_canvas = document.getElementById("sourcesPieChart").getContext("2d");
     chart = new Chart(chart_canvas, config)
 };
+
+// Utility function prototype to truncate strings
+String.prototype.trunc = function(length) {
+    return this.length > length ? this.substring(0, length) + '&hellip;' : this;
+};
+
+// Utility function to format numbers (10000 to 10K)
+function nFormatter(num) {
+
+    if (num >= 1000000000) {
+
+        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+
+    }
+    if (num >= 1000000) {
+
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+
+    }
+    if (num >= 1000) {
+
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+
+    }
+
+    return num;
+
+}
 
 // Ajax get data of reports
 $(document).ready(function() {
@@ -152,6 +180,7 @@ $(document).ready(function() {
             total_os_page_views = JSON.parse(data.total_os_page_views);
 
             sources_stats = data.sources_stats;
+            came_from_stats = JSON.parse(data.came_from_stats);
 
             var region_table = $("#region-table tbody");
             var city_table = $("#city-table tbody");
@@ -162,6 +191,8 @@ $(document).ready(function() {
             var browser_table = $('#browser-table tbody');
             var platform_table = $('#platform-table tbody');
             var os_table = $('#os-table tbody');
+
+            var came_from_table = $('#came-from-table tbody');
 
             region_stats.forEach((key, value) => {
                 region_table.append("<tr><td>" + key.fields.region + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_page_views) * 100).toFixed(2) + "%</td></tr>");
@@ -193,6 +224,10 @@ $(document).ready(function() {
 
             os_stats.forEach((key, value) => {
                 os_table.append("<tr><td>" + key.os + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_os_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_os_page_views) * 100).toFixed(2) + "%</td></tr>");
+            });
+
+            came_from_stats.forEach((key, value) => {
+                came_from_table.append("<tr><td>" + key.referrer.trunc(50) + "<td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
             });
 
             // Change pie chart dataset

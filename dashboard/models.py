@@ -331,6 +331,16 @@ class SourcesStats(models.Model):
     direct_page_views = models.IntegerField()
 
     def __str__(self):
-        return "Sources Stats"
+        return "Sources Stats Model"
+
+    objects = models.DjongoManager()
+
+class CameFromStats(models.Model):
+    datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Came From Stats Model"
 
     objects = models.DjongoManager()
