@@ -13,68 +13,74 @@ import datetime
 from dashboard.models import Log, DailyStats
 from pytz import timezone
 from django.conf import settings
+from celery import shared_task
 
-tz = timezone(settings.TIME_ZONE)
+# using bind=True on the shared_task decorator to turn the below function
+# into a method of Task class. This lets us use self.retry for retrying
+# failed tasks. Currently we are not retrying failed tasks.
+@shared_task(bind=True)
+def daily():
+    tz = timezone(settings.TIME_ZONE)
 
-dates = [] # Stores all dates for which data is present
+    dates = [] # Stores all dates for which data is present
 
-logs = Log.objects.all() # Getting all the logs
+    logs = Log.objects.all() # Getting all the logs
 
-# Calculating number of days of which data is present
-for log in logs:
-    if log.datetime.date() not in dates:
-        dates.append(log.datetime.date())
+    # Calculating number of days of which data is present
+    for log in logs:
+        if log.datetime.date() not in dates:
+            dates.append(log.datetime.date())
 
-# For each day calculating stats and storing them
-for _date in dates:
+    # For each day calculating stats and storing them
+    for _date in dates:
 
-    today_min = datetime.datetime.combine(_date, datetime.time.min) # Days min datetime
-    today_max = datetime.datetime.combine(_date, datetime.time.max) # Days max datetime
+        today_min = datetime.datetime.combine(_date, datetime.time.min) # Days min datetime
+        today_max = datetime.datetime.combine(_date, datetime.time.max) # Days max datetime
 
-    # make datetimes timezone aware
-    today_min = tz.localize(today_min)
-    today_max = tz.localize(today_max)
+        # make datetimes timezone aware
+        today_min = tz.localize(today_min)
+        today_max = tz.localize(today_max)
 
-    daily_logs = Log.objects.filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
+        daily_logs = Log.objects.filter(datetime__range=(today_min, today_max)).order_by('datetime') # Getting data of the date from log collection
 
-    unique_visitors = [] # Stores unique ip addresses
+        unique_visitors = [] # Stores unique ip addresses
 
-    # Finding all unique ip addresses of this day
-    for log in daily_logs:
-        if log.ip_address not in unique_visitors:
-            unique_visitors.append(log.ip_address)
-
-    # variables to store counts
-    unique_visits = 0
-    first_time = 0
-    first_time_total = 0
-    returning_visits = 0
-
-    # caculating stats according to ip addresses
-    for ip in unique_visitors:
-        first_time = 0
+        # Finding all unique ip addresses of this day
         for log in daily_logs:
-            if log.ip_address == ip:
-                # if ip is found for the first time
-                if first_time == 0:
-                    prev_datetime = log.datetime
-                    first_time = 1
-                    first_time_total += 1
-                    unique_visits += 1
-                else:
-                    # if same ip occurs within time differce of 30 minutes
-                    if (log.datetime - prev_datetime).seconds / 60 > 30:
+            if log.ip_address not in unique_visitors:
+                unique_visitors.append(log.ip_address)
+
+        # variables to store counts
+        unique_visits = 0
+        first_time = 0
+        first_time_total = 0
+        returning_visits = 0
+
+        # caculating stats according to ip addresses
+        for ip in unique_visitors:
+            first_time = 0
+            for log in daily_logs:
+                if log.ip_address == ip:
+                    # if ip is found for the first time
+                    if first_time == 0:
                         prev_datetime = log.datetime
-                        returning_visits += 1
+                        first_time = 1
+                        first_time_total += 1
                         unique_visits += 1
+                    else:
+                        # if same ip occurs within time differce of 30 minutes
+                        if (log.datetime - prev_datetime).seconds / 60 > 30:
+                            prev_datetime = log.datetime
+                            returning_visits += 1
+                            unique_visits += 1
 
-    daily_stats = DailyStats() # DailyStats object
+        daily_stats = DailyStats() # DailyStats object
 
-    daily_stats.date = _date
-    daily_stats.page_views = len(daily_logs)
-    daily_stats.unique_visits = unique_visits
-    daily_stats.first_time_visits = first_time_total
-    daily_stats.returning_visits = returning_visits
-    daily_stats.unique_visitors = len(unique_visitors)
-    
-    daily_stats.save() # saving the calculations to database
+        daily_stats.date = _date
+        daily_stats.page_views = len(daily_logs)
+        daily_stats.unique_visits = unique_visits
+        daily_stats.first_time_visits = first_time_total
+        daily_stats.returning_visits = returning_visits
+        daily_stats.unique_visitors = len(unique_visitors)
+        
+        daily_stats.save() # saving the calculations to database

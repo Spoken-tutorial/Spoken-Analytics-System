@@ -152,8 +152,13 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+# CELERY_IMPORTS = (
+#     'das.tasks',
+#     'some_app.some_module',
+# )
 
 SAVE_LOGS_WITH_CELERY = True
+
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (20.5937, 78.9629),
     'DEFAULT_ZOOM': 4,

@@ -13,72 +13,78 @@ import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats
 from pytz import timezone
 from django.conf import settings
+from celery import shared_task
 
-tz = timezone(settings.TIME_ZONE)
+# using bind=True on the shared_task decorator to turn the below function
+# into a method of Task class. This lets us use self.retry for retrying
+# failed tasks. Currently we are not retrying failed tasks.
+@shared_task(bind=True)
+def weekly():
+    tz = timezone(settings.TIME_ZONE)
 
-weeks = [] # Stores week number and year
+    weeks = [] # Stores week number and year
 
-logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'woy': {'$isoWeek': '$datetime'}, 'year': { '$year': '$datetime' }}}}]) # woy = week of year
+    logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'woy': {'$isoWeek': '$datetime'}, 'year': { '$year': '$datetime' }}}}]) # woy = week of year
 
-# Calculating weeks of which data is present
-for log in logs:
-    weeks.append(log['_id'])
+    # Calculating weeks of which data is present
+    for log in logs:
+        weeks.append(log['_id'])
 
-# For each week calculating stats and storing them
-for week in weeks:
+    # For each week calculating stats and storing them
+    for week in weeks:
 
-    current_week = str(week['year']) + '-W' + str(week['woy'])
-    next_week = str(week['year']) + '-W' + str(week['woy'] + 1)
+        current_week = str(week['year']) + '-W' + str(week['woy'])
+        next_week = str(week['year']) + '-W' + str(week['woy'] + 1)
 
-    week_min = datetime.datetime.strptime(current_week + '-1', '%G-W%V-%u') # this week starting date and time
-    week_max = datetime.datetime.strptime(next_week + '-1', '%G-W%V-%u') # this week ending date and time
+        week_min = datetime.datetime.strptime(current_week + '-1', '%G-W%V-%u') # this week starting date and time
+        week_max = datetime.datetime.strptime(next_week + '-1', '%G-W%V-%u') # this week ending date and time
 
-    # make datetimes timezone aware
-    week_min = tz.localize(week_min)
-    week_max = tz.localize(week_max)
-    
-    weekly_logs = Log.objects.filter(datetime__range=(week_min, week_max)).order_by('datetime') # Getting data of the week from log collection
+        # make datetimes timezone aware
+        week_min = tz.localize(week_min)
+        week_max = tz.localize(week_max)
+        
+        weekly_logs = Log.objects.filter(datetime__range=(week_min, week_max)).order_by('datetime') # Getting data of the week from log collection
 
-    unique_visitors = [] # Stores unique ip addresses
+        unique_visitors = [] # Stores unique ip addresses
 
-    # Finding all unique ip addresses of this week
-    for log in weekly_logs:
-        if log.ip_address not in unique_visitors:
-            unique_visitors.append(log.ip_address)
-
-    # variables to store counts
-    unique_visits = 0
-    first_time = 0
-    first_time_total = 0
-    returning_visits = 0
-
-    # caculating stats according to ip addresses
-    for ip in unique_visitors:
-        first_time = 0
+        # Finding all unique ip addresses of this week
         for log in weekly_logs:
-            if log.ip_address == ip:
-                # if ip is found for the first time
-                if first_time == 0:
-                    prev_datetime = log.datetime
-                    first_time = 1
-                    first_time_total += 1
-                    unique_visits += 1
-                else:
-                    # if same ip occurs within time differce of 30 minutes
-                    if (log.datetime - prev_datetime).seconds / 60 > 30:
+            if log.ip_address not in unique_visitors:
+                unique_visitors.append(log.ip_address)
+
+        # variables to store counts
+        unique_visits = 0
+        first_time = 0
+        first_time_total = 0
+        returning_visits = 0
+
+        # caculating stats according to ip addresses
+        for ip in unique_visitors:
+            first_time = 0
+            for log in weekly_logs:
+                if log.ip_address == ip:
+                    # if ip is found for the first time
+                    if first_time == 0:
                         prev_datetime = log.datetime
-                        returning_visits += 1
+                        first_time = 1
+                        first_time_total += 1
                         unique_visits += 1
+                    else:
+                        # if same ip occurs within time differce of 30 minutes
+                        if (log.datetime - prev_datetime).seconds / 60 > 30:
+                            prev_datetime = log.datetime
+                            returning_visits += 1
+                            unique_visits += 1
 
-    weekly_stats = WeeklyStats() # WeeklyStats object
+        weekly_stats = WeeklyStats() # WeeklyStats object
 
-    weekly_stats.date = week_min
-    weekly_stats.week_of_year = week['woy']
-    weekly_stats.year = int(week['year'])
-    weekly_stats.page_views = len(weekly_logs)
-    weekly_stats.unique_visits = unique_visits
-    weekly_stats.first_time_visits = first_time_total
-    weekly_stats.returning_visits = returning_visits
-    weekly_stats.unique_visitors = len(unique_visitors)
-    
-    weekly_stats.save() # saving the calculations to database
+        weekly_stats.date = week_min
+        weekly_stats.week_of_year = week['woy']
+        weekly_stats.year = int(week['year'])
+        weekly_stats.page_views = len(weekly_logs)
+        weekly_stats.unique_visits = unique_visits
+        weekly_stats.first_time_visits = first_time_total
+        weekly_stats.returning_visits = returning_visits
+        weekly_stats.unique_visitors = len(unique_visitors)
+        
+        weekly_stats.save() # saving the calculations to database
