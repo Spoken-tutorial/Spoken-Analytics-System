@@ -152,10 +152,17 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
-# CELERY_IMPORTS = (
-#     'das.tasks',
-#     'some_app.some_module',
-# )
+CELERY_IMPORTS = (
+    'dashboard.logsUtil_calcAvg',
+    'dashboard.logsUtil_calcEventStats',
+    'dashboard.logsUtil_calcFossStats',
+    'dashboard.logsUtil_calcISP',
+    'dashboard.logsUtil_calcLocStats',
+    'dashboard.logsUtil_daily',
+    'dashboard.logsUtil_monthly',
+    'dashboard.logsUtil_weekly',
+    'dashboard.logsUtil_yearly',
+)
 
 SAVE_LOGS_WITH_CELERY = True
 
