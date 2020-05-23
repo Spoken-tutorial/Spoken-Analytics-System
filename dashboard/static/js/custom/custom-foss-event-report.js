@@ -1,6 +1,6 @@
-// JS for Location Report Page
+// JS for Foss Event Report Page
 
-// Region data table config
+// Foss data table config
 var fossReportTable = $('#foss-report-table').DataTable({
     scrollX: false,
     columns: [
@@ -16,7 +16,7 @@ var fossReportTable = $('#foss-report-table').DataTable({
     ]
 });
 
-// City data table config
+// Event data table config
 var eventReportTable = $('#event-report-table').DataTable({
     scrollX: false,
     columns: [

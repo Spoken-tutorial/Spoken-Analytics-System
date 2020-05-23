@@ -463,7 +463,7 @@ def fossEventReport(request):
     """
     Renders the Foss Event Report page
     """
-    
+
     # Getting data from various tables
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
     event_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
@@ -475,3 +475,39 @@ def fossEventReport(request):
 
     return render(request, 'foss_event_report.html', context)
 
+def systemReport(request):
+    """
+    Renders the System Report page
+    """
+
+    # Getting data from various tables
+    browser_stats = BrowserStats.objects.values('name').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    os_stats = OSStats.objects.values('os').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    
+    total_browser_page_views = BrowserStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+    total_platform_page_views = PlatformStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+    total_os_page_views = OSStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+
+    # variables to store stats
+    b_stats = []
+    p_stats = []
+    o_stats = []
+
+    # Preparing data to be sent to template
+    for stat in browser_stats:
+        b_stats.append({'name' : stat['name'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_browser_page_views) * 100, 2)})
+    
+    for stat in platform_stats:
+        p_stats.append({'platform' : stat['platform'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_platform_page_views) * 100, 2)})
+
+    for stat in os_stats:
+        o_stats.append({'os' : stat['os'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_os_page_views) * 100, 2)})
+
+    context = {
+        'browser_stats': b_stats,
+        'platform_stats': p_stats,
+        'os_stats': o_stats,
+    }
+
+    return render(request, 'system_report.html', context)
