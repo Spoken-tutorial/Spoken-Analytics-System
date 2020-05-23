@@ -511,3 +511,20 @@ def systemReport(request):
     }
 
     return render(request, 'system_report.html', context)
+
+def trafficReport(request):
+    """
+    Renders the Traffic Report page
+    """
+
+    # Getting data from various tables
+    came_from_stats = CameFromStats.objects.values('referrer').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    exit_link_stats = ExitLinkStats.objects.values('exit_link').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+
+
+    context = {
+        'came_from_stats': came_from_stats,
+        'exit_link_stats': exit_link_stats,
+    }
+
+    return render(request, 'traffic_report.html', context)

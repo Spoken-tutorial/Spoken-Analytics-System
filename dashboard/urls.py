@@ -46,5 +46,7 @@ urlpatterns = [
     # Serves foss-page report page
     re_path('^foss_event_report/$', views.fossEventReport, name="foss-event-report"),
     # Serves system report page
-    re_path('^system_report/$', views.systemReport, name="system-report")
+    re_path('^system_report/$', views.systemReport, name="system-report"),
+    # Serves traffic report page
+    re_path('^traffic_report/$', views.trafficReport, name="traffic-report"),
 ]

@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>Traffic Report</title>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Reports > Traffic</h1>
+        <select id="type-select" class="custom-select form-control-sm" style="width: 10em">
+            <option value="came_from" selected>Came From</option>
+            <option value="exit_link">Exit Link</option>
+        </select>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive" id="came-from-table">
+                <table class="table table-bordered display no-wrap" id="came-from-report-table" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col span="1" style="width: 80%;">
+                        <col span="1" style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Referrer</th>
+                            <th>Page Views</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in came_from_stats %}
+                        <tr>
+                            <td><a href="{{ stat.referrer }}"> {{ stat.referrer }} </a></td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" id="exit-link-table" style="display: none;">
+                <table class="table table-bordered display no-wrap" id="exit-link-report-table" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col span="1" style="width: 80%;">
+                        <col span="1" style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Exit Link</th>
+                            <th>Page Views</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in exit_link_stats %}
+                        <tr>
+                            <td><a href="{{ stat.exit_link }}"> {{ stat.exit_link }} </a></td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-traffic-report.js' %} "></script>
+{% endblock %}
