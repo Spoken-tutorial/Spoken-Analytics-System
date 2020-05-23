@@ -233,11 +233,11 @@ $(document).ready(function() {
             });
 
             came_from_stats.forEach((key, value) => {
-                came_from_table.append("<tr><td>" + key.referrer.trunc(50) + "<td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
+                came_from_table.append("<tr><td><a href='" + key.referrer + "'>" + key.referrer.trunc(50) + "</a><td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
             });
 
             exit_link_stats.forEach((key, value) => {
-                exit_link_table.append("<tr><td>" + key.exit_link.trunc(50) + "<td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
+                exit_link_table.append("<tr><td><a href='" + key.exit_link + "'>" + key.exit_link.trunc(50) + "</a><td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
             });
 
 

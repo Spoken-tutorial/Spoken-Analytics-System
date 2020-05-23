@@ -43,4 +43,6 @@ urlpatterns = [
     re_path('^kayword_activity/$', views.keywordActivity, name="keyword-activity"),
     # Serves magnify page
     re_path('^magnify/$', views.magnify, name="magnify"),
+    # Serves foss-page report page
+    re_path('^foss_event_report/$', views.fossEventReport, name="foss-event-report"),
 ]

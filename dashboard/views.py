@@ -459,4 +459,19 @@ def magnify(request):
     
     return render(request, 'magnify.html', context)
 
+def fossEventReport(request):
+    """
+    Renders the Foss Event Report page
+    """
+    
+    # Getting data from various tables
+    foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    event_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
+
+    context = {
+        'foss_stats': foss_stats,
+        'event_stats': event_stats,
+    }
+
+    return render(request, 'foss_event_report.html', context)
 
