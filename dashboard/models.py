@@ -114,13 +114,22 @@ class YearlyStats(models.Model):
 
     objects = models.DjongoManager()
 
-class EventStats(models.Model):
-    datetime = models.DateTimeField()
+class Event(models.Model):
     event_name = models.CharField(max_length=100, blank=False)
-    path_info = models.CharField (max_length=200)
-    date = models.DateTimeField()
+    page_title = models.CharField(max_length=200)
+    path_info = models.CharField (max_length=300)
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
+    
+    class Meta:
+        abstract = True
+
+class EventStats(models.Model):
+    datetime = models.DateTimeField()
+    date = models.DateField()
+    event = models.ArrayField(
+        model_container=Event,
+    )
 
     def __str__(self):
         return "Event Stats"
