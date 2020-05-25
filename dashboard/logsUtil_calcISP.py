@@ -2,7 +2,7 @@
 This script takes logs from the dashboard_log collection, calculates no of page loads from different isps.
 """
 import datetime
-from dashboard.models import Log, ISPStats
+# from dashboard.models import Log, ISPStats
 from django.db.models import Count
 from celery import shared_task
 

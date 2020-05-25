@@ -51,7 +51,10 @@ REGION_CODE_TO_REGION = {
     "PY": "Puducherry",
 }
 
-
+"""
+Function called indirectly from the middleware for extracting Geolocation info,
+and pushing the log to a redis queue.
+"""
 @csrf_exempt
 def middleware_log (request):
     
@@ -111,7 +114,7 @@ def middleware_log (request):
             data["region"] = "Unknown"
 
         # enqueue job in the redis queue named 'tasks4'
-        REDIS_CLIENT.rpush('tasks4', json.dumps(data))
+        REDIS_CLIENT.rpush('middleware_log', json.dumps(data))
 
     except Exception as e:
         with open("enqueue_logs_errors.txt", "a") as f:
@@ -124,6 +127,10 @@ db = MONGO_CLIENT.logs
 tutorial_progress_logs = db.tutorial_progress_logs
 
 
+"""
+API function called from the client-side Javascript for extracting Geolocation info,
+and pushing the log to a redis queue.
+"""
 @csrf_exempt
 def save_website_log (request):
 
@@ -154,7 +161,7 @@ def save_website_log (request):
         data['latitude'] = request.POST.get ('latitude')
         data['longitude'] = request.POST.get ('longitude')
         # enqueue job in the redis queue named 'tasks3'
-        REDIS_CLIENT.rpush('tasks3', json.dumps(data))
+        REDIS_CLIENT.rpush('js_log', json.dumps(data))
 
     except Exception as e:
         print("Log Exception " + str(e))
@@ -162,7 +169,13 @@ def save_website_log (request):
     return HttpResponse(status=200)
 
 
-# TODO: don't let users make their own post requests to this view. Remove CSRF exempt
+"""
+Function for handling the AJAX call of saving tutorial progress data. This AJAX
+call is made in watch_tutorial.html. Calls update_tutorial_progress in utils.py
+for the actual saving in MongoDB.
+This code is currently not in use, as an API-based code is currently used instead.
+TODO: don't let users make their own post requests to this view. Remove CSRF exempt
+"""
 @csrf_exempt
 def save_tutorial_progress (request):
 
@@ -192,7 +205,13 @@ def save_tutorial_progress (request):
 
     return HttpResponse(status=200)
 
-# TODO: don't let users make their own post requests to this view. Remove CSRF exempt
+
+"""
+Function for handling the AJAX call of changing tutorial completion data. This AJAX
+call is made in watch_tutorial.html.
+This code is currently not in use, as an API-based code is currently used instead.
+TODO: don't let users make their own post requests to this view. Remove CSRF exempt
+"""
 @csrf_exempt
 def change_completion (request):
 
@@ -225,7 +244,12 @@ def change_completion (request):
         return HttpResponse(status=500)
 
 
-# TODO: don't let users make their own post requests to this view. Remove CSRF exempt
+"""
+Function for handling the AJAX call of checking tutorial completion. This AJAX
+call is made in watch_tutorial.html.
+This code is currently not in use, as an API-based code is currently used instead.
+TODO: don't let users make their own post requests to this view. Remove CSRF exempt
+"""
 @csrf_exempt
 def check_completion (request):
 

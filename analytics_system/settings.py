@@ -213,7 +213,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 GEOIP_PATH  = BASE_DIR + '/geodb/'
 
-SAVE_LOGS_WITH_CELERY = False
+USE_MIDDLEWARE_LOGS = True  # whether to use middleware logs or client-side JS logs system
+
+SAVE_LOGS_WITH_CELERY = True
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (20.5937, 78.9629),

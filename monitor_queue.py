@@ -26,7 +26,13 @@ from analytics_system import REDIS_CLIENT, MONGO_CLIENT
 # configure the pymongo client
 db = MONGO_CLIENT.logs_api
 website_logs_middleware = db.website_logs_middleware
+website_logs_js = db.website_logs_js
 
+task_queue = ''
+if settings.USE_MIDDLEWARE_LOGS:
+    task_queue = 'middleware_log'
+else:
+    task_queue = 'js_log'
 
 """
 Continuosly monitor the redis 'tasks' queue length.
@@ -37,18 +43,18 @@ since the queue is a FIFO structure).
 """
 while (True):
 
-    if REDIS_CLIENT.llen('tasks4') >= 5:
+    if REDIS_CLIENT.llen(task_queue) >= 5:
 
         try:
 
-            logs = REDIS_CLIENT.lrange('tasks4', 0, 4)
+            logs = REDIS_CLIENT.lrange(task_queue, 0, 4)
             
             # trim the queue to remove the leftmost 10000 logs
             # TODO: check if there's any opportunity for data loss, i.e.
             # if it's possible for the queue size to increase between when the function 
             # ltrim() is called, and when the queue is actually trimmed. The newest logs
             # may be lost in this case.
-            REDIS_CLIENT.ltrim('tasks4', start=5, end=REDIS_CLIENT.llen('tasks4'))
+            REDIS_CLIENT.ltrim(task_queue, start=5, end=REDIS_CLIENT.llen(task_queue))
 
             for i in range(len(logs)):
 
@@ -68,7 +74,11 @@ while (True):
                 # insert into MongoDB
                 # the ordered=False option ensures that all the logs are attempted for insert,
                 # even if one of the intermediate logs fails the insertion.
-                website_logs_middleware.insert_many([logs[i] for i in range(len(logs))], ordered=False)
+
+                if settings.USE_MIDDLEWARE_LOGS:
+                    website_logs_middleware.insert_many([logs[i] for i in range(len(logs))], ordered=False)
+                else:
+                    website_logs_js.insert_many([logs[i] for i in range(len(logs))], ordered=False)
 
             t1 = time.clock() - t0
 
