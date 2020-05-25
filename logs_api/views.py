@@ -2,13 +2,127 @@ import redis
 import datetime
 import json 
 import math
+import re
 
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .utils import update_tutorial_progress
 
-from analytics_system import MONGO_CLIENT, REDIS_CLIENT
+from analytics_system import MONGO_CLIENT, REDIS_CLIENT, GEOIP2_CLIENT
+
+
+REGION_CODE_TO_REGION = {
+    "AP": "Andhra Pradesh",
+    "AR": "Arunachal Pradesh",
+    "AS": "Assam",
+    "BR": "Bihar",
+    "CT": "Chhattisgarh",
+    "GA": "Goa",
+    "GJ": "Gujarat",
+    "HR": "Haryana",
+    "HP": "Himachal Pradesh",
+    "JK": "Jammu and Kashmir",
+    "JH": "Jharkhand",
+    "KA": "Karnataka",
+    "KL": "Kerala",
+    "MP": "Madhya Pradesh",
+    "MH": "Maharashtra",
+    "MN": "Manipur",
+    "ML": "Meghalaya",
+    "MZ": "Mizoram",
+    "NL": "Nagaland",
+    "OR": "Odisha",
+    "PB": "Punjab",
+    "RJ": "Rajasthan",
+    "SK": "Sikkim",
+    "TN": "Tamil Nadu",
+    "TG": "Telangana",
+    "TR": "Tripura",
+    "UP": "Uttar Pradesh",
+    "UT": "Uttarakhand",
+    "WB": "West Bengal",
+    "AN": "Andaman and Nicobar Islands",
+    "CH": "Chandigarh",
+    "DD": "Dadra and Nagar Haveli and Daman and Diu",
+    "LA": "Ladakh",
+    "LD": "Lakshadweep",
+    "DL": "Delhi",
+    "PY": "Puducherry",
+}
+
+
+@csrf_exempt
+def middleware_log (request):
+    
+    data = {}
+    data['ip_address'] = request.POST.get('ip_address')
+    data['path_info'] = request.POST.get('path_info')
+    data['browser_info'] = request.POST.get('browser_info')
+    data['event_name'] = request.POST.get('event_name')
+    data['visited_by'] = request.POST.get('visited_by')
+    data['ip_address'] = request.POST.get('ip_address')
+    data['method'] = request.POST.get('method')
+    data['datetime'] = request.POST.get('datetime')
+    data['referer'] = request.POST.get('referer')
+    data['browser_family'] = request.POST.get('browser_family')
+    data['browser_version'] = request.POST.get('browser_version')
+    data['os_family'] = request.POST.get('os_family')
+    data['os_version'] = request.POST.get('os_version')
+    data['device_family'] = request.POST.get('device_family')
+    data['device_type'] = request.POST.get('device_type')
+    data['first_time_visit'] = request.POST.get ('first_time_visit')
+
+    try:
+
+        # if the IPv4 or IPv6 address is not a properly formatted IPv4, reject it
+        if not re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', data["ip_address"]):
+            if not re.match(r'^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$', data['ip_address']):
+                return
+        
+        # extract Geolocation info
+        try:
+            location = GEOIP2_CLIENT.city(data['ip_address'])
+            data["latitude"] = location["latitude"]
+            data["longitude"] = location["longitude"]
+            data["country"] = location["country_name"]
+            data["city"] = location["city"]
+            data['region_code'] = location["region"]
+            data["region"] = REGION_CODE_TO_REGION.get(data["region_code"])
+        except:  # check https://pypi.org/project/geoip2/ for the exceptions thrown by GeoIP2
+            data["latitude"] = None
+            data["longitude"] = None
+            data["country"] = "Unknown"
+            data["city"] = "Unknown"
+            data['region_code'] = "Unknown"
+            data["region"] = "Unknown"
+
+        # sometimes the Geolocation may not return some of the fields
+        if not data["country"]:
+            data["country"] = "Unknown"
+
+        if not data["region_code"]:
+            data["region_code"] = "Unknown"
+
+        if not data["city"]:
+            data["city"] = "Unknown"
+
+        if not data["region"]:
+            data["region"] = "Unknown"
+
+        # enqueue job in the redis queue named 'tasks4'
+        REDIS_CLIENT.rpush('tasks4', json.dumps(data))
+
+    except Exception as e:
+        with open("enqueue_logs_errors.txt", "a") as f:
+            f.write(str(e))
+
+
+# initialize the variable pointing to the tutorial_progress_logs
+# MongoDB collection.
+db = MONGO_CLIENT.logs
+tutorial_progress_logs = db.tutorial_progress_logs
+
 
 @csrf_exempt
 def save_website_log (request):

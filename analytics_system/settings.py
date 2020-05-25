@@ -208,9 +208,12 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+GEOIP_PATH  = BASE_DIR + '/geodb/'
 
-SAVE_LOGS_WITH_CELERY = True
+SAVE_LOGS_WITH_CELERY = False
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (20.5937, 78.9629),

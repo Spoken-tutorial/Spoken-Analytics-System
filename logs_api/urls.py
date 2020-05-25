@@ -4,6 +4,7 @@ from logs_api.views import *
 app_name = 'logs_api'
 
 urlpatterns = [
+    url('middleware_log/', middleware_log, name='middleware_log'),
     url('save_website_log/', save_website_log, name='save_website_log'),
     url('save_tutorial_progress/', save_tutorial_progress, name='save_tutorial_progress'),
     url('change_completion/', change_completion, name='change_completion'),
