@@ -15,7 +15,7 @@ from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkAc
 from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
 from dashboard.models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
 
-num_rows = 1000 # number of rows to insert
+num_rows = 100000 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
@@ -23,7 +23,7 @@ india_tz = tz.gettz('Asia/Kolkata')
 populator = Faker.getPopulator()
 
 event_names = ["event.video.watch", "event.cdcontent.download", "event.tutorial.search", "event.news", "event.login", 
-"event.logout", "event.register", "event.software.training", "event.software.training.planner", 
+"event.logout", "event.registlogser", "event.software.training", "event.software.training.planner", 
 "event.software.training.student.batch", "event.software.training.select.participants", 
 "event.software.training.resource.center", "event.participant.login", "event.statistics", 
 "event.statistics.training", "event.statistics.fdp.training", "event.statistics.tutorial.content", 
@@ -178,40 +178,36 @@ pages = ["https://spoken-tutorial.org/cdcontent/",
 "https://spoken-tutorial.org/cdcontent/", 
 "https://spoken-tutorial.org/participant/index/?category=2"]
 
-browsers = ["Firefox 76.0", "Chrome for Android", "Chrome 83.0", "Chrome 81.0", "Samsung Internet 11.2", "Opera 68.0"]
+browsers = ["Firefox", "Chrome for Android", "Chrome", "Samsung Internet", "Opera"]
 
-os = ["Linux", "Android", "Win7", "Win10"]
+browser_versions = ["76.0", "83.0", "81.0", "11.2", "68.0"]
 
-resolutions = ["1525x858", "360x760", "1440x900", "360x780", "393x851", "412x892", "393x851", "360x640", "1536x864"]
+os = ["Linux", "Android", "Windows", "Mac"]
 
-languages = ["en-gb", "en-us"]
-
-isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Airtel", "Andhra Pradesh State FiberNet Limited"]
+os_versions = ["7", "8", "8.1"]
 
 # For Logs Model
-# def randomData():
-#     visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
-#     method = lambda x: random.choice(["GET", "POST"])
-#     city = lambda x: random.choice(cities)
-#     region = lambda x: random.choice(states_uts)
-#     country = lambda x: populator.generator.country()
-#     ip_address = lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255))
-#     event_name = lambda x: random.choice(event_names)
-#     path_info = lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths)
-#     data = {
-#         'path_info': path_info,
-#         'visited_by': visited_by,
-#         'browser_info' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-#         'request_data' : '{data: request_data}',
-#         'method': method,
-#         'event_name': event_name,
-#         'city': city,
-#         'region': region,
-#         'country': country,
-#         'ip_address':  ip_address,
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+16d', tzinfo=india_tz),
-#     }
-#     return data
+def randomData():
+    data = {
+        'path_info': lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths),
+        'event_name': lambda x: random.choice(event_names),
+        'visited_by': lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else "anonymous",
+        'ip_address':  lambda x: "230.124.0." + str(random.randint(0, 255)),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+10d', tzinfo=india_tz),
+        'referrer': lambda x: random.choice(referrer),
+        'browser_family': lambda x: random.choice(browsers),
+        'browser_version': lambda x: random.choice(browser_versions),
+        'os_family': lambda x: random.choice(os),
+        'os_version': lambda x: random.choice(os_versions),
+        'device_family': lambda x: random.choice(["Lenovo K8 Note", "Realme XT", "Realme X2", "Samasung M31S", "Samsung M40"]),
+        'device_type': lambda x: random.choice(["Mobile", "PC"]),
+        'latitude': lambda x: populator.generator.local_latlng(country_code='IN', coords_only=True)[0],
+        'longitude': lambda x: populator.generator.local_latlng(country_code='IN', coords_only=True)[1],
+        'city': lambda x: random.choice(cities),
+        'region': lambda x: random.choice(states_uts),
+        'country': 'India',
+    }
+    return data
 
 # For CameFromActivity Model
 # def randomData():
@@ -245,7 +241,7 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     data = {
 #         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
 #         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator. local_latlng(country_code='IN', coords_only=True)][::-1] }
+#         'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator.local_latlng(country_code='IN', coords_only=True)][::-1] }
 #     }
 #     return data
 
@@ -393,16 +389,16 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     return data
 
 # For ExitLinkStats Model
-def randomData():
-    data = {
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
-        'exit_link': lambda x: random.choice(exit_links),
-        'page_views': lambda x: random.randint(1, 1000),
-    }
-    return data
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
+#         'exit_link': lambda x: random.choice(exit_links),
+#         'page_views': lambda x: random.randint(1, 1000),
+#     }
+#     return data
 
 # Adding data to populator object
-populator.addEntity(ExitLinkStats, num_rows, randomData())
+populator.addEntity(Log, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()

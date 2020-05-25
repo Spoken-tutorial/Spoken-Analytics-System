@@ -4,17 +4,23 @@ from djgeojson.fields import PointField
 
 # Create your models here.
 class Log(models.Model):
-    path_info = models.CharField (max_length=200)
-    browser_info = models.CharField (max_length=300)
-    method = models.CharField(max_length=10)
-    event_name = models.CharField (max_length=100, blank=False)
-    visited_by = models.CharField (max_length=100, blank=False)
+    path_info = models.CharField(max_length=200)
+    event_name = models.CharField(max_length=200, blank=False)
+    visited_by = models.CharField(max_length=100, blank=False)
     ip_address = models.GenericIPAddressField(null=False)
-    country = models.CharField (max_length=100, blank=False)
-    region = models.CharField (max_length=5, blank=False)
-    city = models.CharField (max_length=100, blank=False)
-    isp = models.CharField (max_length=100)
     datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=500)
+    browser_family = models.CharField(max_length=100)
+    browser_version = models.CharField(max_length=20)
+    os_family = models.CharField(max_length=100)
+    os_version = models.CharField(max_length=20)
+    device_family = models.CharField(max_length=100)
+    device_type = models.CharField(max_length=50)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    country = models.CharField(max_length=100, blank=False)
+    region = models.CharField(max_length=5, blank=False)
+    city = models.CharField(max_length=100, blank=False)
     
     def __str__(self):
         return "Website Log Object"
@@ -48,7 +54,8 @@ class AverageStats(models.Model):
 
 
 class DailyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
+    date = models.DateField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
     first_time_visits = models.IntegerField()
@@ -62,7 +69,7 @@ class DailyStats(models.Model):
 
 
 class WeeklyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
     week_of_year = models.IntegerField()
     year = models.IntegerField()
     page_views = models.IntegerField()
@@ -78,7 +85,7 @@ class WeeklyStats(models.Model):
 
 
 class MonthlyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
     month_of_year = models.IntegerField()
     year = models.IntegerField()
     page_views = models.IntegerField()
@@ -94,7 +101,7 @@ class MonthlyStats(models.Model):
 
 
 class YearlyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
     year = models.IntegerField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
@@ -108,6 +115,7 @@ class YearlyStats(models.Model):
     objects = models.DjongoManager()
 
 class EventStats(models.Model):
+    datetime = models.DateTimeField()
     event_name = models.CharField(max_length=100, blank=False)
     path_info = models.CharField (max_length=200)
     date = models.DateTimeField()
