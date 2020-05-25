@@ -36,25 +36,26 @@ else:
 
 """
 Continuosly monitor the redis 'tasks' queue length.
-if reaches >= 10000 items, pop the leftmost 10000 items
-and save them in MongoDB. (the items at the left of the
-queue are the ones that have been in the queue the longest,
+if reaches >= MONGO_BULK_INSERT_COUNT items, pop the 
+leftmost MONGO_BULK_INSERT_COUNT items and save them 
+in MongoDB. (the items at the left of the queue 
+are the ones that have been in the queue the longest,
 since the queue is a FIFO structure).
 """
 while (True):
 
-    if REDIS_CLIENT.llen(task_queue) >= 5:
+    if REDIS_CLIENT.llen(task_queue) >= settings.MONGO_BULK_INSERT_COUNT:
 
         try:
 
-            logs = REDIS_CLIENT.lrange(task_queue, 0, 4)
+            logs = REDIS_CLIENT.lrange(task_queue, 0, settings.MONGO_BULK_INSERT_COUNT - 1)
             
             # trim the queue to remove the leftmost 10000 logs
             # TODO: check if there's any opportunity for data loss, i.e.
             # if it's possible for the queue size to increase between when the function 
             # ltrim() is called, and when the queue is actually trimmed. The newest logs
             # may be lost in this case.
-            REDIS_CLIENT.ltrim(task_queue, start=5, end=REDIS_CLIENT.llen(task_queue))
+            REDIS_CLIENT.ltrim(task_queue, start=settings.MONGO_BULK_INSERT_COUNT, end=-1)
 
             for i in range(len(logs)):
 
