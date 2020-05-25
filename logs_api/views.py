@@ -78,7 +78,7 @@ def middleware_log (request):
 
     try:
 
-        # if the IPv4 or IPv6 address is not a properly formatted IPv4, reject it
+        # if the address is not a properly formatted IPv4 or IPv6, reject the log
         if not re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', data["ip_address"]):
             if not re.match(r'^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$', data['ip_address']):
                 return
@@ -92,6 +92,7 @@ def middleware_log (request):
             data["city"] = location["city"]
             data['region_code'] = location["region"]
             data["region"] = REGION_CODE_TO_REGION.get(data["region_code"])
+
         except:  # check https://pypi.org/project/geoip2/ for the exceptions thrown by GeoIP2
             data["latitude"] = None
             data["longitude"] = None
@@ -113,11 +114,11 @@ def middleware_log (request):
         if not data["region"]:
             data["region"] = "Unknown"
 
-        # enqueue job in the redis queue named 'tasks4'
+        # enqueue job in the redis queue named 'middleware_log'
         REDIS_CLIENT.rpush('middleware_log', json.dumps(data))
 
     except Exception as e:
-        with open("enqueue_logs_errors.txt", "a") as f:
+        with open("enqueue_middleware_logs_errors.txt", "a") as f:
             f.write(str(e))
 
 
@@ -160,7 +161,7 @@ def save_website_log (request):
         data['city'] = request.POST.get ('city')
         data['latitude'] = request.POST.get ('latitude')
         data['longitude'] = request.POST.get ('longitude')
-        # enqueue job in the redis queue named 'tasks3'
+        # enqueue job in the redis queue named 'js_log'
         REDIS_CLIENT.rpush('js_log', json.dumps(data))
 
     except Exception as e:

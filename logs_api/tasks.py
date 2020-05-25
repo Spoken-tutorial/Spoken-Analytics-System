@@ -10,7 +10,7 @@ from django.conf import settings
 from analytics_system import MONGO_CLIENT
 
 # configurations for pymongo
-db = MONGO_CLIENT.logs_api
+db = MONGO_CLIENT.logs
 website_logs_middleware = db.website_logs_middleware
 website_logs_js = db.website_logs_js
 
@@ -38,10 +38,12 @@ def dump_json_logs(self, logs):  # celery task for bulk insertion of logs into M
 
     except Exception as e:  # catching a generic exception
 
-        # sending the task back into the queue with exponential
-        # backoff. If the task fails more than max_retries + 1 times,
-        # an error is display in the celery worker.
+        """
+        Sending the task back into the queue with exponential
+        backoff. If the task fails more than max_retries + 1 times,
+        an error is display in the celery worker.
+        """
         # self.retry(exc=exc, countdown=2 ** self.request.retries)
 
-        with open("logs/dump_json_logs_errors.txt", "a") as f:
+        with open("logs/celery_errors_log.txt", "a") as f:
             f.write(str(e) + "\n")
