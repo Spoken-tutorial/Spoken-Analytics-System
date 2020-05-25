@@ -7,6 +7,7 @@ import re
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST   
 from .utils import update_tutorial_progress
 
 from analytics_system import MONGO_CLIENT, REDIS_CLIENT, GEOIP2_CLIENT
@@ -56,7 +57,8 @@ Function called indirectly from the middleware for extracting Geolocation info,
 and pushing the log to a redis queue.
 """
 @csrf_exempt
-def middleware_log (request):
+@require_POST
+def save_middleware_log (request):
     
     data = {}
     data['ip_address'] = request.POST.get('ip_address')
@@ -118,8 +120,10 @@ def middleware_log (request):
         REDIS_CLIENT.rpush('middleware_log', json.dumps(data))
 
     except Exception as e:
-        with open("enqueue_middleware_logs_errors.txt", "a") as f:
+        with open("enqueue_middleware_log_errors.txt", "a") as f:
             f.write(str(e))
+
+    return HttpResponse(status=200)
 
 
 # initialize the variable pointing to the tutorial_progress_logs
@@ -133,10 +137,8 @@ API function called from the client-side Javascript for extracting Geolocation i
 and pushing the log to a redis queue.
 """
 @csrf_exempt
-def save_website_log (request):
-
-    if request.method != "POST":
-        return HttpResponse("You are not allowed to make that request to this page.")
+@require_POST
+def save_js_log (request):
 
     try:
         data = {}
@@ -165,7 +167,8 @@ def save_website_log (request):
         REDIS_CLIENT.rpush('js_log', json.dumps(data))
 
     except Exception as e:
-        print("Log Exception " + str(e))
+        with open("enqueue_js_log_errors.txt", "a") as f:
+            f.write(str(e))
     
     return HttpResponse(status=200)
 
@@ -178,10 +181,8 @@ This code is currently not in use, as an API-based code is currently used instea
 TODO: don't let users make their own post requests to this view. Remove CSRF exempt
 """
 @csrf_exempt
+@require_POST
 def save_tutorial_progress (request):
-
-    if request.method != "POST":
-        return HttpResponse("You are not allowed to make that request to this page.")
 
     data = {}
     data['username'] = request.POST.get("username")
@@ -214,10 +215,8 @@ This code is currently not in use, as an API-based code is currently used instea
 TODO: don't let users make their own post requests to this view. Remove CSRF exempt
 """
 @csrf_exempt
+@require_POST
 def change_completion (request):
-
-    if request.method != "POST":
-        return HttpResponse("You are not allowed to make that request to this page.")
 
     # configurations for pymongo
     db = MONGO_CLIENT.logs
@@ -241,8 +240,10 @@ def change_completion (request):
         return HttpResponse(status=200)
 
     except Exception as e:
-        print (str(e))
-        return HttpResponse(status=500)
+        with open("change_completion_errors.txt", "a") as f:
+            f.write(str(e))
+        
+    return HttpResponse(status=500)
 
 
 """
@@ -252,10 +253,8 @@ This code is currently not in use, as an API-based code is currently used instea
 TODO: don't let users make their own post requests to this view. Remove CSRF exempt
 """
 @csrf_exempt
+@require_POST
 def check_completion (request):
-
-    if request.method != "POST":
-        return HttpResponse("You are not allowed to make that request to this page.")
 
     # configurations for pymongo
     db = MONGO_CLIENT.logs
@@ -270,8 +269,7 @@ def check_completion (request):
         if res['fosses'][str(request.POST.get('foss_id'))][str(request.POST.get('language_id'))][str(request.POST.get('tutorial_id'))]['completed'] == True:
             return HttpResponse(status=200)
 
-        return HttpResponse(status=500)
-
-    except Exception as e:
-        print (str(e))
-        return HttpResponse(status=500)
+    except Exception:  # the 'completed' field is not yet created for that log.
+        pass
+    
+    return HttpResponse(status=500)

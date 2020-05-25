@@ -45,5 +45,5 @@ def dump_json_logs(self, logs):  # celery task for bulk insertion of logs into M
         """
         # self.retry(exc=exc, countdown=2 ** self.request.retries)
 
-        with open("logs/celery_errors_log.txt", "a") as f:
+        with open("celery_errors_log.txt", "a") as f:
             f.write(str(e) + "\n")
