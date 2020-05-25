@@ -202,6 +202,7 @@ def save_tutorial_progress (request):
 
     data['language_visit_count'] = int (request.POST.get("language_visit_count"))
     data['datetime'] = datetime.datetime.fromtimestamp(int (request.POST.get("timestamp"))/1000)
+    data['allow_completion_change'] = request.POST.get("allow_completion_change")
 
     update_tutorial_progress (data)  # synchronous call
 
