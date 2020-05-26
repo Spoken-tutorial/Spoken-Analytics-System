@@ -15,7 +15,7 @@ from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkAc
 from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
 from dashboard.models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
 
-num_rows = 100000 # number of rows to insert
+num_rows = 10000 # number of rows to insert
 
 india_tz = tz.gettz('Asia/Kolkata')
 
@@ -23,7 +23,7 @@ india_tz = tz.gettz('Asia/Kolkata')
 populator = Faker.getPopulator()
 
 event_names = ["event.video.watch", "event.cdcontent.download", "event.tutorial.search", "event.news", "event.login", 
-"event.logout", "event.registlogser", "event.software.training", "event.software.training.planner", 
+"event.logout", "event.register", "event.software.training", "event.software.training.planner", 
 "event.software.training.student.batch", "event.software.training.select.participants", 
 "event.software.training.resource.center", "event.participant.login", "event.statistics", 
 "event.statistics.training", "event.statistics.fdp.training", "event.statistics.tutorial.content", 
@@ -35,22 +35,46 @@ paths = ["/watch/", "/cdcontent/", "/tutorial-search/", "/news/", "/accounts/log
 "/statistics/training/", "/statistics/pmmmnmtt/fdp/", "/statistics/tutorial-content/", "/statistics/online-test/", 
 "/statistics/academic-center/", "/home/"]
 
-foss = ["Aakash Business Tool", "Advance C", "Advanced Cpp", "Applications of GeoGebra", "Arduino", "ASCEND", 
-"Avogadro", "BASH", "Biogas Plant", "Biopython", "Blender", "BOSS Linux", "C", "C and Cpp", "CellDesigner", 
-"ChemCollective Virtual Labs", "Cpp", "Digital Divide", "Digital India", "Drupal", "DWSIM", "eSim", "ExpEYES", 
-"Filezilla", "Firefox", "FrontAccounting", "GChemPaint", "gedit Text Editor", "Geogebra", 
-"GeoGebra for Engineering drawing", "GIMP", "Git", "GNS3", "GNUKhata", "GSchem", "Inkscape", 
-"Introduction to Computers", "Java", "Java Business Application", "JChemPaint", "Jmol Application", "Joomla", 
-"K3b", "KiCad", "Koha Library Management System", "KTouch", "KTurtle", "LaTeX", "LaTeX Old Version", 
-"LibreOffice Calc on BOSS Linux", "LibreOffice Impress on BOSS Linux", "LibreOffice Installation", 
-"LibreOffice Suite Base", "LibreOffice Suite Calc", "LibreOffice Suite Draw", "LibreOffice Suite Impress", 
-"LibreOffice Suite Math", "LibreOffice Suite Writer", "LibreOffice Writer on BOSS Linux", "Linux", 
-"Moodle Learning Management System", "Netbeans", "Ngspice", "OpenFOAM", "OpenModelica", "OR Tools", "Orca", "Oscad", 
-"PERL", "PhET", "PHP and MySQL", "Python", "Python 3.4.3", "Python for Biologists", "Python Old Version", "QCad", 
-"R", "RDBMS PostgreSQL", "Ruby", "Scilab", "Selenium", "Showcase Tutorials", "Single Board Heater System", 
-"Skill Development- Fitter", "Skill Development- InStore Promoter", "Spoken Tutorial Technology", "Step", 
-"Synfig", "test", "TEST FOSS", "Thunderbird", "Translation and Dubbing", "Tux Typing", "UCSF Chimera", 
-"Website Information", "What is Spoken Tutorial", "Xfig"]
+page_titles = ["Watch Tutorial | spoken-tutorial.org", 
+"CD Content Creation | spoken-tutorial.org", 
+"Search Tutorials | spoken-tutorial.org", 
+"Events & Happenings  | spoken-tutorial.org", 
+"Login | spoken-tutorial.org", 
+"Logout | spoken-tutorial.org", 
+"Register | spoken-tutorial.org", 
+"Software Training Dashboard | spoken-tutorial.org", 
+"Software Training Planner | spoken-tutorial.org", 
+"Software Training Student Batch | spoken-tutorial.org", 
+"Software Training Select Participants | spoken-tutorial.org", 
+"Software Training Resource Center | spoken-tutorial.org", 
+"Participant/Student Login | spoken-tutorial.org", 
+"India Map | spoken-tutorial.org",
+"Workshop/Training Statistics  | spoken-tutorial.org", 
+"PMMMNMTT Statistics  | spoken-tutorial.org",
+"Tutorial Statistics  | spoken-tutorial.org",
+"Online-Test Statistics  | spoken-tutorial.org", 
+"Academic Centers  | spoken-tutorial.org", 
+"Home | spoken-tutorial.org", 
+"CD Image Download | spoken-tutorial.org",
+]
+
+foss = ['Aakash+Business+Tool', 'Advance+C', 'Advanced+Cpp', 'Applications+of+GeoGebra', 
+'Arduino', 'ASCEND', 'Avogadro', 'BASH', 'Biogas+Plant', 'Biopython', 'Blender', 'BOSS+Linux', 
+'C', 'C+and+Cpp', 'CellDesigner', 'ChemCollective+Virtual+Labs', 'Cpp', 'Digital+Divide', 
+'Digital+India', 'Drupal', 'DWSIM', 'eSim', 'ExpEYES', 'Filezilla', 'Firefox', 'FrontAccounting', 
+'GChemPaint', 'gedit+Text+Editor', 'Geogebra', 'GeoGebra+for+Engineering+drawing', 'GIMP', 'Git', 
+'GNS3', 'GNUKhata', 'GSchem', 'Inkscape', 'Introduction+to+Computers', 'Java', 
+'Java+Business+Application', 'JChemPaint', 'Jmol+Application', 'Joomla', 'K3b', 'KiCad', 
+'Koha+Library+Management+System', 'KTouch', 'KTurtle', 'LaTeX', 'LaTeX+Old+Version', 
+'LibreOffice+Calc+on+BOSS+Linux', 'LibreOffice+Impress+on+BOSS+Linux', 'LibreOffice+Installation', 
+'LibreOffice+Suite+Base', 'LibreOffice+Suite+Calc', 'LibreOffice+Suite+Draw', 'LibreOffice+Suite+Impress', 
+'LibreOffice+Suite+Math', 'LibreOffice+Suite+Writer', 'LibreOffice+Writer+on+BOSS+Linux', 'Linux', 
+'Moodle+Learning+Management+System', 'Netbeans', 'Ngspice', 'OpenFOAM', 'OpenModelica', 'OR+Tools', 
+'Orca', 'Oscad', 'PERL', 'PhET', 'PHP+and+MySQL', 'Python', 'Python+3.4.3', 'Python+for+Biologists', 
+'Python+Old+Version', 'QCad', 'R', 'RDBMS+PostgreSQL', 'Ruby', 'Scilab', 'Selenium', 'Showcase+Tutorials', 
+'Single+Board+Heater+System', 'Skill+Development-+Fitter', 'Skill+Development-+InStore+Promoter', 
+'Spoken+Tutorial+Technology', 'Step', 'Synfig', 'test', 'TEST+FOSS', 'Thunderbird', 
+'Translation+and+Dubbing', 'Tux+Typing', 'UCSF+Chimera', 'Website+Information', 'What+is+Spoken+Tutorial', 'Xfig']
 
 tutorials = ["Tutorial 1", "Tutorial 2", "Tutorial 3", "Tutorial 4", "Tutorial 5", "Tutorial 6", "Tutorial 7", "Tutorial 8"]
 
@@ -191,9 +215,10 @@ def randomData():
     data = {
         'path_info': lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths),
         'event_name': lambda x: random.choice(event_names),
+        'page_title': lambda x: random.choice(page_titles),
         'visited_by': lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else "anonymous",
         'ip_address':  lambda x: "230.124.0." + str(random.randint(0, 255)),
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+10d', tzinfo=india_tz),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-7d', end_date='+5d', tzinfo=india_tz),
         'referrer': lambda x: random.choice(referrer),
         'browser_family': lambda x: random.choice(browsers),
         'browser_version': lambda x: random.choice(browser_versions),

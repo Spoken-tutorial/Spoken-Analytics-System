@@ -6,6 +6,7 @@ from djgeojson.fields import PointField
 class Log(models.Model):
     path_info = models.CharField(max_length=200)
     event_name = models.CharField(max_length=200, blank=False)
+    page_title = models.CharField(max_length=200)
     visited_by = models.CharField(max_length=100, blank=False)
     ip_address = models.GenericIPAddressField(null=False)
     datetime = models.DateTimeField()
@@ -29,6 +30,7 @@ class Log(models.Model):
 
 
 class AverageStats(models.Model):
+    datetime = models.DateTimeField()
     average_daily_page_views = models.IntegerField()
     average_daily_unique_visits = models.IntegerField()
     average_daily_first_time_visits = models.IntegerField()
@@ -114,22 +116,13 @@ class YearlyStats(models.Model):
 
     objects = models.DjongoManager()
 
-class Event(models.Model):
+class EventStats(models.Model):
+    date = models.DateField()
     event_name = models.CharField(max_length=100, blank=False)
     page_title = models.CharField(max_length=200)
-    path_info = models.CharField (max_length=300)
+    path_info = models.CharField (max_length=200)
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
-    
-    class Meta:
-        abstract = True
-
-class EventStats(models.Model):
-    datetime = models.DateTimeField()
-    date = models.DateField()
-    event = models.ArrayField(
-        model_container=Event,
-    )
 
     def __str__(self):
         return "Event Stats"

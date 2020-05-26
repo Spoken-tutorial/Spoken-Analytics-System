@@ -9,14 +9,8 @@ tz = timezone(settings.TIME_ZONE)
 yesterday = datetime.datetime.now() - datetime.timedelta(1)
 one_year_ago = datetime.datetime.now() - relativedelta(years=1)
 
-print(yesterday)
-print(one_year_ago)
-
 one_year_ago_min = datetime.datetime.combine(one_year_ago, datetime.time.min)
 yesterday_max = datetime.datetime.combine(yesterday, datetime.time.max)
-
-print(one_year_ago_min)
-print(yesterday_max)
 
 # make datetimes timezone aware
 one_year_ago_min = tz.localize(one_year_ago_min)

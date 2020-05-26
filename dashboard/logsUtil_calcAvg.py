@@ -15,7 +15,7 @@ def calc_avg (self):
     weekly_stats = WeeklyStats.objects.all()
     monthly_stats = MonthlyStats.objects.all()
     yearly_stats = YearlyStats.objects.all()
-    all_logs = Log.objects.all()
+    all_logs_total = Log.objects.all().count()
 
     # Variables to store stats
     total_records = 0
@@ -124,6 +124,6 @@ def calc_avg (self):
     avg_stats.average_yearly_first_time_visits = average_yearly_first_time_visits
     avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
 
-    avg_stats.total_page_views = len(all_logs)
+    avg_stats.total_page_views = all_logs_total
     # Saving the object
     avg_stats.save()

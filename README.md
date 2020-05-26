@@ -48,7 +48,7 @@ for field in self.model_container._meta._get_fields(reverse = False):
 (mind the underscores)
 This is to be done because there is bug in djongo in latest release.
 
-* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly file in the shell so that stats can be calculated.
+* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg files in the shell so that stats can be calculated.
 
 These files contain the same code as in logsUtil_* files but logsUtil_* files run from celery at regular intervals.
 

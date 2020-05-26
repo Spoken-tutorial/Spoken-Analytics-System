@@ -1,3 +1,5 @@
+# Add the event names, title page and path for new events for which stats are to be calculated.
+
 events_titles = [
     ("event.video.watch", "Watch Tutorial | spoken-tutorial.org"), 
     ("event.cdcontent.download", "CD Content Creation | spoken-tutorial.org"), 

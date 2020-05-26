@@ -59,7 +59,7 @@ function getEventsData() {
             // Inserting data to data_table_array
             data.forEach((key, value) => {
                 data_table_array.push([
-                    '<span class="text-primary text-uppercase">' + key.event_name + '</span>' + '<br>' + key.path_info,
+                    '<span class="text-primary text-uppercase">' + key.page_title + '</span>' + '<br>' + "<a href='http://spoken-tutorial.org" + key.path_info + "'>" + key.path_info + "</a>",
                     key.unique_visits,
                     '<a class="text-primary link" href="/dashboard/event_analysis/' + key.event_name + '"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>',
                 ])

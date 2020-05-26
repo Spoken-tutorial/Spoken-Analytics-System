@@ -75,19 +75,19 @@ def graphData(request):
     # extracting data on basis of granuality (weekly, monthly, etc)
     if data_summary_type == 'daily':
         
-        stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
+        stats = DailyStats.objects.filter(datetime__gte=from_date, datetime__lte=to_date).order_by('datetime')
 
     elif data_summary_type == 'weekly':
 
-        stats = WeeklyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
+        stats = WeeklyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
     
     elif data_summary_type == 'monthly':
 
-        stats = MonthlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
+        stats = MonthlyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
 
     elif data_summary_type == 'yearly':
 
-        stats = YearlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
+        stats = YearlyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
 
     # Converting data to json object
     json_stats = serializers.serialize('json', stats)
@@ -106,23 +106,7 @@ def events(request):
     """
     Renders the events page
     """
-
-    today = datetime.today()
-    day_before = today - timedelta(days=2)
-
-    # make datetimes timezone aware
-    today = tz.localize(today)
-    day_before = tz.localize(day_before)
-
-    # getting event stats of 4 days ago
-    # you can choose any day but difference must be of 1 day
-    event_stats = EventStats.objects.filter(date__range=(day_before, today)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
-
-    context = {
-        'event_stats': event_stats,
-    }
-
-    return render(request, 'events.html', context)
+    return render(request, 'events.html')
 
 def eventsData(request):
     """
@@ -139,9 +123,9 @@ def eventsData(request):
     to_date = tz.localize(to_date)
     
     # getting events stats from database
-    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
+    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('path_info', 'page_title').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
 
-    # Converting data to json object
+    # Converting data to json objectath_info = models.CharFi
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
     return JsonResponse(json_res, safe=False) # sending data

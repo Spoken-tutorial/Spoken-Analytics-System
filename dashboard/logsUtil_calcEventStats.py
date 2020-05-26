@@ -11,7 +11,6 @@ from django.utils.timezone import get_current_timezone
 from pytz import timezone
 from django.conf import settings
 from celery import shared_task
-from dashboard.events_info import events_titles
 
 
 # using bind=True on the shared_task decorator to turn the below function
@@ -30,49 +29,53 @@ def calc_event_stats (self):
     yesterday_min = tz.localize(yesterday_min)
     yesterday_max = tz.localize(yesterday_max)
 
+    paths = [] # Stores all paths for which data is present
+
     logs = Log.objects.filter(datetime__range=(yesterday_min, yesterday_max)) # Getting the logs
 
-    stats = []
+    # Calculating paths of which data is present
+    for log in logs:
+        if log.path_info not in paths:
+            paths.append(log.path_info)
 
-    for event in events_titles:
-        yesterdays_logs = logs.filter(event_name=event[0]).order_by('datetime') # Getting data of the date from log collection
+    for path in paths:
 
-        unique_visitors = [] # Stores unique ip addresses
+        daily_logs = Log.objects.filter(path_info=path).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('-datetime') # Getting data of the date from log collection
+        
+        # if logs are found
+        if daily_logs:
+            unique_visitors = [] # Stores unique ip addresses
 
-        # Finding all unique ip addresses of this day
-        for log in yesterdays_logs:
-            if log.ip_address not in unique_visitors:
-                unique_visitors.append(log.ip_address)
-        # variables to store counts
-        unique_visits = 0
-        first_time = 0
+            # Finding all unique ip addresses of this day
+            for log in daily_logs:
+                if log.ip_address not in unique_visitors:
+                    unique_visitors.append(log.ip_address)
 
-        # caculating stats according to ip addresses
-        for ip in unique_visitors:
+            # variables to store counts
+            unique_visits = 0
             first_time = 0
-            for log in yesterdays_logs:
-                if log.ip_address == ip:
-                    # if ip is found for the first time
-                    if first_time == 0:
-                        prev_datetime = log.datetime
-                        unique_visits += 1
-                    else:
-                        # if same ip occurs within time differce of 30 minutes
-                        if (log.datetime - prev_datetime).seconds / 60 > 30:
+
+            # caculating stats according to ip addresses
+            for ip in unique_visitors:
+                first_time = 0
+                for log in daily_logs:
+                    if log.ip_address == ip:
+                        # if ip is found for the first time
+                        if first_time == 0:
+                            first_time = 1
                             prev_datetime = log.datetime
                             unique_visits += 1
-        
-        stats += [{
-            'event_name': event[0],
-            'page_title': event[1],
-            'path_info': '',
-            'page_views': len(yesterdays_logs),
-            'unique_visits': unique_visits,
-        }]
-
-    # saving the events stats
-    event_stats = EventStats()
-    event_stats.date = yesterday.date()
-    event_stats.datetime = tz.localize(datetime.datetime.now())
-    event_stats.event = stats
-    event_stats.save()
+                        else:
+                            # if same ip occurs within time differce of 30 minutes
+                            if (log.datetime - prev_datetime).seconds / 60 > 30:
+                                prev_datetime = log.datetime
+                                unique_visits += 1
+            
+            # saving the events stats
+            event_stats = EventStats()
+            event_stats.date = yesterday.date()
+            event_stats.path_info = path
+            event_stats.page_title = daily_logs.first().page_title
+            event_stats.page_views = len(daily_logs)
+            event_stats.unique_visits = unique_visits
+            event_stats.save()
