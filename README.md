@@ -44,9 +44,17 @@ for field in self.model_container._meta._get_fields(reverse = False):
 (mind the underscores)
 This is to be done because there is bug in djongo in latest release.
 
-* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg and temp_eventStats files in the shell so that stats can be calculated. (These files contain the same code as in logsUtil_* files but logsUtil_* files run from celery at regular intervals).
+* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg, temp_eventStats and temo_fossStats files in the shell so that stats can be calculated. 
+```
+python3 manage.py shell < temp_daily.py
+python3 manage.py shell < temp_weekly.py
+...
 
-* You can only see the visualization of dashboard page, events and event analysis page till now, because data for other pages is not being calculated yet.
+```
+
+(These files contain the same code as in logsUtil_* files but logsUtil_* files run from celery at regular intervals).
+
+* You can only see the visualization of dashboard page, events, event analysis and foss page till now, because data for other pages is not being calculated yet.
 
 * Finally, you’re ready to start the development server:
 ```

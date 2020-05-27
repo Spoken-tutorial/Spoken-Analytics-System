@@ -66,7 +66,7 @@ def calc_event_stats (self):
                             prev_datetime = log.datetime
                             unique_visits += 1
                         else:
-                            # if same ip occurs within time differce of 30 minutes
+                            # if same ip occurs within time difference of 30 minutes
                             if (log.datetime - prev_datetime).seconds / 60 > 30:
                                 prev_datetime = log.datetime
                                 unique_visits += 1

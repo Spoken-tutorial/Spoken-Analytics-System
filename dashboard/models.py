@@ -130,8 +130,8 @@ class EventStats(models.Model):
     objects = models.DjongoManager()
 
 class FossStats(models.Model):
+    date = models.DateField()
     foss_name = models.CharField(max_length=100)
-    date = models.DateTimeField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
 

@@ -245,27 +245,12 @@ def foss(request):
     """
     Renders the foss page
     """
-
-    today = datetime.today()
-    day_before = today - timedelta(days=2)
-    
-    # make datetimes timezone aware
-    today = tz.localize(today)
-    day_before = tz.localize(day_before)
-
-    # getting foss stats of 1 day
-    foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
-
-    context = {
-        'foss_stats': foss_stats,
-    }
-
-    return render(request, 'foss.html', context)
+    return render(request, 'foss.html')
 
 
 def fossData(request):
     """
-    Suppy data to data table of reports page
+    Suppy data to data table of foss page
     """
 
     data = json.loads(request.body) # Extract data from request
