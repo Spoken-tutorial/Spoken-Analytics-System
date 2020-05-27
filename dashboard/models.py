@@ -30,7 +30,7 @@ class Log(models.Model):
 
 
 class AverageStats(models.Model):
-    datetime = models.DateTimeField()
+    date = models.DateField()
     average_daily_page_views = models.IntegerField()
     average_daily_unique_visits = models.IntegerField()
     average_daily_first_time_visits = models.IntegerField()
@@ -218,6 +218,7 @@ class PageViewActivity(models.Model):
     objects = models.DjongoManager()
 
 class VisitorActivity(models.Model):
+    datetime = models.DateTimeField()
     page_views = models.IntegerField()
     total_visits = models.IntegerField()
     latest_page_view = models.DateTimeField()
@@ -226,14 +227,12 @@ class VisitorActivity(models.Model):
     country = models.CharField(max_length=100)
     visit_length_sec = models.IntegerField()
     ip_address = models.GenericIPAddressField()
-    isp = models.CharField(max_length=100)
-    screen_res = models.CharField(max_length=20)
     browser = models.CharField(max_length=100)
     os = models.CharField(max_length=100)
+    device = models.CharField(max_length=100)
     referrer = models.CharField(max_length=300)
     entry_page = models.CharField(max_length=300)
     latest_page = models.CharField(max_length=300)
-    visit_page = models.CharField(max_length=300)
 
     def __str__(self):
         return "Visitor Activity Model"

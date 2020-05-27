@@ -218,7 +218,7 @@ def randomData():
         'page_title': lambda x: random.choice(page_titles),
         'visited_by': lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else "anonymous",
         'ip_address':  lambda x: "230.124.0." + str(random.randint(0, 255)),
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-7d', end_date='+5d', tzinfo=india_tz),
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz),
         'referrer': lambda x: random.choice(referrer),
         'browser_family': lambda x: random.choice(browsers),
         'browser_version': lambda x: random.choice(browser_versions),

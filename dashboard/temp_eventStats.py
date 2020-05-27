@@ -32,7 +32,7 @@ for log in logs:
 
 for path in paths:
 
-    daily_logs = Log.objects.filter(path_info=path).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('-datetime') # Getting data of the date from log collection
+    daily_logs = Log.objects.filter(path_info=path).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
     
     # if logs are found
     if daily_logs:
@@ -51,17 +51,17 @@ for path in paths:
         for ip in unique_visitors:
             first_time = 0
             for log in daily_logs:
-                if log.ip_address == ip:
+                if ip == log.ip_address:
                     # if ip is found for the first time
                     if first_time == 0:
-                        first_time = 1
                         prev_datetime = log.datetime
+                        first_time = 1
                         unique_visits += 1
                     else:
-                        # if same ip occurs within time difference of 30 minutes
-                        if (log.datetime - prev_datetime).seconds / 60 > 30:
-                            prev_datetime = log.datetime
+                        # if same ip occurs after 30 minutes
+                        if ((log.datetime - prev_datetime).seconds / 60) > 30:
                             unique_visits += 1
+                    prev_datetime = log.datetime
         
         # saving the events stats
         event_stats = EventStats()

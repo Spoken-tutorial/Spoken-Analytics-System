@@ -123,6 +123,6 @@ avg_stats.average_yearly_first_time_visits = average_yearly_first_time_visits
 avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
 
 avg_stats.total_page_views = all_logs_total
-avg_stats.datetime = tz.localize(datetime.datetime.now())
+avg_stats.date = tz.localize(datetime.datetime.now()).date()
 # Saving the object
 avg_stats.save()

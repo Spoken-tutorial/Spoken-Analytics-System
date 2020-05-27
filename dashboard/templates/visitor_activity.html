@@ -44,17 +44,12 @@
                                         {{ activity.visit_length_sec|intdiv:60 }} min {{ activity.visit_length_sec|mod:60 }} sec
                                     </dd>
                                     <dt>
-                                        Resolution:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.screen_res }}
-                                    </dd>
-                                    <dt>
                                         System:
                                     </dt>
                                     <dd>
                                         {{ activity.browser }}
                                         <br> {{ activity.os }}
+                                        <br> {{ activity.device }}
                                     </dd>
                                 </dl>
                             </td>
@@ -76,7 +71,7 @@
                                         IP Address:
                                     </dt>
                                     <dd>
-                                        <span style="color: red">{{ activity.isp }} </span>({{ activity.ip_address }})
+                                        {{ activity.ip_address }}
                                     </dd>
                                     <dt>
                                         Referring URL:
@@ -90,9 +85,13 @@
                                     <dd>
                                         <a href="{{ activity.entry_page }}" style="text-decoration: none; color: blue">{{ activity.entry_page }}</a>
                                     </dd>
+                                    {% if activity.page_views == 1 %}
+                                    <dt>
+                                        Visit Page:
+                                    </dt> {% else %}
                                     <dt>
                                         Latest Page:
-                                    </dt>
+                                    </dt> {% endif %}
                                     <dd>
                                         <a href="{{ activity.latest_page }}" style="text-decoration: none; color: blue">{{ activity.latest_page }}</a>
                                     </dd>
