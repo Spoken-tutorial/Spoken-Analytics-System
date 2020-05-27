@@ -77,7 +77,7 @@ while (True):
                 # even if one of the intermediate logs fails the insertion.
 
                 if settings.USE_MIDDLEWARE_LOGS:
-                    website_logs_middleware.insert_many([logs[i] for i in range(len(logs))], ordered=False)
+                    website_logs.insert_many([logs[i] for i in range(len(logs))], ordered=False)
                 else:
                     website_logs_js.insert_many([logs[i] for i in range(len(logs))], ordered=False)
 

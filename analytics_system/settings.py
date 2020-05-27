@@ -218,7 +218,7 @@ USE_MIDDLEWARE_LOGS = True  # whether to use middleware logs or client-side JS l
 
 SAVE_LOGS_WITH_CELERY = False
 
-MONGO_BULK_INSERT_COUNT = 10000
+MONGO_BULK_INSERT_COUNT = 1  # change to 10000 later
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (20.5937, 78.9629),
