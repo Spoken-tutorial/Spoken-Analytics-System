@@ -72,7 +72,6 @@ var config = {
                 display: true,
                 scaleLabel: {
                     display: true,
-                    labelString: 'Date'
                 },
                 ticks: {
                     major: {
@@ -127,7 +126,7 @@ function getEventData() {
 
     fromDate = $('#graph-from-date').val();
     toDate = $('#graph-to-date').val();
-    event_name = $('#event-name').html();
+    path = $('#path').html();
 
     $.ajax({
         type: "POST",
@@ -137,7 +136,7 @@ function getEventData() {
             'Accept': 'application/json'
         },
         data: JSON.stringify({
-            event_name: event_name,
+            path: path,
             from: fromDate,
             to: toDate,
         }),

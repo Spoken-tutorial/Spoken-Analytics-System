@@ -1,8 +1,5 @@
 # Spoken-Analytics-System
 
-
-## Chart visualization added
-
 ## Setting up the project
 * Create a virtual environment in recently created directory and activate it:
 ```
@@ -16,10 +13,9 @@ git clone https://github.com/Spoken-tutorial/Spoken-Analytics-System.git
 cd Spoken-Analytics-System
 ```
 
-* Switch to branch "arish" and go back to previous commit (3 commit ago) (some functionalities are not working in recent commits as they are in development)
+* Switch to branch "arish"
 ```
 git checkout arish
-git checkout 65816a7c
 ```
 
 
@@ -28,7 +24,7 @@ git checkout 65816a7c
 pip install -r requirements-dev.txt 
 ```
 
-* Change analytics_system/config.py-exp to analytics_system/config.py and put the configuration of databases
+* Change analytics_system/config.py-exp to analytics_system/config.py and change the configuration of databases
 
 * Restore the mongo dump
 ```
@@ -48,13 +44,9 @@ for field in self.model_container._meta._get_fields(reverse = False):
 (mind the underscores)
 This is to be done because there is bug in djongo in latest release.
 
-* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg files in the shell so that stats can be calculated.
+* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg and temp_eventStats files in the shell so that stats can be calculated. (These files contain the same code as in logsUtil_* files but logsUtil_* files run from celery at regular intervals).
 
-These files contain the same code as in logsUtil_* files but logsUtil_* files run from celery at regular intervals.
-
-* You can only see the visualization of dashboard page till now, because date for other pages is not being calculated yet.
-
-* To be able to see all pages you have to restore data from my database.
+* You can only see the visualization of dashboard page, events and event analysis page till now, because data for other pages is not being calculated yet.
 
 * Finally, you’re ready to start the development server:
 ```

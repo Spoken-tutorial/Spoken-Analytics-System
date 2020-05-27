@@ -130,13 +130,17 @@ def eventsData(request):
 
     return JsonResponse(json_res, safe=False) # sending data
 
-def eventAnalysis(request, event_name):
+def eventAnalysis(request):
     """
     Renders the event analysis page
     From users perspective events are 'pages'
     """
+
+    # Gettign path from request object
+    path = request.GET.get('path', '')
+
     context = {
-        'event_name': event_name,
+        'path': path,
     }
     return render(request, 'event_analysis.html', context)
 
@@ -147,7 +151,7 @@ def eventAnalysisGraphData(request):
 
     data = json.loads(request.body) # Extract data from request
 
-    event_name = data['event_name']
+    path = data['path']
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
@@ -156,8 +160,10 @@ def eventAnalysisGraphData(request):
     to_date = tz.localize(to_date)
 
     # getting events stats from database
-    event_stats = EventStats.objects.filter(event_name=event_name).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
-
+    event_stats = EventStats.objects.filter(path_info=path).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
+    
+    # for stats in event_stats
+    
     # Converting data to json object
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
