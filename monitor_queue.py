@@ -25,7 +25,7 @@ from analytics_system import REDIS_CLIENT, MONGO_CLIENT
 
 # configure the pymongo client
 db = MONGO_CLIENT.logs
-website_logs_middleware = db.website_logs_middleware
+website_logs = db.website_logs
 website_logs_js = db.website_logs_js
 
 task_queue = ''

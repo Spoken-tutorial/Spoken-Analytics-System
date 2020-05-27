@@ -146,6 +146,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
+    "http://192.168.100.6:8000",
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
@@ -215,7 +216,7 @@ GEOIP_PATH  = BASE_DIR + '/geodb/'
 
 USE_MIDDLEWARE_LOGS = True  # whether to use middleware logs or client-side JS logs system
 
-SAVE_LOGS_WITH_CELERY = True
+SAVE_LOGS_WITH_CELERY = False
 
 MONGO_BULK_INSERT_COUNT = 10000
 
