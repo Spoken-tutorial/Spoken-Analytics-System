@@ -18,7 +18,7 @@ yesterdays_logs = Log.objects.filter(datetime__range=(yesterday_min, yesterday_m
 
 ip_addresses = [] # Stores unique ip addresses
 
-# Finding all unique ip addresses of this day
+# Finding all unique ip addresses of previous day
 for log in yesterdays_logs:
     if log.ip_address not in ip_addresses:
         ip_addresses.append(log.ip_address)
@@ -53,23 +53,6 @@ for ip_address in ip_addresses:
             else:
                 last_datetime = log.datetime
         prev_datetime = log.datetime
-
-
-    print("Date: ", yesterday.date())
-    print("Page Views: ", len(ip_logs))
-    print("Total Visits: ", total_visits)
-    print("Latest Page View: ", ip_logs.last().datetime)
-    print("City: ", ip_logs.first().city)
-    print("Region: ", ip_logs.first().region)
-    print("Country: ", ip_logs.first().country)
-    print("Visit length: ", (last_datetime - first_datetime).seconds)
-    print("IP: ", ip_address)
-    print("Browser: ", ip_logs.first().browser_family, ip_logs.first().browser_version)
-    print("OS: ", ip_logs.first().os_family, ip_logs.first().os_version)
-    print("Device: ", ip_logs.first().device_family, ip_logs.first().device_type)
-    print("Referrer: ", referrer)
-    print("Entry Page: ", entry_page)
-    print("Latest Page: ", ip_logs.last().path_info)
 
     visitor_activity_stats = VisitorActivity() # DailyStats object
 

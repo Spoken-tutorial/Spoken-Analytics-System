@@ -253,11 +253,10 @@ class VisitorPath(models.Model):
     region = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     ip_address = models.GenericIPAddressField()
-    isp = models.CharField(max_length=100)
     visit_num = models.IntegerField()
-    screen_res = models.CharField(max_length=20)
     browser = models.CharField(max_length=100)
     os = models.CharField(max_length=100)
+    device = models.CharField(max_length=100)
     path = models.ArrayField(
         model_container=Path,
     )
