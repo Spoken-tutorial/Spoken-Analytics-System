@@ -285,11 +285,9 @@ class VisitorInfo(models.Model):
     city = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
-    screen_res = models.CharField(max_length=20)
+    device = models.CharField(max_length=100)
     returning_visits = models.IntegerField()
-    javascript = models.BooleanField()
     visit_length_sec = models.IntegerField()
-    isp = models.CharField(max_length=100)
     path = models.ArrayField(
         model_container=Path,
     )
