@@ -19,7 +19,7 @@
                             <th>Date</th>
                             <th>Time</th>
                             <th>System</th>
-                            <th>Location/Language</th>
+                            <th>Location</th>
                             <th>Host Name/Web Page/Referrer</th>
                         </tr>
                     </thead>
@@ -35,16 +35,16 @@
                             <td>
                                 {{ activity.browser }}
                                 <br> {{ activity.os }}
-                                <br> {{ activity.screen_res }}
+                                <br> {{ activity.device }}
                             </td>
                             <td>
                                 {{ activity.city }},
                                 <br> {{ activity.region }},
-                                <br> {{ activity.country }} / {{ activity.language }}
+                                <br> {{ activity.country }}
                             </td>
                             <td>
-                                <span style="color: red">{{ activity.isp }} </span>({{ activity.ip_address }})
-                                <br> <a href="{{ activity.page_url }}" style="text-decoration: none; color: blue">{{ activity.page_url }}</a>
+                                ({{ activity.ip_address }})
+                                <br> <a href="https://spoken-tutorial.org{{ activity.page_url }}" style="text-decoration: none; color: blue">https://spoken-tutorial.org{{ activity.page_url }}</a>
                                 <br> <a href="{{ activity.referrer }}" style="text-decoration: none; color: green">{{ activity.referrer }}</a>
                             </td>
                         </tr>

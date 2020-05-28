@@ -44,7 +44,7 @@ for field in self.model_container._meta._get_fields(reverse = False):
 (mind the underscores)
 This is to be done because there is bug in djongo in latest release.
 
-* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg, temp_eventStats, temp_fossStats, temp_visitorActivityStats and temp_visitorPathStats files in the shell so that stats can be calculated. 
+* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg, temp_eventStats, temp_fossStats, temp_visitorActivityStats, temp_visitorPathStats, temp_pageViewActivityStats and temp_pageViewActivityStats files in the shell so that stats can be calculated. 
 ```
 python3 manage.py shell < temp_daily.py
 python3 manage.py shell < temp_weekly.py
@@ -62,7 +62,7 @@ python manage.py runserver
 Visit http://127.0.0.1:8000/dashboard in your browser to get to visualization page.
 
 * Note : 
-You can only see the visualization of dashboard page, events, event analysis, foss, visitor activity and visitor path page till now, because data for other pages is not being calculated yet.
+You can only see the visualization of dashboard page, events, event analysis, foss, visitor activity, visitor path page, came from activity and page view activity till now, because data for other pages is not being calculated yet.
 
 
 
