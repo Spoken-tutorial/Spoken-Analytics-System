@@ -205,6 +205,32 @@ def save_js_log (request):
     return HttpResponse(status=200)
 
 
+exit_link_logs = db.exit_link_logs
+
+"""
+API function called from the client-side Javascript for saving exit link info.
+"""
+@csrf_exempt
+@require_POST
+def save_exit_info (request):
+
+    try:
+        data = {}
+        data['datetime'] = str(datetime.datetime.fromtimestamp(int (request.POST.get("datetime"))/1000))
+        data['exit_link_clicked'] = request.POST.get('exit_link_clicked')
+        data['exit_link_page'] = request.POST.get('exit_link_page')
+
+        # enqueue job in the redis queue named 'js_log'
+        # REDIS_CLIENT.rpush('js_log', json.dumps(data))
+        exit_link_logs.insert_one (data)
+
+    except Exception as e:
+        with open("exit_link_logs_errors.txt", "a") as f:
+            f.write(str(e) + '\n')
+    
+    return HttpResponse(status=200)
+
+
 """
 Function for handling the AJAX call of saving tutorial progress data. This AJAX
 call is made in watch_tutorial.html. Calls update_tutorial_progress in utils.py

@@ -9,4 +9,5 @@ urlpatterns = [
     url('save_tutorial_progress/', save_tutorial_progress, name='save_tutorial_progress'),
     url('change_completion/', change_completion, name='change_completion'),
     url('check_completion/', check_completion, name='check_completion'),
+    url('save_exit_info/', save_exit_info, name='save_exit_info'),
 ]
