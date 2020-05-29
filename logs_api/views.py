@@ -59,24 +59,49 @@ and pushing the log to a redis queue.
 @csrf_exempt
 @require_POST
 def save_middleware_log (request):
-    
+
+    # data = dict(request.POST)
+    # print ('\n\n')
+    # print (data)
+    # print ('\n\n')
+
     data = {}
-    data['ip_address'] = request.POST.get('ip_address')
-    data['path_info'] = request.POST.get('path_info')
-    data['browser_info'] = request.POST.get('browser_info')
-    data['event_name'] = request.POST.get('event_name')
-    data['visited_by'] = request.POST.get('visited_by')
-    data['ip_address'] = request.POST.get('ip_address')
-    data['method'] = request.POST.get('method')
-    data['datetime'] = request.POST.get('datetime')
-    data['referer'] = request.POST.get('referer')
-    data['browser_family'] = request.POST.get('browser_family')
-    data['browser_version'] = request.POST.get('browser_version')
-    data['os_family'] = request.POST.get('os_family')
-    data['os_version'] = request.POST.get('os_version')
-    data['device_family'] = request.POST.get('device_family')
-    data['device_type'] = request.POST.get('device_type')
-    data['first_time_visit'] = request.POST.get ('first_time_visit')
+    # Note that request.POST can contain multiple items for each key. 
+    # If you are expecting multiple items for each key, you can use lists, 
+    # which returns all values as a list.
+    for key, values in request.POST.lists():
+
+        if key == 'request':
+            continue
+
+        if len(values) == 1:
+            data[key] = values[0]
+        else:
+            data[key] = values
+    
+    # data = {}
+    # data['ip_address'] = request.POST.get('ip_address')
+    # data['path_info'] = request.POST.get('path_info')
+    # data['browser_info'] = request.POST.get('browser_info')
+    # data['event_name'] = request.POST.get('event_name')
+    # data['visited_by'] = request.POST.get('visited_by')
+    # data['ip_address'] = request.POST.get('ip_address')
+    # data['view_args'] = request.POST.get('view_args')
+    # data['view_kwargs'] = request.POST.get('view_kwargs')
+    # data['body'] = request.POST.get('body')
+    # data['method'] = request.POST.get('method')
+    # data['datetime'] = request.POST.get('datetime')
+    # data['referer'] = request.POST.get('referer')
+    # data['browser_family'] = request.POST.get('browser_family')
+    # data['browser_version'] = request.POST.get('browser_version')
+    # data['os_family'] = request.POST.get('os_family')
+    # data['os_version'] = request.POST.get('os_version')
+    # data['device_family'] = request.POST.get('device_family')
+    # data['device_type'] = request.POST.get('device_type')
+    # data['first_time_visit'] = request.POST.get ('first_time_visit')
+
+    # if request.POST.get ('post_data'):
+    #     data['post_data'] = request.POST.get ('post_data')
 
     try:
 
@@ -121,7 +146,7 @@ def save_middleware_log (request):
 
     except Exception as e:
         with open("enqueue_middleware_log_errors.txt", "a") as f:
-            f.write(str(e))
+            f.write(str(e) + '\n')
 
     return HttpResponse(status=200)
 
@@ -168,7 +193,7 @@ def save_js_log (request):
 
     except Exception as e:
         with open("enqueue_js_log_errors.txt", "a") as f:
-            f.write(str(e))
+            f.write(str(e) + '\n')
     
     return HttpResponse(status=200)
 
@@ -242,7 +267,7 @@ def change_completion (request):
 
     except Exception as e:
         with open("change_completion_errors.txt", "a") as f:
-            f.write(str(e))
+            f.write(str(e) + '\n')
         
     return HttpResponse(status=500)
 

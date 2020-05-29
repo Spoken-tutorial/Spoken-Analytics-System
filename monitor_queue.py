@@ -75,6 +75,9 @@ while (True):
                 # insert into MongoDB
                 # the ordered=False option ensures that all the logs are attempted for insert,
                 # even if one of the intermediate logs fails the insertion.
+                # convert datetime from str to datetime object
+                for i in range(len(logs)):
+                    logs[i]['datetime'] = datetime.datetime.strptime(logs[i]['datetime'], '%Y-%m-%d %H:%M:%S.%f')
 
                 if settings.USE_MIDDLEWARE_LOGS:
                     website_logs.insert_many([logs[i] for i in range(len(logs))], ordered=False)

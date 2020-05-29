@@ -147,6 +147,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:8000",
     "http://192.168.100.6:8000",
+    "http://192.168.43.71:8000",
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
