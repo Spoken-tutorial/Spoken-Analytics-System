@@ -30,7 +30,7 @@ class Log(models.Model):
 
 
 class AverageStats(models.Model):
-    date = models.DateField()
+    datetime = models.DateTimeField()
     average_daily_page_views = models.IntegerField()
     average_daily_unique_visits = models.IntegerField()
     average_daily_first_time_visits = models.IntegerField()

@@ -42,39 +42,41 @@ for foss_name in foss:
         continue
 
     daily_logs = Log.objects.filter(path_info__contains=foss_name).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
-
-    unique_visitors = [] # Stores unique ip addresses
-
-    # Finding all unique ip addresses of this day
-    for log in daily_logs:
-        if log.ip_address not in unique_visitors:
-            unique_visitors.append(log.ip_address)
-
-    # variables to store counts
-    unique_visits = 0
-    first_time = 0
-
-    # caculating stats according to ip addresses
-    for ip in unique_visitors:
-        first_time = 0
-        for log in daily_logs:
-            if ip == log.ip_address:
-                # if ip is found for the first time
-                if first_time == 0:
-                    prev_datetime = log.datetime
-                    first_time = 1
-                    unique_visits += 1
-                else:
-                    # if same ip occurs after 30 minutes
-                    if ((log.datetime - prev_datetime).seconds / 60) > 30:
-                        unique_visits += 1
-                prev_datetime = log.datetime
     
-    # saving the events stats
-    foss_stats = FossStats()
-    foss_stats.date = yesterday.date()
-    # Change foss names stored in path_info as 'Advance+C' to 'Advance C'
-    foss_stats.foss_name = foss_name.replace("+", " ")
-    foss_stats.page_views = len(daily_logs)
-    foss_stats.unique_visits = unique_visits
-    foss_stats.save()
+    # if logs are found
+    if daily_logs:
+        unique_visitors = [] # Stores unique ip addresses
+
+        # Finding all unique ip addresses of this day
+        for log in daily_logs:
+            if log.ip_address not in unique_visitors:
+                unique_visitors.append(log.ip_address)
+
+        # variables to store counts
+        unique_visits = 0
+        first_time = 0
+
+        # caculating stats according to ip addresses
+        for ip in unique_visitors:
+            first_time = 0
+            for log in daily_logs:
+                if ip == log.ip_address:
+                    # if ip is found for the first time
+                    if first_time == 0:
+                        prev_datetime = log.datetime
+                        first_time = 1
+                        unique_visits += 1
+                    else:
+                        # if same ip occurs after 30 minutes
+                        if ((log.datetime - prev_datetime).seconds / 60) > 30:
+                            unique_visits += 1
+                    prev_datetime = log.datetime
+        
+        # saving the events stats
+        foss_stats = FossStats()
+        foss_stats.date = yesterday.date()
+        # Change foss names stored in path_info as 'Advance+C' to 'Advance C'
+        foss_stats.foss_name = foss_name.replace("+", " ")
+        foss_stats.page_views = len(daily_logs)
+        foss_stats.unique_visits = unique_visits
+        foss_stats.save()

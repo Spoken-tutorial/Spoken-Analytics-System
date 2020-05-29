@@ -187,7 +187,7 @@ def getReportsStats(request):
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     events_stats = EventStats.objects.values('path_info', 'page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
-    browser_stats = BrowserStats.objects.values('browser_type').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    browser_stats = BrowserStats.objects.values('name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     os_stats = OSStats.objects.values('os').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     
@@ -278,7 +278,7 @@ def locationReport(request):
     region_stats = RegionStats.objects.all().order_by('-page_views')
     city_stats = CityStats.objects.all().order_by('-page_views')
 
-    total_page_views = Log.objects.all().count()
+    total_page_views = AverageStats.objects.all().order_by('-datetime').first().total_page_views
 
     # variables to store stats
     r_stats = []
@@ -413,11 +413,24 @@ def fossEventReport(request):
 
     # Getting data from various tables
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
-    event_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    event_stats = EventStats.objects.values('page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))
+
+    total_page_views = AverageStats.objects.all().order_by('-datetime').first().total_page_views
+
+    # variables to store stats
+    e_stats = []
+    f_stats = []
+
+    # Preparing data to be sent to template
+    for stat in event_stats:
+        e_stats.append({'page_title' : stat['page_title'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_page_views) * 100, 2)})
+    
+    for stat in foss_stats:
+        f_stats.append({'foss_name' : stat['foss_name'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_page_views) * 100, 2)})
 
     context = {
-        'foss_stats': foss_stats,
-        'event_stats': event_stats,
+        'foss_stats': f_stats,
+        'event_stats': e_stats,
     }
 
     return render(request, 'foss_event_report.html', context)

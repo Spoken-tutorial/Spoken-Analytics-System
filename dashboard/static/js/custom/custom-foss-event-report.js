@@ -4,8 +4,9 @@
 var fossReportTable = $('#foss-report-table').DataTable({
     scrollX: false,
     columns: [
-        { "width": "80%" },
-        { "width": "20%" },
+        { "width": "60%" },
+        { "width": "10%" },
+        { "width": "30%" },
     ],
     order: [
         [1, 'desc']
@@ -20,8 +21,9 @@ var fossReportTable = $('#foss-report-table').DataTable({
 var eventReportTable = $('#event-report-table').DataTable({
     scrollX: false,
     columns: [
-        { "width": "80%" },
-        { "width": "20%" },
+        { "width": "60%" },
+        { "width": "10%" },
+        { "width": "30%" },
     ],
     order: [
         [1, 'desc']

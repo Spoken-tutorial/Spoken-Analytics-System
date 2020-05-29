@@ -215,13 +215,13 @@ $(document).ready(function() {
             });
 
             events_stats.forEach((key, value) => {
-                events_table.append("<tr><td>" + key.event_name + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_events_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_events_page_views) * 100).toFixed(2) + "%</td></tr>");
+                events_table.append("<tr><td>" + key.page_title + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_events_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_events_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
 
 
 
             browser_stats.forEach((key, value) => {
-                browser_table.append("<tr><td>" + key.browser_type + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_browser_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_browser_page_views) * 100).toFixed(2) + "%</td></tr>");
+                browser_table.append("<tr><td>" + key.name + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_browser_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_browser_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
 
             platform_stats.forEach((key, value) => {
@@ -231,6 +231,8 @@ $(document).ready(function() {
             os_stats.forEach((key, value) => {
                 os_table.append("<tr><td>" + key.os + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_os_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_os_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
+
+
 
             came_from_stats.forEach((key, value) => {
                 came_from_table.append("<tr><td><a href='" + key.referrer + "'>" + key.referrer.trunc(50) + "</a><td class='text-primary'>" + nFormatter(key.page_views) + "</td></tr>");
