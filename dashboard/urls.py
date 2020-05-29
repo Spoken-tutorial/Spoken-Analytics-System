@@ -27,8 +27,6 @@ urlpatterns = [
     re_path('^location_report/$', views.locationReport, name="location-report"),
     # Serves came from activity page
     re_path('^came_from_activity/$', views.cameFromActivity, name="came-from-activity"),
-    # Serves download activity page
-    re_path('^download_activity/$', views.downloadActivity, name="download-activity"),
     # Serves exit link activity page
     re_path('^exit_link_activity/$', views.exitLinkActivity, name="exit-link-activity"),
     # Serves visitor map page
@@ -39,8 +37,6 @@ urlpatterns = [
     re_path('^visitor_activity/$', views.visitorActivity, name="visitor-activity"),
     # Serves visitor paths page
     re_path('^visitor_path/$', views.visitorPath, name="visitor-path"),
-    # Serves keyword activity page
-    re_path('^kayword_activity/$', views.keywordActivity, name="keyword-activity"),
     # Serves magnify page
     re_path('^magnify/$', views.magnify, name="magnify"),
     # Serves foss-page report page
@@ -49,4 +45,12 @@ urlpatterns = [
     re_path('^system_report/$', views.systemReport, name="system-report"),
     # Serves traffic report page
     re_path('^traffic_report/$', views.trafficReport, name="traffic-report"),
+
+    # Thise activities are to be implemented in next version
+    
+    # Serves keyword activity page
+    # re_path('^keyword_activity/$', views.keywordActivity, name="keyword-activity"),
+
+    # Serves download activity page
+    # re_path('^download_activity/$', views.downloadActivity, name="download-activity"),
 ]

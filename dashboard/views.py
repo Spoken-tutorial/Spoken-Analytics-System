@@ -11,8 +11,8 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
-from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
-from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, ExitLinkActivity
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, VisitorInfo
 from .models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
 
 # get current timezone 
@@ -185,7 +185,7 @@ def getReportsStats(request):
     city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
 
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
-    # events_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    events_stats = EventStats.objects.values('path_info', 'page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     browser_stats = BrowserStats.objects.values('browser_type').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
@@ -198,7 +198,7 @@ def getReportsStats(request):
     # total page views (needed to find percentage of page views)
     total_page_views = Log.objects.all().count()
     total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))
-    # total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
+    total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
     total_browser_page_views = BrowserStats.objects.aggregate(Sum('page_views'))
     total_platform_page_views = PlatformStats.objects.aggregate(Sum('page_views'))
     total_os_page_views = OSStats.objects.aggregate(Sum('page_views'))
@@ -208,7 +208,7 @@ def getReportsStats(request):
     json_city_stats = serializers.serialize('json', city_stats)
 
     json_foss_stats = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
-    # json_event_stats = json.dumps(list(events_stats), cls=DjangoJSONEncoder)
+    json_event_stats = json.dumps(list(events_stats), cls=DjangoJSONEncoder)
 
     json_browser_stats = json.dumps(list(browser_stats), cls=DjangoJSONEncoder)
     json_platform_stats = json.dumps(list(platform_stats), cls=DjangoJSONEncoder)
@@ -224,8 +224,8 @@ def getReportsStats(request):
 
         'foss_stats': json_foss_stats,
         'total_foss_page_views': total_foss_page_views['page_views__sum'],
-        # 'events_stats': json_event_stats,
-        # 'total_events_page_views': total_events_page_views['page_views__sum'],
+        'events_stats': json_event_stats,
+        'total_events_page_views': total_events_page_views['page_views__sum'],
 
         'browser_stats': json_browser_stats,
         'total_browser_page_views': total_browser_page_views['page_views__sum'],
@@ -312,20 +312,6 @@ def cameFromActivity(request):
     
     return render(request, 'came_from_activity.html', context)
 
-def downloadActivity(request):
-    """
-    Renders the download activity page
-    """
-
-    # retrieving data from database
-    obj = DownloadActivity.objects.all().order_by('-datetime')[0:150]
-
-    context = {
-        'download_activity': obj
-    }
-    
-    return render(request, 'download_activity.html', context)
-
 def exitLinkActivity(request):
     """
     Renders the exit link activity page
@@ -395,20 +381,6 @@ def visitorPath(request):
     }
     
     return render(request, 'visitor_paths.html', context)
-
-def keywordActivity(request):
-    """
-    Renders the keyword activity page
-    """
-
-    # retriving data from database
-    obj = KeywordActivity.objects.all().order_by('-datetime')[0:25]
-
-    context = {
-        'keyword_activity': obj,
-    }
-    
-    return render(request, 'keyword_activity.html', context)
 
 def magnify(request):
     """
@@ -503,3 +475,36 @@ def trafficReport(request):
     }
 
     return render(request, 'traffic_report.html', context)
+
+
+
+"""
+Views of features to be implemented in next version
+"""
+# def downloadActivity(request):
+#     """
+#     Renders the download activity page
+#     """
+
+#     # retrieving data from database
+#     obj = DownloadActivity.objects.all().order_by('-datetime')[0:150]
+
+#     context = {
+#         'download_activity': obj
+#     }
+    
+#     return render(request, 'download_activity.html', context)
+
+# def keywordActivity(request):
+#     """
+#     Renders the keyword activity page
+#     """
+
+#     # retriving data from database
+#     obj = KeywordActivity.objects.all().order_by('-datetime')[0:25]
+
+#     context = {
+#         'keyword_activity': obj,
+#     }
+    
+#     return render(request, 'keyword_activity.html', context)

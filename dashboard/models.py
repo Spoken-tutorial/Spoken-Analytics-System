@@ -141,6 +141,7 @@ class FossStats(models.Model):
     objects = models.DjongoManager()
 
 class RegionStats(models.Model):
+    datetime = models.DateTimeField()
     region = models.CharField(max_length=100)
     page_views = models.IntegerField()
 
@@ -150,6 +151,7 @@ class RegionStats(models.Model):
     objects = models.DjongoManager()
 
 class CityStats(models.Model):
+    datetime = models.DateTimeField()
     city = models.CharField(max_length=100)
     page_views = models.IntegerField()
 
@@ -165,16 +167,6 @@ class CameFromActivity(models.Model):
 
     def __str__(self):
         return "Came From Activity Model"
-
-    objects = models.DjongoManager()
-
-class DownloadActivity(models.Model):
-    datetime = models.DateTimeField()
-    download_link = models.CharField(max_length=300)
-    clicked_from = models.CharField(max_length=300)
-
-    def __str__(self):
-        return "Download Activity Model"
 
     objects = models.DjongoManager()
 
@@ -264,18 +256,6 @@ class VisitorPath(models.Model):
 
     objects = models.DjongoManager()
 
-
-class KeywordActivity(models.Model):
-    datetime = models.DateTimeField()
-    name = models.CharField(max_length=100)
-    search_query = models.CharField(max_length=300)
-    entry_page = models.CharField(max_length=300)
-
-    def __str__(self):
-        return "Keyword Activity Model"
-
-    objects = models.DjongoManager()
-
 class VisitorInfo(models.Model):
     datetime = models.DateTimeField()
     referrer = models.CharField(max_length=300)
@@ -359,3 +339,27 @@ class ExitLinkStats(models.Model):
         return "Exit Link Stats Model"
 
     objects = models.DjongoManager()
+
+"""
+Models of features to be implemented in next version
+"""
+# class KeywordActivity(models.Model):
+#     datetime = models.DateTimeField()
+#     name = models.CharField(max_length=100)
+#     search_query = models.CharField(max_length=300)
+#     entry_page = models.CharField(max_length=300)
+
+#     def __str__(self):
+#         return "Keyword Activity Model"
+
+#     objects = models.DjongoManager()
+
+# class DownloadActivity(models.Model):
+#     datetime = models.DateTimeField()
+#     download_link = models.CharField(max_length=300)
+#     clicked_from = models.CharField(max_length=300)
+
+#     def __str__(self):
+#         return "Download Activity Model"
+
+#     objects = models.DjongoManager()
