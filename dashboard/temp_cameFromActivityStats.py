@@ -29,7 +29,7 @@ for ip_address in ip_addresses:
 
     for log in ip_logs:
         # store the came from log only if referring in present and is not from spoken website
-        if not log.referrer.find('https://spoken-turorial.org') != -1 and not log.referrer.find('(No referring link)') != -1:
+        if not log.referrer.find('https://spoken-tutorial.org') != -1 and not log.referrer.find('(No referring link)') != -1:
             came_from_stats = CameFromActivity()
             came_from_stats.datetime = log.datetime
             came_from_stats.referrer = log.referrer

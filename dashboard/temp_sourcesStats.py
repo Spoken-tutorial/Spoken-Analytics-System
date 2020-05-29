@@ -22,7 +22,7 @@ yesterdays_logs_count = Log.objects.filter(datetime__range=(yesterday_min, yeste
 
 total_referring_urls_having_spoken = Log.objects.filter(referrer__icontains='spoken').filter(datetime__range=(yesterday_min, yesterday_max)).count()
 total_direct_traffic = Log.objects.filter(referrer__contains='(No referring link)').filter(datetime__range=(yesterday_min, yesterday_max)).count()
-total_search_traffic = Log.objects.filter(referrer__icontains='https://google.com').filter(datetime__range=(yesterday_min, yesterday_max)).count()
+total_search_traffic = Log.objects.filter(referrer__icontains='https://www.google.com/').filter(datetime__range=(yesterday_min, yesterday_max)).count()
 total_referrer_traffic = yesterdays_logs_count - total_referring_urls_having_spoken - total_direct_traffic - total_search_traffic
 
 sources_stats = SourcesStats()

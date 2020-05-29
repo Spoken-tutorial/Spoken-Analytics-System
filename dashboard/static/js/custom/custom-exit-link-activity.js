@@ -6,8 +6,8 @@ var exitLinkActivityDataTable = $('#exit-link-activity-data-table').DataTable({
     columns: [
         { "width": "10%" },
         { "width": "10%" },
-        { "width": "50%" },
-        { "width": "30%" },
+        { "width": "40%" },
+        { "width": "40%" },
     ],
     lengthMenu: [
         [10, 25, 50, -1],

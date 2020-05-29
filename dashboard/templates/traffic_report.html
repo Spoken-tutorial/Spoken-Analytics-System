@@ -28,7 +28,11 @@
                     <tbody>
                         {% for stat in came_from_stats %}
                         <tr>
+                            {% if stat.referrer == '(No referring link)' %}
+                            <td>{{ stat.referrer }}</td>
+                            {% else %}
                             <td><a href="{{ stat.referrer }}"> {{ stat.referrer }} </a></td>
+                            {% endif %}
                             <td class="text-primary">{{ stat.page_views }}</td>
                         </tr>
                         {% endfor %}
