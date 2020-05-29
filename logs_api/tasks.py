@@ -41,7 +41,7 @@ def dump_json_logs(self, logs):  # celery task for bulk insertion of logs into M
         """
         Sending the task back into the queue with exponential
         backoff. If the task fails more than max_retries + 1 times,
-        an error is display in the celery worker.
+        an error is displayed in the celery worker.
         """
         # self.retry(exc=exc, countdown=2 ** self.request.retries)
 

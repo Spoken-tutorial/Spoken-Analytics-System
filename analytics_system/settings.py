@@ -215,7 +215,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 GEOIP_PATH  = BASE_DIR + '/geodb/'
 
-USE_MIDDLEWARE_LOGS = True  # whether to use middleware logs or client-side JS logs system
+USE_MIDDLEWARE_LOGS = False  # whether to use middleware logs or client-side JS logs system
 
 SAVE_LOGS_WITH_CELERY = False
 

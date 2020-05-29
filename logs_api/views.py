@@ -79,6 +79,9 @@ def save_middleware_log (request):
         else:
             data[key] = values
     
+    if not data['referer']:
+        data['referer'] = '(No referring link)'
+
     # data = {}
     # data['ip_address'] = request.POST.get('ip_address')
     # data['path_info'] = request.POST.get('path_info')
@@ -167,14 +170,13 @@ def save_js_log (request):
 
     try:
         data = {}
+        data["visit_duration"] = request.POST.get('visit_duration')
         data['referer'] = request.POST.get('referer')
-        data['browser_name'] = request.POST.get('browser_name')
+        data['browser_family'] = request.POST.get('browser_family')
         data['browser_version'] = request.POST.get('browser_version')
-        data['os_name'] = request.POST.get('os_name')
+        data['os_family'] = request.POST.get('os_family')
         data['os_version'] = request.POST.get('os_version')
-        data['platform'] = request.POST.get('platform')
-        data['vendor'] = request.POST.get('vendor')
-
+        data['title'] = request.POST.get('title')
         # data['event_name'] = EVENT_NAME_DICT[key]['name']
         data['url_name'] = request.POST.get('url_name')
         data['visited_by'] = request.POST.get('visited_by')  # request.user.username if request.user.is_authenticated else 'anonymous'
@@ -188,6 +190,11 @@ def save_js_log (request):
         data['city'] = request.POST.get ('city')
         data['latitude'] = request.POST.get ('latitude')
         data['longitude'] = request.POST.get ('longitude')
+        data['device_type'] = request.POST.get ('device_type')
+
+        if not data['referer']:
+            data['referer'] = '(No referring link)'
+
         # enqueue job in the redis queue named 'js_log'
         REDIS_CLIENT.rpush('js_log', json.dumps(data))
 
