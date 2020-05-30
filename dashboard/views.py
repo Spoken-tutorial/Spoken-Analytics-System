@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from pytz import timezone
 from django.core import serializers
+from djgeojson.serializers import Serializer as GeoJSONSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
@@ -331,15 +332,7 @@ def exitLinkActivity(request):
     """
     Renders the exit link activity page
     """
-
-    # retrieving data from database
-    obj = ExitLinkActivity.objects.all().order_by('-datetime')[0:150]
-
-    context = {
-        'exit_link_activity': obj
-    }
-    
-    return render(request, 'exit_link_activity.html', context)
+    return render(request, 'exit_link_activity.html')
 
 def exitLinkActivityData(request):
     """
@@ -377,6 +370,29 @@ def visitorMap(request):
     }
     
     return render(request, 'visitor_map.html', context)
+
+def visitorMapData(request):
+    """
+    Suppy data to data table of exit link activity page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+    
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor spot stats from database
+    visitor_spot_stats = VisitorSpot.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = GeoJSONSerializer().serialize(visitor_spot_stats, use_natural_keys=True, with_modelname=False)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 
 def pageViewActivity(request):
     """

@@ -252,22 +252,22 @@ os_versions = ["7", "8", "8.1"]
 #     return data
 
 # For ExitLinkActivity Model
-def randomData():
-    data = {
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'exit_link_clicked': lambda x: random.choice(exit_links),
-        'exit_link_page': lambda x: random.choice(pages)
-    }
-    return data
-
-# For VisitorSpot Model
 # def randomData():
 #     data = {
 #         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator.local_latlng(country_code='IN', coords_only=True)][::-1] }
+#         'exit_link_clicked': lambda x: random.choice(exit_links),
+#         'exit_link_page': lambda x: random.choice(pages)
 #     }
 #     return data
+
+# For VisitorSpot Model
+def randomData():
+    data = {
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+        'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
+        'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator.local_latlng(country_code='IN', coords_only=True)][::-1] }
+    }
+    return data
 
 # For PageViewActivity Model
 # def randomData():
@@ -422,7 +422,7 @@ def randomData():
 #     return data
 
 # Adding data to populator object
-populator.addEntity(ExitLinkActivity, num_rows, randomData())
+populator.addEntity(VisitorSpot, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()

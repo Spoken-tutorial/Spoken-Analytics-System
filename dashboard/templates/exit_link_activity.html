@@ -40,22 +40,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for activity in exit_link_activity %}
-                        <tr>
-                            <td>
-                                {{ activity.datetime|date:'Y-m-d' }}
-                            </td>
-                            <td>
-                                {{ activity.datetime|date:'H:i:s' }}
-                            </td>
-                            <td>
-                                <a href="{{ activity.exit_link_clicked }}" style="text-decoration: none; color: blue">{{ activity.exit_link_clicked }}</a>
-                            </td>
-                            <td>
-                                <a href="https://spoken-tutorial.org{{ activity.exit_page }}">{{ activity.exit_link_page }}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>

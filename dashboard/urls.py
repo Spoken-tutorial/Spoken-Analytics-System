@@ -43,6 +43,8 @@ urlpatterns = [
 
     # Serves visitor map page
     re_path('^visitor_map/$', views.visitorMap, name="visitor-map"),
+    # Serves data for map at visitor map page
+    re_path('^visitor_map_data/$', views.visitorMapData, name="visitor-map-data"),
 
     # Serves page view activity page
     re_path('^page_view_activity/$', views.pageViewActivity, name="page-view-activity"),
