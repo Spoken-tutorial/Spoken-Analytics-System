@@ -1,7 +1,6 @@
 """
 This script takes logs from the dashboard_dailystats collection, calculates daily logs stats 
 (date and unique_visits) for different events.
-
 Terms: 
     Unique visits: unique visit is counted if user visits the site for the first time or he/she revisit it after 30 minutes.
 """
@@ -10,14 +9,7 @@ from dashboard.models import Log, EventStats
 from django.utils.timezone import get_current_timezone
 from pytz import timezone
 from django.conf import settings
-from celery import shared_task
 
-
-# using bind=True on the shared_task decorator to turn the below function
-# into a method of Task class. This lets us use self.retry for retrying
-# failed tasks. Currently we are not retrying failed tasks.
-# @shared_task(bind=True)
-# def calc_event_stats (self):
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)

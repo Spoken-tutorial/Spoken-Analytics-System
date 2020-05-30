@@ -24,7 +24,9 @@ var fossDataTable = $('#foss-data-table').DataTable({
 $(document).ready(function() {
 
     $('#foss-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
-    $('#foss-to-date').val(moment().toISOString().substr(0, 10));
+    $('#foss-to-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
+
+    getFossData();
 
 });
 

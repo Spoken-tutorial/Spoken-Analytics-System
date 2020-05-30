@@ -8,12 +8,13 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from pytz import timezone
 from django.core import serializers
+from djgeojson.serializers import Serializer as GeoJSONSerializer
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from .models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
-from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, DownloadActivity, ExitLinkActivity
-from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
-from .models import BrowserStats, PlatformStats, OSStats
+from .models import EventStats, FossStats, RegionStats, CityStats, CameFromActivity, ExitLinkActivity
+from .models import VisitorSpot, PageViewActivity, VisitorActivity, VisitorPath, VisitorInfo
+from .models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
 
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
@@ -75,19 +76,19 @@ def graphData(request):
     # extracting data on basis of granuality (weekly, monthly, etc)
     if data_summary_type == 'daily':
         
-        stats = DailyStats.objects.filter(date__gte=from_date, date__lte=to_date).order_by('date')
+        stats = DailyStats.objects.filter(datetime__gte=from_date, datetime__lte=to_date).order_by('datetime')
 
     elif data_summary_type == 'weekly':
 
-        stats = WeeklyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
+        stats = WeeklyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
     
     elif data_summary_type == 'monthly':
 
-        stats = MonthlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
+        stats = MonthlyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
 
     elif data_summary_type == 'yearly':
 
-        stats = YearlyStats.objects.filter(date__range=(from_date, to_date)).order_by('date')
+        stats = YearlyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
 
     # Converting data to json object
     json_stats = serializers.serialize('json', stats)
@@ -106,23 +107,7 @@ def events(request):
     """
     Renders the events page
     """
-
-    today = datetime.today()
-    day_before = today - timedelta(days=2)
-
-    # make datetimes timezone aware
-    today = tz.localize(today)
-    day_before = tz.localize(day_before)
-
-    # getting event stats of 4 days ago
-    # you can choose any day but difference must be of 1 day
-    event_stats = EventStats.objects.filter(date__range=(day_before, today)).values('event_name', 'path_info').order_by('event_name').annotate(unique_visits=Sum('unique_visits'))
-
-    context = {
-        'event_stats': event_stats,
-    }
-
-    return render(request, 'events.html', context)
+    return render(request, 'events.html')
 
 def eventsData(request):
     """
@@ -139,20 +124,24 @@ def eventsData(request):
     to_date = tz.localize(to_date)
     
     # getting events stats from database
-    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('event_name', 'path_info').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
+    event_stats = EventStats.objects.filter(date__range=(from_date, to_date)).values('path_info', 'page_title').order_by('-unique_visits').annotate(unique_visits=Sum('unique_visits'))
 
-    # Converting data to json object
+    # Converting data to json objectath_info = models.CharFi
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
     return JsonResponse(json_res, safe=False) # sending data
 
-def eventAnalysis(request, event_name):
+def eventAnalysis(request):
     """
     Renders the event analysis page
     From users perspective events are 'pages'
     """
+
+    # Gettign path from request object
+    path = request.GET.get('path', '')
+
     context = {
-        'event_name': event_name,
+        'path': path,
     }
     return render(request, 'event_analysis.html', context)
 
@@ -163,7 +152,7 @@ def eventAnalysisGraphData(request):
 
     data = json.loads(request.body) # Extract data from request
 
-    event_name = data['event_name']
+    path = data['path']
     from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
     to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
 
@@ -172,8 +161,10 @@ def eventAnalysisGraphData(request):
     to_date = tz.localize(to_date)
 
     # getting events stats from database
-    event_stats = EventStats.objects.filter(event_name=event_name).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
-
+    event_stats = EventStats.objects.filter(path_info=path).filter(date__range=(from_date, to_date)).values('date').order_by('date').annotate(unique_visits=Sum('unique_visits'))
+    
+    # for stats in event_stats
+    
     # Converting data to json object
     json_res = json.dumps(list(event_stats), cls=DjangoJSONEncoder)
 
@@ -195,11 +186,15 @@ def getReportsStats(request):
     city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
 
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
-    events_stats = EventStats.objects.values('event_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    events_stats = EventStats.objects.values('path_info', 'page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
-    browser_stats = BrowserStats.objects.values('browser_type').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    browser_stats = BrowserStats.objects.values('name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     os_stats = OSStats.objects.values('os').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    
+    sources_stats = SourcesStats.objects.aggregate(Sum('referrer_page_views'),Sum('search_page_views'),Sum('direct_page_views'))
+    came_from_stats = CameFromStats.objects.values('referrer').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    exit_link_stats = ExitLinkStats.objects.values('exit_link').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     # total page views (needed to find percentage of page views)
     total_page_views = Log.objects.all().count()
@@ -220,6 +215,9 @@ def getReportsStats(request):
     json_platform_stats = json.dumps(list(platform_stats), cls=DjangoJSONEncoder)
     json_os_stats = json.dumps(list(os_stats), cls=DjangoJSONEncoder)
 
+    json_came_from_stats = json.dumps(list(came_from_stats), cls=DjangoJSONEncoder)
+    json_exit_link_stats = json.dumps(list(exit_link_stats), cls=DjangoJSONEncoder)
+
     json_res = {
         'region_stats': json_region_stats,
         'city_stats': json_city_stats,  
@@ -236,6 +234,10 @@ def getReportsStats(request):
         'total_platform_page_views': total_platform_page_views['page_views__sum'],
         'os_stats': json_os_stats,
         'total_os_page_views': total_os_page_views['page_views__sum'],
+
+        'sources_stats': sources_stats,
+        'came_from_stats': json_came_from_stats,
+        'exit_link_stats': json_exit_link_stats,
     }
 
     return JsonResponse(json_res, safe=False) # sending data
@@ -244,27 +246,12 @@ def foss(request):
     """
     Renders the foss page
     """
-
-    today = datetime.today()
-    day_before = today - timedelta(days=2)
-    
-    # make datetimes timezone aware
-    today = tz.localize(today)
-    day_before = tz.localize(day_before)
-
-    # getting foss stats of 1 day
-    foss_stats = FossStats.objects.filter(date__range=(day_before, today)).values('foss_name').order_by('foss_name').annotate(unique_visits=Sum('unique_visits'))
-
-    context = {
-        'foss_stats': foss_stats,
-    }
-
-    return render(request, 'foss.html', context)
+    return render(request, 'foss.html')
 
 
 def fossData(request):
     """
-    Suppy data to data table of reports page
+    Suppy data to data table of foss page
     """
 
     data = json.loads(request.body) # Extract data from request
@@ -292,7 +279,7 @@ def locationReport(request):
     region_stats = RegionStats.objects.all().order_by('-page_views')
     city_stats = CityStats.objects.all().order_by('-page_views')
 
-    total_page_views = Log.objects.all().count()
+    total_page_views = AverageStats.objects.all().order_by('-datetime').first().total_page_views
 
     # variables to store stats
     r_stats = []
@@ -316,43 +303,59 @@ def cameFromActivity(request):
     """
     Renders the came from activity page
     """
+    return render(request, 'came_from_activity.html')
 
-    # retrieving data from database
-    obj = CameFromActivity.objects.all().order_by('-datetime')[0:150]
-
-    context = {
-        'came_from_activity': obj
-    }
-    
-    return render(request, 'came_from_activity.html', context)
-
-def downloadActivity(request):
+def cameFromActivityData(request):
     """
-    Renders the download activity page
+    Suppy data to data table of came from activity page
     """
 
-    # retrieving data from database
-    obj = DownloadActivity.objects.all().order_by('-datetime')[0:150]
-
-    context = {
-        'download_activity': obj
-    }
+    data = json.loads(request.body) # Extract data from request
     
-    return render(request, 'download_activity.html', context)
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    came_from_activity_stats = CameFromActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', came_from_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 
 def exitLinkActivity(request):
     """
     Renders the exit link activity page
     """
+    return render(request, 'exit_link_activity.html')
 
-    # retrieving data from database
-    obj = ExitLinkActivity.objects.all().order_by('-datetime')[0:150]
+def exitLinkActivityData(request):
+    """
+    Suppy data to data table of exit link activity page
+    """
 
-    context = {
-        'exit_link_activity': obj
-    }
+    data = json.loads(request.body) # Extract data from request
     
-    return render(request, 'exit_link_activity.html', context)
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    exit_link_activity_stats = ExitLinkActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', exit_link_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 
 def visitorMap(request):
     """
@@ -368,61 +371,113 @@ def visitorMap(request):
     
     return render(request, 'visitor_map.html', context)
 
+def visitorMapData(request):
+    """
+    Suppy data to data table of exit link activity page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+    
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor spot stats from database
+    visitor_spot_stats = VisitorSpot.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = GeoJSONSerializer().serialize(visitor_spot_stats, use_natural_keys=True, with_modelname=False)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
+
 def pageViewActivity(request):
     """
     Renders the page view activity page
     """
+    return render(request, 'page_view_activity.html')
 
-    # retriving data from database
-    obj = PageViewActivity.objects.all().order_by('-datetime')[0:25]
+def pageViewActivityData(request):
+    """
+    Suppy data to data table of page view activity page
+    """
 
-    context = {
-        'page_view_activity': obj,
-    }
+    data = json.loads(request.body) # Extract data from request
     
-    return render(request, 'page_view_activity.html', context)
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    page_view_activity_stats = PageViewActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', page_view_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
 
 def visitorActivity(request):
     """
     Renders the visitor activity page
     """
+    return render(request, 'visitor_activity.html')
 
-    # retriving data from database
-    obj = VisitorActivity.objects.all().order_by('-latest_page_view')[0:25]
 
-    context = {
-        'visitor_activity': obj,
-    }
+def visitorActivityData(request):
+    """
+    Suppy data to data table of visitor activity page
+    """
+
+    data = json.loads(request.body) # Extract data from request
     
-    return render(request, 'visitor_activity.html', context)
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    visitor_activity_stats = VisitorActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', visitor_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
 
 def visitorPath(request):
     """
     Renders the visitor paths page
     """
+    return render(request, 'visitor_paths.html')
 
-    # retriving data from database
-    obj = VisitorPath.objects.all().order_by('-datetime')[0:25]
-
-    context = {
-        'visitor_path': obj,
-    }
-    
-    return render(request, 'visitor_paths.html', context)
-
-def keywordActivity(request):
+def visitorPathData(request):
     """
-    Renders the keyword activity page
+    Suppy data to data table of visitor path page
     """
 
-    # retriving data from database
-    obj = KeywordActivity.objects.all().order_by('-datetime')[0:25]
-
-    context = {
-        'keyword_activity': obj,
-    }
+    data = json.loads(request.body) # Extract data from request
     
-    return render(request, 'keyword_activity.html', context)
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor path stats from database
+    visitor_path_stats = VisitorPath.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', visitor_path_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
 
 def magnify(request):
     """
@@ -448,4 +503,118 @@ def magnify(request):
     
     return render(request, 'magnify.html', context)
 
+def fossEventReport(request):
+    """
+    Renders the Foss Event Report page
+    """
 
+    # Getting data from various tables
+    foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    event_stats = EventStats.objects.values('page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))
+
+    total_page_views = AverageStats.objects.all().order_by('-datetime').first().total_page_views
+
+    # variables to store stats
+    e_stats = []
+    f_stats = []
+
+    # Preparing data to be sent to template
+    for stat in event_stats:
+        e_stats.append({'page_title' : stat['page_title'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_page_views) * 100, 2)})
+    
+    for stat in foss_stats:
+        f_stats.append({'foss_name' : stat['foss_name'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_page_views) * 100, 2)})
+
+    context = {
+        'foss_stats': f_stats,
+        'event_stats': e_stats,
+    }
+
+    return render(request, 'foss_event_report.html', context)
+
+def systemReport(request):
+    """
+    Renders the System Report page
+    """
+
+    # Getting data from various tables
+    browser_stats = BrowserStats.objects.values('name').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    platform_stats = PlatformStats.objects.values('platform').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    os_stats = OSStats.objects.values('os').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    
+    total_browser_page_views = BrowserStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+    total_platform_page_views = PlatformStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+    total_os_page_views = OSStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+
+    # variables to store stats
+    b_stats = []
+    p_stats = []
+    o_stats = []
+
+    # Preparing data to be sent to template
+    for stat in browser_stats:
+        b_stats.append({'name' : stat['name'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_browser_page_views) * 100, 2)})
+    
+    for stat in platform_stats:
+        p_stats.append({'platform' : stat['platform'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_platform_page_views) * 100, 2)})
+
+    for stat in os_stats:
+        o_stats.append({'os' : stat['os'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_os_page_views) * 100, 2)})
+
+    context = {
+        'browser_stats': b_stats,
+        'platform_stats': p_stats,
+        'os_stats': o_stats,
+    }
+
+    return render(request, 'system_report.html', context)
+
+def trafficReport(request):
+    """
+    Renders the Traffic Report page
+    """
+
+    # Getting data from various tables
+    came_from_stats = CameFromStats.objects.values('referrer').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    exit_link_stats = ExitLinkStats.objects.values('exit_link').order_by('-page_views').annotate(page_views=Sum('page_views'))
+
+
+    context = {
+        'came_from_stats': came_from_stats,
+        'exit_link_stats': exit_link_stats,
+    }
+
+    return render(request, 'traffic_report.html', context)
+
+
+
+"""
+Views of features to be implemented in next version
+"""
+# def downloadActivity(request):
+#     """
+#     Renders the download activity page
+#     """
+
+#     # retrieving data from database
+#     obj = DownloadActivity.objects.all().order_by('-datetime')[0:150]
+
+#     context = {
+#         'download_activity': obj
+#     }
+    
+#     return render(request, 'download_activity.html', context)
+
+# def keywordActivity(request):
+#     """
+#     Renders the keyword activity page
+#     """
+
+#     # retriving data from database
+#     obj = KeywordActivity.objects.all().order_by('-datetime')[0:25]
+
+#     context = {
+#         'keyword_activity': obj,
+#     }
+    
+#     return render(request, 'keyword_activity.html', context)

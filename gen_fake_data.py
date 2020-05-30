@@ -8,12 +8,11 @@ excute this file in python shell.
 import datetime
 import random
 import dateutil.parser
-
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log, CameFromActivity, DownloadActivity, ExitLinkActivity, VisitorSpot
-from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, KeywordActivity, VisitorInfo
-from dashboard.models import BrowserStats, PlatformStats, OSStats
+from dashboard.models import Log, CameFromActivity, ExitLinkActivity, VisitorSpot
+from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, VisitorInfo
+from dashboard.models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
 
 num_rows = 1000 # number of rows to insert
 
@@ -35,22 +34,46 @@ paths = ["/watch/", "/cdcontent/", "/tutorial-search/", "/news/", "/accounts/log
 "/statistics/training/", "/statistics/pmmmnmtt/fdp/", "/statistics/tutorial-content/", "/statistics/online-test/", 
 "/statistics/academic-center/", "/home/"]
 
-foss = ["Aakash Business Tool", "Advance C", "Advanced Cpp", "Applications of GeoGebra", "Arduino", "ASCEND", 
-"Avogadro", "BASH", "Biogas Plant", "Biopython", "Blender", "BOSS Linux", "C", "C and Cpp", "CellDesigner", 
-"ChemCollective Virtual Labs", "Cpp", "Digital Divide", "Digital India", "Drupal", "DWSIM", "eSim", "ExpEYES", 
-"Filezilla", "Firefox", "FrontAccounting", "GChemPaint", "gedit Text Editor", "Geogebra", 
-"GeoGebra for Engineering drawing", "GIMP", "Git", "GNS3", "GNUKhata", "GSchem", "Inkscape", 
-"Introduction to Computers", "Java", "Java Business Application", "JChemPaint", "Jmol Application", "Joomla", 
-"K3b", "KiCad", "Koha Library Management System", "KTouch", "KTurtle", "LaTeX", "LaTeX Old Version", 
-"LibreOffice Calc on BOSS Linux", "LibreOffice Impress on BOSS Linux", "LibreOffice Installation", 
-"LibreOffice Suite Base", "LibreOffice Suite Calc", "LibreOffice Suite Draw", "LibreOffice Suite Impress", 
-"LibreOffice Suite Math", "LibreOffice Suite Writer", "LibreOffice Writer on BOSS Linux", "Linux", 
-"Moodle Learning Management System", "Netbeans", "Ngspice", "OpenFOAM", "OpenModelica", "OR Tools", "Orca", "Oscad", 
-"PERL", "PhET", "PHP and MySQL", "Python", "Python 3.4.3", "Python for Biologists", "Python Old Version", "QCad", 
-"R", "RDBMS PostgreSQL", "Ruby", "Scilab", "Selenium", "Showcase Tutorials", "Single Board Heater System", 
-"Skill Development- Fitter", "Skill Development- InStore Promoter", "Spoken Tutorial Technology", "Step", 
-"Synfig", "test", "TEST FOSS", "Thunderbird", "Translation and Dubbing", "Tux Typing", "UCSF Chimera", 
-"Website Information", "What is Spoken Tutorial", "Xfig"]
+page_titles = ["Watch Tutorial | spoken-tutorial.org", 
+"CD Content Creation | spoken-tutorial.org", 
+"Search Tutorials | spoken-tutorial.org", 
+"Events & Happenings  | spoken-tutorial.org", 
+"Login | spoken-tutorial.org", 
+"Logout | spoken-tutorial.org", 
+"Register | spoken-tutorial.org", 
+"Software Training Dashboard | spoken-tutorial.org", 
+"Software Training Planner | spoken-tutorial.org", 
+"Software Training Student Batch | spoken-tutorial.org", 
+"Software Training Select Participants | spoken-tutorial.org", 
+"Software Training Resource Center | spoken-tutorial.org", 
+"Participant/Student Login | spoken-tutorial.org", 
+"India Map | spoken-tutorial.org",
+"Workshop/Training Statistics  | spoken-tutorial.org", 
+"PMMMNMTT Statistics  | spoken-tutorial.org",
+"Tutorial Statistics  | spoken-tutorial.org",
+"Online-Test Statistics  | spoken-tutorial.org", 
+"Academic Centers  | spoken-tutorial.org", 
+"Home | spoken-tutorial.org", 
+"CD Image Download | spoken-tutorial.org",
+]
+
+foss = ['Aakash+Business+Tool', 'Advance+C', 'Advanced+Cpp', 'Applications+of+GeoGebra', 
+'Arduino', 'ASCEND', 'Avogadro', 'BASH', 'Biogas+Plant', 'Biopython', 'Blender', 'BOSS+Linux', 
+'C', 'C+and+Cpp', 'CellDesigner', 'ChemCollective+Virtual+Labs', 'Cpp', 'Digital+Divide', 
+'Digital+India', 'Drupal', 'DWSIM', 'eSim', 'ExpEYES', 'Filezilla', 'Firefox', 'FrontAccounting', 
+'GChemPaint', 'gedit+Text+Editor', 'Geogebra', 'GeoGebra+for+Engineering+drawing', 'GIMP', 'Git', 
+'GNS3', 'GNUKhata', 'GSchem', 'Inkscape', 'Introduction+to+Computers', 'Java', 
+'Java+Business+Application', 'JChemPaint', 'Jmol+Application', 'Joomla', 'K3b', 'KiCad', 
+'Koha+Library+Management+System', 'KTouch', 'KTurtle', 'LaTeX', 'LaTeX+Old+Version', 
+'LibreOffice+Calc+on+BOSS+Linux', 'LibreOffice+Impress+on+BOSS+Linux', 'LibreOffice+Installation', 
+'LibreOffice+Suite+Base', 'LibreOffice+Suite+Calc', 'LibreOffice+Suite+Draw', 'LibreOffice+Suite+Impress', 
+'LibreOffice+Suite+Math', 'LibreOffice+Suite+Writer', 'LibreOffice+Writer+on+BOSS+Linux', 'Linux', 
+'Moodle+Learning+Management+System', 'Netbeans', 'Ngspice', 'OpenFOAM', 'OpenModelica', 'OR+Tools', 
+'Orca', 'Oscad', 'PERL', 'PhET', 'PHP+and+MySQL', 'Python', 'Python+3.4.3', 'Python+for+Biologists', 
+'Python+Old+Version', 'QCad', 'R', 'RDBMS+PostgreSQL', 'Ruby', 'Scilab', 'Selenium', 'Showcase+Tutorials', 
+'Single+Board+Heater+System', 'Skill+Development-+Fitter', 'Skill+Development-+InStore+Promoter', 
+'Spoken+Tutorial+Technology', 'Step', 'Synfig', 'test', 'TEST+FOSS', 'Thunderbird', 
+'Translation+and+Dubbing', 'Tux+Typing', 'UCSF+Chimera', 'Website+Information', 'What+is+Spoken+Tutorial', 'Xfig']
 
 tutorials = ["Tutorial 1", "Tutorial 2", "Tutorial 3", "Tutorial 4", "Tutorial 5", "Tutorial 6", "Tutorial 7", "Tutorial 8"]
 
@@ -178,38 +201,35 @@ pages = ["https://spoken-tutorial.org/cdcontent/",
 "https://spoken-tutorial.org/cdcontent/", 
 "https://spoken-tutorial.org/participant/index/?category=2"]
 
-browsers = ["Firefox 76.0", "Chrome for Android", "Chrome 83.0", "Chrome 81.0", "Samsung Internet 11.2", "Opera 68.0"]
+browsers = ["Firefox", "Chrome for Android", "Chrome", "Samsung Internet", "Opera"]
 
-os = ["Linux", "Android", "Win7", "Win10"]
+browser_versions = ["76.0", "83.0", "81.0", "11.2", "68.0"]
 
-resolutions = ["1525x858", "360x760", "1440x900", "360x780", "393x851", "412x892", "393x851", "360x640", "1536x864"]
+os = ["Linux", "Android", "Windows", "Mac"]
 
-languages = ["en-gb", "en-us"]
-
-isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Airtel", "Andhra Pradesh State FiberNet Limited"]
+os_versions = ["7", "8", "8.1"]
 
 # For Logs Model
 # def randomData():
-#     visited_by = lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else ""
-#     method = lambda x: random.choice(["GET", "POST"])
-#     city = lambda x: random.choice(cities)
-#     region = lambda x: random.choice(states_uts)
-#     country = lambda x: populator.generator.country()
-#     ip_address = lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255))
-#     event_name = lambda x: random.choice(event_names)
-#     path_info = lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths)
 #     data = {
-#         'path_info': path_info,
-#         'visited_by': visited_by,
-#         'browser_info' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-#         'request_data' : '{data: request_data}',
-#         'method': method,
-#         'event_name': event_name,
-#         'city': city,
-#         'region': region,
-#         'country': country,
-#         'ip_address':  ip_address,
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+16d', tzinfo=india_tz),
+#         'path_info': lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths),
+#         'event_name': lambda x: random.choice(event_names),
+#         'page_title': lambda x: random.choice(page_titles),
+#         'visited_by': lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else "anonymous",
+#         'ip_address':  lambda x: "230.124.0." + str(random.randint(0, 255)),
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz),
+#         'referrer': lambda x: random.choice(referrer),
+#         'browser_family': lambda x: random.choice(browsers),
+#         'browser_version': lambda x: random.choice(browser_versions),
+#         'os_family': lambda x: random.choice(os),
+#         'os_version': lambda x: random.choice(os_versions),
+#         'device_family': lambda x: random.choice(["Lenovo K8 Note", "Realme XT", "Realme X2", "Samasung M31S", "Samsung M40"]),
+#         'device_type': lambda x: random.choice(["Mobile", "PC"]),
+#         'latitude': lambda x: populator.generator.local_latlng(country_code='IN', coords_only=True)[0],
+#         'longitude': lambda x: populator.generator.local_latlng(country_code='IN', coords_only=True)[1],
+#         'city': lambda x: random.choice(cities),
+#         'region': lambda x: random.choice(states_uts),
+#         'country': 'India',
 #     }
 #     return data
 
@@ -236,18 +256,18 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     data = {
 #         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
 #         'exit_link_clicked': lambda x: random.choice(exit_links),
-#         'exit_page': lambda x: random.choice(pages)
+#         'exit_link_page': lambda x: random.choice(pages)
 #     }
 #     return data
 
 # For VisitorSpot Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator. local_latlng(country_code='IN', coords_only=True)][::-1] }
-#     }
-#     return data
+def randomData():
+    data = {
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+        'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
+        'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator.local_latlng(country_code='IN', coords_only=True)][::-1] }
+    }
+    return data
 
 # For PageViewActivity Model
 # def randomData():
@@ -364,17 +384,45 @@ isp = ["Powai", "Jio", "CtrlS Datacenters", "ACT Fibernet", "Idea Cellular", "Ai
 #     return data
 
 # For OSStats Model
-def randomData():
-    data = {
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-        'os': lambda x: random.choice(['Android', 'iOS', 'Win10', 'Win7', 'Win8.1', 'OSX']),
-        'page_views': lambda x: random.randint(1, 1000),
-    }
-    return data
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
+#         'os': lambda x: random.choice(['Android', 'iOS', 'Win10', 'Win7', 'Win8.1', 'OSX']),
+#         'page_views': lambda x: random.randint(1, 1000),
+#     }
+#     return data
 
+# For SourcesStats Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
+#         'referrer_page_views': lambda x: random.randint(1, 1000),
+#         'search_page_views': lambda x: random.randint(1, 1000),
+#         'direct_page_views': lambda x: random.randint(1, 1000),
+#         'total_page_views': lambda x: random.randint(1, 3000),
+#     }
+#     return data
+
+# For CameFromStats Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
+#         'referrer': lambda x: random.choice(referrer),
+#         'page_views': lambda x: random.randint(1, 1000),
+#     }
+#     return data
+
+# For ExitLinkStats Model
+# def randomData():
+#     data = {
+#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
+#         'exit_link': lambda x: random.choice(exit_links),
+#         'page_views': lambda x: random.randint(1, 1000),
+#     }
+#     return data
 
 # Adding data to populator object
-populator.addEntity(OSStats, num_rows, randomData())
+populator.addEntity(VisitorSpot, num_rows, randomData())
 
 # Inserting data to database
 populator.execute()

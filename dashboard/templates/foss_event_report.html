@@ -1,0 +1,96 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>Foss Pages Report</title>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Reports > Foss/Pages</h1>
+        <select id="foss-event-select" class="custom-select form-control-sm" style="width: 10em">
+            <option value="foss" selected>Foss</option>
+            <option value="event">Pages</option>
+        </select>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive" id="foss-table">
+                <table class="table table-bordered display no-wrap" id="foss-report-table" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col span="1" style="width: 60%;">
+                        <col span="1" style="width: 10%;">
+                        <col span="1" style="width: 30%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Foss</th>
+                            <th>Page Views</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in foss_stats %}
+                        <tr>
+                            <td>{{ stat.foss_name }} </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.5em;">
+                                            <div class="progress-bar " role="progressbar " style="width: {{ stat.percentage }}% " aria-valuemin="0 " aria-valuemax="10 "></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ stat.percentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" id="event-table" style="display: none;">
+                <table class="table table-bordered display no-wrap" id="event-report-table" width="100%" cellspacing="0">
+                    <colgroup>
+                        <col span="1" style="width: 60%;">
+                        <col span="1" style="width: 10%;">
+                        <col span="1" style="width: 30%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Pages</th>
+                            <th>Page Views</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in event_stats %}
+                        <tr>
+                            <td>{{ stat.page_title }} </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="progress progress-sm mb-2" style="margin-top: 0.5em;">
+                                            <div class="progress-bar " role="progressbar " style="width: {{ stat.percentage }}% " aria-valuemin="0 " aria-valuemax="10 "></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ stat.percentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-foss-event-report.js' %} "></script>
+{% endblock %}

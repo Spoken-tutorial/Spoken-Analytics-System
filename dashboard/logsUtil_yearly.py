@@ -10,10 +10,11 @@ Terms:
     Unique visitors: number of users who visited the site.
 """
 import datetime
-from dashboard.models import Log, YearlyStats
+from dashboard.models import MonthlyStats, YearlyStats
 from pytz import timezone
 from django.conf import settings
 from celery import shared_task
+from dateutil.relativedelta import relativedelta
 
 # using bind=True on the shared_task decorator to turn the below function
 # into a method of Task class. This lets us use self.retry for retrying
@@ -22,72 +23,40 @@ from celery import shared_task
 def yearly(self):
     tz = timezone(settings.TIME_ZONE)
 
-    years = [] # Stores all years for which data is present
+    yesterday = datetime.datetime.now() - datetime.timedelta(1) # eg. 2020-05-24 13:25:39.576267
+    one_year_ago = yesterday - relativedelta(years=1) # eg. 2019-05-25 13:25:39.576283
 
-    logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'year': {'$year': '$datetime'}}}}])
+    one_year_ago_min = datetime.datetime.combine(one_year_ago, datetime.time.min) # eg. 2019-05-25 00:00:00
+    yesterday_max = datetime.datetime.combine(yesterday, datetime.time.max) # eg. 2020-05-24 23:59:59.999999
 
-    # Calculating number of years of which data is present
-    for log in logs:
-        years.append(log['_id'])
+    # make datetimes timezone aware
+    one_year_ago_min = tz.localize(one_year_ago_min)
+    yesterday_max = tz.localize(yesterday_max)
 
-    # For each day calculating stats and storing them
-    for year in years:
+    previous_year_logs = MonthlyStats.objects.filter(datetime__range=(one_year_ago_min, yesterday_max)).order_by('-datetime') # Getting data of the date from log collection
 
-        current_year = year['year']
+    # variables to store total values
+    page_views = 0
+    unique_visits = 0
+    first_time_visits = 0
+    returning_visits = 0
+    unique_visitors = 0
 
-        current_year_start = datetime.datetime(day= 1, month=1, year=current_year)
-        current_year_end = datetime.datetime(day= 31, month=12, year=current_year)
+    for log in previous_year_logs:
+        page_views += log.page_views
+        unique_visits += log.unique_visits
+        first_time_visits += log.first_time_visits
+        returning_visits += log.returning_visits
+        unique_visitors += log.unique_visitors
 
-        current_year_min_time = datetime.datetime.combine(current_year_start, datetime.time.min)
-        current_year_max_time = datetime.datetime.combine(current_year_end, datetime.time.max)
-        
-        # make datetimes timezone aware
-        current_year_min_time = tz.localize(current_year_min_time)
-        current_year_max_time = tz.localize(current_year_max_time)
+    previous_year_stats = YearlyStats()
 
-        monthly_logs = Log.objects.filter(datetime__range=(current_year_min_time, current_year_max_time)).order_by('datetime') # Getting data of the date from log collection
+    previous_year_stats.datetime = tz.localize(yesterday)
+    previous_year_stats.year = yesterday.year
+    previous_year_stats.page_views = page_views
+    previous_year_stats.unique_visits = unique_visits
+    previous_year_stats.first_time_visits = first_time_visits
+    previous_year_stats.returning_visits = returning_visits
+    previous_year_stats.unique_visitors = unique_visitors
 
-        unique_visitors = [] # Stores unique ip addresses
-
-        # Finding all unique ip addresses of this month
-        for log in monthly_logs:
-            if log.ip_address not in unique_visitors:
-                unique_visitors.append(log.ip_address)
-
-        # variables to store counts
-        unique_visits = 0
-        first_time = 0
-        first_time_total = 0
-        returning_visits = 0
-
-        # caculating stats according to ip addresses
-        for ip in unique_visitors:
-            first_time = 0
-            for log in monthly_logs:
-                if log.ip_address == ip:
-                    # if ip is found for the first time
-                    if first_time == 0:
-                        prev_datetime = log.datetime
-                        first_time = 1
-                        first_time_total += 1
-                        unique_visits += 1
-                    else:
-                        # if same ip occurs within time differce of 30 minutes
-                        if (log.datetime - prev_datetime).seconds / 60 > 30:
-                            prev_datetime = log.datetime
-                            returning_visits += 1
-                            unique_visits += 1
-
-        yearly_stats = YearlyStats() # YearlyStats object
-
-        yearly_stats.date = current_year_min_time
-        yearly_stats.year = current_year
-        yearly_stats.page_views = len(monthly_logs)
-        yearly_stats.unique_visits = unique_visits
-        yearly_stats.first_time_visits = first_time_total
-        yearly_stats.returning_visits = returning_visits
-        yearly_stats.unique_visitors = len(unique_visitors)
-        
-        yearly_stats.save() # saving the calculations to database
-
-    print(datetime.datetime.now())
+    previous_year_stats.save()

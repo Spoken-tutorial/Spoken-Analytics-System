@@ -14,3 +14,81 @@ hr {
 td {
     color: black;
 }
+
+
+/* CSS for time slider of activities page */
+
+.range-slider {
+    margin: 0 0 0 0;
+}
+
+.range-slider {
+    width: 100%;
+}
+
+.range-slider__range {
+    -webkit-appearance: none;
+    width: 50%;
+    height: 10px;
+    border-radius: 5px;
+    background: #d7dcdf;
+    outline: none;
+    padding: 0;
+    margin: 0;
+}
+
+.range-slider__range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4e73df;
+    cursor: pointer;
+    -webkit-transition: background .15s ease-in-out;
+    transition: background .15s ease-in-out;
+}
+
+.range-slider__range::-webkit-slider-thumb:hover {
+    background: #224abe;
+}
+
+.range-slider__range:active::-webkit-slider-thumb {
+    background: #224abe;
+}
+
+.range-slider__range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    border-radius: 50%;
+    background: #4e73df;
+    cursor: pointer;
+    -moz-transition: background .15s ease-in-out;
+    transition: background .15s ease-in-out;
+}
+
+.range-slider__range::-moz-range-thumb:hover {
+    background: #224abe;
+}
+
+.range-slider__range:active::-moz-range-thumb {
+    background: #224abe;
+}
+
+.range-slider__range:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px #fff, 0 0 0 6px #224abe;
+}
+
+ ::-moz-range-track {
+    background: #d7dcdf;
+    border: 0;
+}
+
+input::-moz-focus-inner,
+input::-moz-focus-outer {
+    border: 0;
+}
+
+
+/* end of CSS for time slider of activities page */

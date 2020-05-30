@@ -4,17 +4,24 @@ from djgeojson.fields import PointField
 
 # Create your models here.
 class Log(models.Model):
-    path_info = models.CharField (max_length=200)
-    browser_info = models.CharField (max_length=300)
-    method = models.CharField(max_length=10)
-    event_name = models.CharField (max_length=100, blank=False)
-    visited_by = models.CharField (max_length=100, blank=False)
+    path_info = models.CharField(max_length=200)
+    event_name = models.CharField(max_length=200, blank=False)
+    page_title = models.CharField(max_length=200)
+    visited_by = models.CharField(max_length=100, blank=False)
     ip_address = models.GenericIPAddressField(null=False)
-    country = models.CharField (max_length=100, blank=False)
-    region = models.CharField (max_length=5, blank=False)
-    city = models.CharField (max_length=100, blank=False)
-    isp = models.CharField (max_length=100)
     datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=500)
+    browser_family = models.CharField(max_length=100)
+    browser_version = models.CharField(max_length=20)
+    os_family = models.CharField(max_length=100)
+    os_version = models.CharField(max_length=20)
+    device_family = models.CharField(max_length=100)
+    device_type = models.CharField(max_length=50)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    country = models.CharField(max_length=100, blank=False)
+    region = models.CharField(max_length=5, blank=False)
+    city = models.CharField(max_length=100, blank=False)
     
     def __str__(self):
         return "Website Log Object"
@@ -23,6 +30,7 @@ class Log(models.Model):
 
 
 class AverageStats(models.Model):
+    datetime = models.DateTimeField()
     average_daily_page_views = models.IntegerField()
     average_daily_unique_visits = models.IntegerField()
     average_daily_first_time_visits = models.IntegerField()
@@ -48,7 +56,8 @@ class AverageStats(models.Model):
 
 
 class DailyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
+    date = models.DateField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
     first_time_visits = models.IntegerField()
@@ -62,7 +71,7 @@ class DailyStats(models.Model):
 
 
 class WeeklyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
     week_of_year = models.IntegerField()
     year = models.IntegerField()
     page_views = models.IntegerField()
@@ -78,7 +87,7 @@ class WeeklyStats(models.Model):
 
 
 class MonthlyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
     month_of_year = models.IntegerField()
     year = models.IntegerField()
     page_views = models.IntegerField()
@@ -94,7 +103,7 @@ class MonthlyStats(models.Model):
 
 
 class YearlyStats(models.Model):
-    date = models.DateTimeField()
+    datetime = models.DateTimeField()
     year = models.IntegerField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
@@ -108,9 +117,10 @@ class YearlyStats(models.Model):
     objects = models.DjongoManager()
 
 class EventStats(models.Model):
+    date = models.DateField()
     event_name = models.CharField(max_length=100, blank=False)
+    page_title = models.CharField(max_length=200)
     path_info = models.CharField (max_length=200)
-    date = models.DateTimeField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
 
@@ -120,8 +130,8 @@ class EventStats(models.Model):
     objects = models.DjongoManager()
 
 class FossStats(models.Model):
+    date = models.DateField()
     foss_name = models.CharField(max_length=100)
-    date = models.DateTimeField()
     page_views = models.IntegerField()
     unique_visits = models.IntegerField()
 
@@ -131,6 +141,7 @@ class FossStats(models.Model):
     objects = models.DjongoManager()
 
 class RegionStats(models.Model):
+    datetime = models.DateTimeField()
     region = models.CharField(max_length=100)
     page_views = models.IntegerField()
 
@@ -140,6 +151,7 @@ class RegionStats(models.Model):
     objects = models.DjongoManager()
 
 class CityStats(models.Model):
+    datetime = models.DateTimeField()
     city = models.CharField(max_length=100)
     page_views = models.IntegerField()
 
@@ -158,20 +170,10 @@ class CameFromActivity(models.Model):
 
     objects = models.DjongoManager()
 
-class DownloadActivity(models.Model):
-    datetime = models.DateTimeField()
-    download_link = models.CharField(max_length=300)
-    clicked_from = models.CharField(max_length=300)
-
-    def __str__(self):
-        return "Download Activity Model"
-
-    objects = models.DjongoManager()
-
 class ExitLinkActivity(models.Model):
     datetime = models.DateTimeField()
     exit_link_clicked = models.CharField(max_length=300)
-    exit_page = models.CharField(max_length=300)
+    exit_link_page = models.CharField(max_length=300)
 
     def __str__(self):
         return "Exit Link Activity Model"
@@ -191,13 +193,11 @@ class PageViewActivity(models.Model):
     datetime = models.DateTimeField()
     browser = models.CharField(max_length=100)
     os = models.CharField(max_length=100)
-    screen_res = models.CharField(max_length=20)
     city = models.CharField(max_length=100)
+    device = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
-    language = models.CharField(max_length=25)
     ip_address = models.GenericIPAddressField()
-    isp = models.CharField(max_length=100)
     page_name = models.CharField(max_length=300)
     page_url = models.CharField(max_length=300)
     referrer = models.CharField(max_length=300)
@@ -208,6 +208,7 @@ class PageViewActivity(models.Model):
     objects = models.DjongoManager()
 
 class VisitorActivity(models.Model):
+    datetime = models.DateTimeField()
     page_views = models.IntegerField()
     total_visits = models.IntegerField()
     latest_page_view = models.DateTimeField()
@@ -216,14 +217,12 @@ class VisitorActivity(models.Model):
     country = models.CharField(max_length=100)
     visit_length_sec = models.IntegerField()
     ip_address = models.GenericIPAddressField()
-    isp = models.CharField(max_length=100)
-    screen_res = models.CharField(max_length=20)
     browser = models.CharField(max_length=100)
     os = models.CharField(max_length=100)
+    device = models.CharField(max_length=100)
     referrer = models.CharField(max_length=300)
     entry_page = models.CharField(max_length=300)
     latest_page = models.CharField(max_length=300)
-    visit_page = models.CharField(max_length=300)
 
     def __str__(self):
         return "Visitor Activity Model"
@@ -244,29 +243,16 @@ class VisitorPath(models.Model):
     region = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     ip_address = models.GenericIPAddressField()
-    isp = models.CharField(max_length=100)
     visit_num = models.IntegerField()
-    screen_res = models.CharField(max_length=20)
     browser = models.CharField(max_length=100)
     os = models.CharField(max_length=100)
+    device = models.CharField(max_length=100)
     path = models.ArrayField(
         model_container=Path,
     )
 
     def __str__(self):
         return "Visitor Path Model"
-
-    objects = models.DjongoManager()
-
-
-class KeywordActivity(models.Model):
-    datetime = models.DateTimeField()
-    name = models.CharField(max_length=100)
-    search_query = models.CharField(max_length=300)
-    entry_page = models.CharField(max_length=300)
-
-    def __str__(self):
-        return "Keyword Activity Model"
 
     objects = models.DjongoManager()
 
@@ -279,11 +265,9 @@ class VisitorInfo(models.Model):
     city = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
-    screen_res = models.CharField(max_length=20)
+    device = models.CharField(max_length=100)
     returning_visits = models.IntegerField()
-    javascript = models.BooleanField()
     visit_length_sec = models.IntegerField()
-    isp = models.CharField(max_length=100)
     path = models.ArrayField(
         model_container=Path,
     )
@@ -323,3 +307,59 @@ class OSStats(models.Model):
         return "OS Stats"
 
     objects = models.DjongoManager()
+
+class SourcesStats(models.Model):
+    datetime = models.DateTimeField()
+    referrer_page_views = models.IntegerField()
+    search_page_views = models.IntegerField()
+    direct_page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Sources Stats Model"
+
+    objects = models.DjongoManager()
+
+class CameFromStats(models.Model):
+    datetime = models.DateTimeField()
+    referrer = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Came From Stats Model"
+
+    objects = models.DjongoManager()
+
+
+class ExitLinkStats(models.Model):
+    datetime = models.DateTimeField()
+    exit_link = models.CharField(max_length=100)
+    page_views = models.IntegerField()
+
+    def __str__(self):
+        return "Exit Link Stats Model"
+
+    objects = models.DjongoManager()
+
+"""
+Models of features to be implemented in next version
+"""
+# class KeywordActivity(models.Model):
+#     datetime = models.DateTimeField()
+#     name = models.CharField(max_length=100)
+#     search_query = models.CharField(max_length=300)
+#     entry_page = models.CharField(max_length=300)
+
+#     def __str__(self):
+#         return "Keyword Activity Model"
+
+#     objects = models.DjongoManager()
+
+# class DownloadActivity(models.Model):
+#     datetime = models.DateTimeField()
+#     download_link = models.CharField(max_length=300)
+#     clicked_from = models.CharField(max_length=300)
+
+#     def __str__(self):
+#         return "Download Activity Model"
+
+#     objects = models.DjongoManager()

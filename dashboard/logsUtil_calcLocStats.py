@@ -15,6 +15,7 @@ def calc_loc_stats (self):
 
     for stats in city_stats:
         city_stats = CityStats()
+        city_stats.datetime = Log.first().datetime
         city_stats.city = stats['city']
         city_stats.page_views = stats['count']
         city_stats.save()
@@ -23,6 +24,7 @@ def calc_loc_stats (self):
 
     for stats in region_stats:
         region_stats = RegionStats()
+        city_stats.datetime = Log.first().datetime
         region_stats.region = stats['region']
         region_stats.page_views = stats['count']
         region_stats.save()

@@ -25,7 +25,7 @@ var eventsDataTable = $('#events-data-table').DataTable({
 $(document).ready(function() {
 
     $('#event-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
-    $('#event-to-date').val(moment().toISOString().substr(0, 10));
+    $('#event-to-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
 
     getEventsData();
 
@@ -59,9 +59,9 @@ function getEventsData() {
             // Inserting data to data_table_array
             data.forEach((key, value) => {
                 data_table_array.push([
-                    '<span class="text-primary text-uppercase">' + key.event_name + '</span>' + '<br>' + key.path_info,
+                    '<span class="text-primary">' + key.page_title + '</span>' + '<br>' + "<a href='http://spoken-tutorial.org" + key.path_info + "'>spoken-tutorial.org" + key.path_info + "</a>",
                     key.unique_visits,
-                    '<a class="text-primary link" href="/dashboard/event_analysis/' + key.event_name + '"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>',
+                    '<a class="text-primary link" href="/dashboard/event_analysis/?path=' + key.path_info + '"><i class="fa fa-cogs"></i>&nbspPage Analysis</a>',
                 ])
             });
 

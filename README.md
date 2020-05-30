@@ -1,18 +1,68 @@
-# Website log storage API
+# Spoken-Analytics-System
 
-- Run the Django server on port 8001 ~ ```python manage.py runserver 127.0.0.1:8001```
-- Run monitor_queue.py ~ ```python monitor_queue.py```
-- After generating 5 visit logs, check logs_api collection of logs_api MongoDB database.
+## Setting up the project
+* Create a virtual environment in recently created directory and activate it:
+```
+python3 -m venv env
+source env/bin/activate ( for linux )
+```
 
-# Tutorial progress logs API
+* Clone the repository and enter to the repository:
+```
+git clone https://github.com/Spoken-tutorial/Spoken-Analytics-System.git
+cd Spoken-Analytics-System
+```
 
-pip install django-cors-headers
+* Switch to branch "arish"
+```
+git checkout arish
+```
 
-- Run the Django server on port 8001 ~ ```python manage.py runserver 127.0.0.1:8001```
-- The views defined in *logs_api/views.py* define the API methods for tutorial progress logs.
+
+* Next, install the dependencies using pip:
+```
+pip install -r requirements-dev.txt 
+```
+
+* Change analytics_system/config.py-exp to analytics_system/config.py and change the configuration of databases
+
+* Restore the mongo dump
+```
+mongorestore --db logs --verbose \path\dump\<dumpfolder>
+```
+
+* Make migrations and migrate the database
+```
+python3 manage.py makemigraions
+python3 manage.py migrate --database=default
+```
+
+* Go to file in env/lib/python3.6/site-packages/djongo/models/fields.py and change the line no 91 to
+```
+for field in self.model_container._meta._get_fields(reverse = False):
+```
+(mind the underscores)
+This is to be done because there is bug in djongo in latest release.
+
+* After that you have to run temp_daily, temp_weekly, temp_monthly, temp_yearly, temp_calcAvg, temp_eventStats, temp_fossStats, temp_visitorActivityStats, temp_visitorPathStats, temp_pageViewActivityStats and temp_pageViewActivityStats files in the shell so that stats can be calculated. 
+```
+python3 manage.py shell < temp_daily.py
+python3 manage.py shell < temp_weekly.py
+...
+
+```
+
+(These files contain the same code as in logsUtil_* files but logsUtil_* files run from celery at regular intervals).
+
+* Finally, you’re ready to start the development server:
+```
+python manage.py runserver
+```
+
+Visit http://127.0.0.1:8000/dashboard in your browser to get to visualization page.
+
+* Note : 
+You can only see the visualization of dashboard page, events, event analysis, foss, visitor activity, visitor path page, came from activity and page view activity till now, because data for other pages is not being calculated yet.
 
 
-# Celery beats for cron jobs
-
-Run celery -A analytics_system beat -l INFO  
 

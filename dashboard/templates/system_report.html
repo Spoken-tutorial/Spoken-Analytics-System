@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% load static %} {% block title %}
+<title>System Report</title>
+{% endblock %} {% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-primary">Reports > System</h1>
+        <select id="system-select" class="custom-select form-control-sm" style="width: 10em">
+            <option value="browser" selected>Browser</option>
+            <option value="platform">Platform</option>
+            <option value="os">OS</option>
+        </select>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive" id="browser-table">
+                <table class="table table-bordered display no-wrap" id="browser-report-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Browser</th>
+                            <th>Percentage</th>
+                            <th>Page Views</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in browser_stats %}
+                        <tr>
+                            <td>{{ stat.name }} </td>
+                            <td>
+                                <div class='progress progress-sm mb-2' style='margin-top: 0.7em;'>
+                                    <div class='progress-bar' role='progressbar' style='width: {{ stat.percentage }}%' aria-valuemin='0' aria-valuemax='100'></div>
+                                </div>
+                            </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" id="platform-table" style="display: none;">
+                <table class="table table-bordered display no-wrap" id="platform-report-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th>Percentage</th>
+                            <th>Page Views</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in platform_stats %}
+                        <tr>
+                            <td>{{ stat.platform }} </td>
+                            <td>
+                                <div class='progress progress-sm mb-2' style='margin-top: 0.7em;'>
+                                    <div class='progress-bar' role='progressbar' style='width: {{ stat.percentage }}%' aria-valuemin='0' aria-valuemax='100'></div>
+                                </div>
+                            </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive" id="os-table" style="display: none;">
+                <table class="table table-bordered display no-wrap" id="os-report-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>OS</th>
+                            <th>Percentage</th>
+                            <th>Page Views</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in os_stats %}
+                        <tr>
+                            <td>{{ stat.os }} </td>
+                            <td>
+                                <div class='progress progress-sm mb-2' style='margin-top: 0.7em;'>
+                                    <div class='progress-bar' role='progressbar' style='width: {{ stat.percentage }}%' aria-valuemin='0' aria-valuemax='100'></div>
+                                </div>
+                            </td>
+                            <td class="text-primary">{{ stat.page_views }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+{% endblock %} {% block custom_js %}
+<script src="{% static 'js/custom/custom-system-report.js' %} "></script>
+{% endblock %}

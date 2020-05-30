@@ -9,6 +9,23 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-primary">Exit Link Activity</h1>
     </div>
+    <div style="margin-bottom: 10px;">
+        <div id="date-select-div" style="display: inline">
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="getData()">
+            </div>
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="start-time" type="time" style="width: 10em" disabled>
+            </div>
+            -
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="end-time" type="time" style="width: 10em" disabled>
+            </div>
+        </div>
+        <div class="range-slider" style="display: inline">
+            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="getData()">
+        </div>
+    </div>
 
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -23,22 +40,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for activity in exit_link_activity %}
-                        <tr>
-                            <td>
-                                {{ activity.datetime|date:'Y-m-d' }}
-                            </td>
-                            <td>
-                                {{ activity.datetime|date:'H:i:s' }}
-                            </td>
-                            <td>
-                                <a href="{{ activity.exit_link_clicked }}" style="text-decoration: none; color: blue">{{ activity.exit_link_clicked }}</a>
-                            </td>
-                            <td>
-                                <a href="https://spoken-tutorial.org{{ activity.exit_page }}">{{ activity.exit_page }}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>

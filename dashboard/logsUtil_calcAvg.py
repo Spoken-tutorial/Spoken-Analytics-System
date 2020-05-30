@@ -1,8 +1,10 @@
 """
 This script calculates the average stats from different collections
 """
+import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
-from celery import shared_task
+from pytz import timezone
+from django.conf import settings
 
 
 # using bind=True on the shared_task decorator to turn the below function
@@ -10,12 +12,14 @@ from celery import shared_task
 # failed tasks. Currently we are not retrying failed tasks.
 @shared_task(bind=True)
 def calc_avg (self):
+    tz = timezone(settings.TIME_ZONE)
+    
     # Fetching data from collections
     daily_stats = DailyStats.objects.all() 
     weekly_stats = WeeklyStats.objects.all()
     monthly_stats = MonthlyStats.objects.all()
     yearly_stats = YearlyStats.objects.all()
-    all_logs = Log.objects.all()
+    all_logs_total = Log.objects.all().count()
 
     # Variables to store stats
     total_records = 0
@@ -124,6 +128,7 @@ def calc_avg (self):
     avg_stats.average_yearly_first_time_visits = average_yearly_first_time_visits
     avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
 
-    avg_stats.total_page_views = len(all_logs)
+    avg_stats.total_page_views = all_logs_total
+    avg_stats.date = tz.localize(datetime.datetime.now()).date()
     # Saving the object
     avg_stats.save()

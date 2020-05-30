@@ -10,7 +10,7 @@ Terms:
     Unique visitors: number of users who visited the site.
 """
 import datetime
-from dashboard.models import Log, MonthlyStats
+from dashboard.models import DailyStats, MonthlyStats
 from calendar import monthrange
 from pytz import timezone
 from django.conf import settings
@@ -23,72 +23,41 @@ from celery import shared_task
 def monthly(self):
     tz = timezone(settings.TIME_ZONE)
 
-    months = [] # Stores all months for which data is present
+    yesterday = datetime.datetime.now() - datetime.timedelta(1) # eg. 2020-05-24 13:18:33.231161
+    one_month_ago = datetime.datetime.now() - datetime.timedelta(yesterday.day) # eg. 2020-04-30 13:18:33.231161
 
-    logs = Log.objects.mongo_aggregate([{'$group': {'_id': {'month': {'$month': '$datetime'}, 'year': { '$year': '$datetime' }}}}])
+    one_month_ago_min = datetime.datetime.combine(one_month_ago, datetime.time.min) # eg. 2020-05-01 00:00:00
+    yesterday_max = datetime.datetime.combine(yesterday, datetime.time.max) # eg. 2020-05-24 23:59:59.999999
 
-    # Calculating number of months of which data is present
-    for log in logs:
-        months.append(log['_id'])
+    # make datetimes timezone aware
+    one_month_ago_min = tz.localize(one_month_ago_min)
+    yesterday_max = tz.localize(yesterday_max)
 
-    # For each day calculating stats and storing them
-    for month in months:
+    previous_month_logs = DailyStats.objects.filter(date__range=(one_month_ago_min, yesterday_max)).order_by('-datetime') # Getting data of the date from log collection
 
-        current_month = month['month']
-        current_year = month['year']
+    # variables to store total values
+    page_views = 0
+    unique_visits = 0
+    first_time_visits = 0
+    returning_visits = 0
+    unique_visitors = 0
 
-        current_month_start = datetime.datetime(day= 1, month=current_month, year=current_year)
-        current_month_end = datetime.datetime(day= monthrange(current_year, current_month)[1], month=current_month, year=current_year)
+    for log in previous_month_logs:
+        page_views += log.page_views
+        unique_visits += log.unique_visits
+        first_time_visits += log.first_time_visits
+        returning_visits += log.returning_visits
+        unique_visitors += log.unique_visitors
 
-        current_month_min_time = datetime.datetime.combine(current_month_start, datetime.time.min)
-        current_month_max_time = datetime.datetime.combine(current_month_end, datetime.time.max)
+    previous_month_stats = MonthlyStats()
 
-        # make datetimes timezone aware
-        current_month_min_time = tz.localize(current_month_min_time)
-        current_month_max_time = tz.localize(current_month_max_time)
-        
-        monthly_logs = Log.objects.filter(datetime__range=(current_month_min_time, current_month_max_time)).order_by('datetime') # Getting data of the date from log collection
+    previous_month_stats.datetime = tz.localize(yesterday)
+    previous_month_stats.month_of_year = yesterday.month
+    previous_month_stats.year = yesterday.year
+    previous_month_stats.page_views = page_views
+    previous_month_stats.unique_visits = unique_visits
+    previous_month_stats.first_time_visits = first_time_visits
+    previous_month_stats.returning_visits = returning_visits
+    previous_month_stats.unique_visitors = unique_visitors
 
-        unique_visitors = [] # Stores unique ip addresses
-
-        # Finding all unique ip addresses of this month
-        for log in monthly_logs:
-            if log.ip_address not in unique_visitors:
-                unique_visitors.append(log.ip_address)
-
-        # variables to store counts
-        unique_visits = 0
-        first_time = 0
-        first_time_total = 0
-        returning_visits = 0
-
-        # caculating stats according to ip addresses
-        for ip in unique_visitors:
-            first_time = 0
-            for log in monthly_logs:
-                if log.ip_address == ip:
-                    # if ip is found for the first time
-                    if first_time == 0:
-                        prev_datetime = log.datetime
-                        first_time = 1
-                        first_time_total += 1
-                        unique_visits += 1
-                    else:
-                        # if same ip occurs within time differce of 30 minutes
-                        if (log.datetime - prev_datetime).seconds / 60 > 30:
-                            prev_datetime = log.datetime
-                            returning_visits += 1
-                            unique_visits += 1
-
-        monthly_stats = MonthlyStats() # MonthlyStats object
-
-        monthly_stats.date = current_month_min_time
-        monthly_stats.month_of_year = current_month
-        monthly_stats.year = current_year
-        monthly_stats.page_views = len(monthly_logs)
-        monthly_stats.unique_visits = unique_visits
-        monthly_stats.first_time_visits = first_time_total
-        monthly_stats.returning_visits = returning_visits
-        monthly_stats.unique_visitors = len(unique_visitors)
-        
-        monthly_stats.save() # saving the calculations to database
+    previous_month_stats.save()

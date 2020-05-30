@@ -28,30 +28,26 @@
                         <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="regions" role="tabpanel" aria-labelledby="home-tab">
-                                <div>
-                                    <table class="table" id="region-table">
-                                        <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
-                                            <col span="1" style="width: 10%;">
-                                        </colgroup>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table" id="region-table">
+                                    <colgroup>
+                                        <col span="1" style="width: 40%;">
+                                        <col span="1" style="width: 50%;">
+                                        <col span="1" style="width: 10%;">
+                                    </colgroup>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="tab-pane fade" id="cities" role="tabpanel" aria-labelledby="profile-tab">
-                                <div>
-                                    <table class="table" id="city-table">
-                                        <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
-                                            <col span="1" style="width: 10%;">
-                                        </colgroup>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table" id="city-table">
+                                    <colgroup>
+                                        <col span="1" style="width: 40%;">
+                                        <col span="1" style="width: 50%;">
+                                        <col span="1" style="width: 10%;">
+                                    </colgroup>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -73,45 +69,42 @@
                         <ul class="nav nav-tabs nav-justified" role="tablist">
                             <div class="slider"></div>
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#foss" role="tab" aria-controls="home" aria-selected="true">Foss</a>
+                                <a class="nav-link active" id="foss-tab" data-toggle="tab" href="#foss" role="tab" aria-controls="foss" aria-selected="true">Foss</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#events" role="tab" aria-controls="profile" aria-selected="false">Pages</a>
+                                <a class="nav-link" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">Pages</a>
                             </li>
                         </ul>
                         <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
                         <div class="tab-content">
-                            <div class="tab-pane fade show active" id="foss" role="tabpanel" aria-labelledby="home-tab">
-                                <div>
-                                    <table class="table" id="foss-table">
-                                        <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
-                                            <col span="1" style="width: 10%;">
-                                        </colgroup>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="tab-pane fade show active" id="foss" role="tabpanel" aria-labelledby="foss-tab">
+                                <table class="table" id="foss-table">
+                                    <colgroup>
+                                        <col span="1" style="width: 40%;">
+                                        <col span="1" style="width: 50%;">
+                                        <col span="1" style="width: 10%;">
+                                    </colgroup>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="profile-tab">
-                                <div>
-                                    <table class="table" id="events-table">
-                                        <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
-                                            <col span="1" style="width: 10%;">
-                                        </colgroup>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">
+                                <table class="table" id="events-table">
+                                    <colgroup>
+                                        <col span="1" style="width: 90%;">
+                                        <col span="1" style="width: 10%;">
+                                    </colgroup>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer">
-                    <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
+                    <a href="{% url 'foss-event-report' %}">
+                        <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
+                    </a>
                 </div>
             </div>
         </div>
@@ -142,8 +135,8 @@
                                 <div>
                                     <table class="table" id="browser-table">
                                         <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 40%;">
+                                            <col span="1" style="width: 50%;">
                                             <col span="1" style="width: 10%;">
                                         </colgroup>
                                         <tbody>
@@ -155,8 +148,8 @@
                                 <div>
                                     <table class="table" id="platform-table">
                                         <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 40%;">
+                                            <col span="1" style="width: 50%;">
                                             <col span="1" style="width: 10%;">
                                         </colgroup>
                                         <tbody>
@@ -168,8 +161,8 @@
                                 <div>
                                     <table class="table" id="os-table">
                                         <colgroup>
-                                            <col span="1" style="width: 30%;">
-                                            <col span="1" style="width: 60%;">
+                                            <col span="1" style="width: 40%;">
+                                            <col span="1" style="width: 50%;">
                                             <col span="1" style="width: 10%;">
                                         </colgroup>
                                         <tbody>
@@ -181,13 +174,67 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="{% url 'location-report' %}">
+                    <a href="{% url 'system-report' %}">
                         <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
                     </a>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Traffic</h6>
+                </div>
+                <div class="card-body" style="padding: 0px; height:28em">
+                    <div class="tile-4" id="tile-4">
+                        <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <div class="slider"></div>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="sources-tab" data-toggle="tab" href="#sources" role="tab" aria-controls="sources" aria-selected="true">Sources</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="came-from-tab" data-toggle="tab" href="#came-from" role="tab" aria-controls="came-from" aria-selected="false">Came From</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="exit-link-tab" data-toggle="tab" href="#exit-link" role="tab" aria-controls="exit-link" aria-selected="false">Exit Links</a>
+                            </li>
+                        </ul>
+                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw" style="width: 100%"></i>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="sources" role="tabpanel" aria-labelledby="sources-tab">
+                                <div class="chart-pie pt-4 pb-2">
+                                    <canvas id="sourcesPieChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="came-from" role="tabpanel" aria-labelledby="came-from-tab">
+                                <table class="table" id="came-from-table">
+                                    <colgroup>
+                                        <col span="1" style="width: 80%;">
+                                        <col span="1" style="width: 20%;">
+                                    </colgroup>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="exit-link" role="tabpanel" aria-labelledby="exit-link-tab">
+                                <table class="table" id="exit-link-table">
+                                    <colgroup>
+                                        <col span="1" style="width: 80%;">
+                                        <col span="1" style="width: 20%;">
+                                    </colgroup>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'traffic-report' %}">
+                        <h6 class="m-0 font-weight-bold text-primary" style="float: right;"><i class="fa fa-search"></i>&nbspView Report</h6>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
