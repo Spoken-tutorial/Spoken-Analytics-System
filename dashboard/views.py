@@ -354,6 +354,28 @@ def pageViewActivity(request):
     
     return render(request, 'page_view_activity.html', context)
 
+def pageViewActivityData(request):
+    """
+    Suppy data to data table of page view activity page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+    
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    page_view_activity_stats = PageViewActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', page_view_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 def visitorActivity(request):
     """
     Renders the visitor activity page

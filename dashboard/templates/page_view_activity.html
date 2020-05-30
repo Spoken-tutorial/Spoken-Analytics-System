@@ -9,6 +9,23 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-primary">Page View Activity</h1>
     </div>
+    <div style="margin-bottom: 10px;">
+        <div id="date-select-div" style="display: inline">
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="getData()">
+            </div>
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="start-time" type="time" style="width: 10em" disabled>
+            </div>
+            -
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="end-time" type="time" style="width: 10em" disabled>
+            </div>
+        </div>
+        <div class="range-slider" style="display: inline">
+            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="getData()">
+        </div>
+    </div>
 
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -24,31 +41,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for activity in page_view_activity %}
-                        <tr>
-                            <td>
-                                {{ activity.datetime|date:'Y-m-d' }}
-                            </td>
-                            <td>
-                                {{ activity.datetime|date:'H:i:s' }}
-                            </td>
-                            <td>
-                                {{ activity.browser }}
-                                <br> {{ activity.os }}
-                                <br> {{ activity.device }}
-                            </td>
-                            <td>
-                                {{ activity.city }},
-                                <br> {{ activity.region }},
-                                <br> {{ activity.country }}
-                            </td>
-                            <td>
-                                ({{ activity.ip_address }})
-                                <br> <a href="https://spoken-tutorial.org{{ activity.page_url }}" style="text-decoration: none; color: blue">https://spoken-tutorial.org{{ activity.page_url }}</a>
-                                <br> <a href="{{ activity.referrer }}" style="text-decoration: none; color: green">{{ activity.referrer }}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>
