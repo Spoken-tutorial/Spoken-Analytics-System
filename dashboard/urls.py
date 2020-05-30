@@ -39,6 +39,8 @@ urlpatterns = [
     re_path('^visitor_activity_data/$', views.visitorActivityData, name="visitor-activity-data"),
     # Serves visitor paths page
     re_path('^visitor_path/$', views.visitorPath, name="visitor-path"),
+    # Serves data for data table at visitor paths page
+    re_path('^visitor_path_data/$', views.visitorPathData, name="visitor-path-data"),
     # Serves magnify page
     re_path('^magnify/$', views.magnify, name="magnify"),
     # Serves foss-page report page

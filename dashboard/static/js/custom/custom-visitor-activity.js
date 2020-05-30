@@ -37,7 +37,6 @@ function getData() {
 
             // Parsing the data
             data = JSON.parse(data);
-            console.log(data);
 
             data_table_array = []
 
