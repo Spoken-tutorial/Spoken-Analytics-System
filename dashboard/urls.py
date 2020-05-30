@@ -33,6 +33,8 @@ urlpatterns = [
 
     # Serves came from activity page
     re_path('^came_from_activity/$', views.cameFromActivity, name="came-from-activity"),
+    # Serves data for data table at came from activity page
+    re_path('^came_from_activity_data/$', views.cameFromActivityData, name="came-from-activity-data"),
 
     # Serves exit link activity page
     re_path('^exit_link_activity/$', views.exitLinkActivity, name="exit-link-activity"),

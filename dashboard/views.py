@@ -302,15 +302,30 @@ def cameFromActivity(request):
     """
     Renders the came from activity page
     """
+    return render(request, 'came_from_activity.html')
 
-    # retrieving data from database
-    obj = CameFromActivity.objects.all().order_by('-datetime')[0:150]
+def cameFromActivityData(request):
+    """
+    Suppy data to data table of came from activity page
+    """
 
-    context = {
-        'came_from_activity': obj
-    }
+    data = json.loads(request.body) # Extract data from request
     
-    return render(request, 'came_from_activity.html', context)
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    came_from_activity_stats = CameFromActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', came_from_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 
 def exitLinkActivity(request):
     """
@@ -344,15 +359,7 @@ def pageViewActivity(request):
     """
     Renders the page view activity page
     """
-
-    # retriving data from database
-    obj = PageViewActivity.objects.all().order_by('-datetime')[0:25]
-
-    context = {
-        'page_view_activity': obj,
-    }
-    
-    return render(request, 'page_view_activity.html', context)
+    return render(request, 'page_view_activity.html')
 
 def pageViewActivityData(request):
     """
@@ -380,15 +387,7 @@ def visitorActivity(request):
     """
     Renders the visitor activity page
     """
-
-    # retriving data from database
-    obj = VisitorActivity.objects.all().order_by('-latest_page_view')[0:25]
-
-    context = {
-        'visitor_activity': obj,
-    }
-    
-    return render(request, 'visitor_activity.html', context)
+    return render(request, 'visitor_activity.html')
 
 
 def visitorActivityData(request):
@@ -417,15 +416,7 @@ def visitorPath(request):
     """
     Renders the visitor paths page
     """
-
-    # retriving data from database
-    obj = VisitorPath.objects.all().order_by('-datetime')[0:25]
-
-    context = {
-        'visitor_path': obj,
-    }
-    
-    return render(request, 'visitor_paths.html', context)
+    return render(request, 'visitor_paths.html')
 
 def visitorPathData(request):
     """
