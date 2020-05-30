@@ -1,0 +1,22 @@
+{
+    "_id": "5ec3a6d1f229cb915b2d2c2e",
+    "path_info": "/",
+    "browser_info": "Mozilla/5.0 (Linux; Android 9; Redmi Note 7S) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Mobile Safari/537.36",
+    "event_name": "event.home.view",
+    "visited_by": "anonymous",
+    "ip_address": "192.168.100.4",
+    "method": "GET",
+    "datetime": "2020-05-19T14:58:49.123Z",
+    "referer": null,
+    "browser_family": "Chrome Mobile",
+    "browser_version": "81.0.4044",
+    "operating_system_family": "Android",
+    "operating_system_version": "9",
+    "device_family": "XiaoMi Redmi Note 7S",
+    "first_time_visit": true,
+    "latitude": 15.5017,
+    "longitude": 73.8225,
+    "country": "India",
+    "city": "Panjim",
+    "state_code": "GA"
+  }

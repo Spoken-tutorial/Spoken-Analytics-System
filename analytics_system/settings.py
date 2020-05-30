@@ -144,11 +144,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-CORS_ORIGIN_WHITELIST = [
-    "http://127.0.0.1:8000",
-    "http://192.168.100.6:8000",
-    "http://192.168.43.71:8000",
-]
+CORS_ORIGIN_ALLOW_ALL = True
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
@@ -215,11 +211,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 GEOIP_PATH  = BASE_DIR + '/geodb/'
 
-USE_MIDDLEWARE_LOGS = False  # whether to use middleware logs or client-side JS logs system
+MONITOR_QUEUE_ITERATION_DELAY = 5  # delay between successive iterations of monitor_queue.py, in seconds
+
+USE_MIDDLEWARE_LOGS = True  # whether to use middleware logs or client-side JS logs system
 
 SAVE_LOGS_WITH_CELERY = False
 
-MONGO_BULK_INSERT_COUNT = 1  # change to 10000 later
+MONGO_BULK_INSERT_COUNT = 3  # change to 10000 later
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (20.5937, 78.9629),

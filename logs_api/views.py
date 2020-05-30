@@ -3,6 +3,7 @@ import datetime
 import json 
 import math
 import re
+import time
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -60,12 +61,8 @@ and pushing the log to a redis queue.
 @require_POST
 def save_middleware_log (request):
 
-    # data = dict(request.POST)
-    # print ('\n\n')
-    # print (data)
-    # print ('\n\n')
-
     data = {}
+
     # Note that request.POST can contain multiple items for each key. 
     # If you are expecting multiple items for each key, you can use lists, 
     # which returns all values as a list.
@@ -78,33 +75,6 @@ def save_middleware_log (request):
             data[key] = values[0]
         else:
             data[key] = values
-    
-    if not data['referer']:
-        data['referer'] = '(No referring link)'
-
-    # data = {}
-    # data['ip_address'] = request.POST.get('ip_address')
-    # data['path_info'] = request.POST.get('path_info')
-    # data['browser_info'] = request.POST.get('browser_info')
-    # data['event_name'] = request.POST.get('event_name')
-    # data['visited_by'] = request.POST.get('visited_by')
-    # data['ip_address'] = request.POST.get('ip_address')
-    # data['view_args'] = request.POST.get('view_args')
-    # data['view_kwargs'] = request.POST.get('view_kwargs')
-    # data['body'] = request.POST.get('body')
-    # data['method'] = request.POST.get('method')
-    # data['datetime'] = request.POST.get('datetime')
-    # data['referer'] = request.POST.get('referer')
-    # data['browser_family'] = request.POST.get('browser_family')
-    # data['browser_version'] = request.POST.get('browser_version')
-    # data['os_family'] = request.POST.get('os_family')
-    # data['os_version'] = request.POST.get('os_version')
-    # data['device_family'] = request.POST.get('device_family')
-    # data['device_type'] = request.POST.get('device_type')
-    # data['first_time_visit'] = request.POST.get ('first_time_visit')
-
-    # if request.POST.get ('post_data'):
-    #     data['post_data'] = request.POST.get ('post_data')
 
     try:
 
@@ -113,8 +83,17 @@ def save_middleware_log (request):
             if not re.match(r'^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$', data['ip_address']):
                 return
         
+        ips = ["15.194.44.177", "129.33.168.145", '46.228.130.180', '195.13.190.53', '146.235.167.153', 
+            '103.79.252.4', '67.231.228.190', '146.235.167.157', '88.89.235.241', '27.67.134.159',
+            '117.217.149.25', '202.134.153.244', '117.221.232.65', '115.96.110.248', '182.74.35.216', '27.61.140.192',
+            '202.83.21.148', '182.65.60.225', '106.77.155.162', '101.214.104.169', '103.120.153.54'
+        ]
+        import random
         # extract Geolocation info
+        
         try:
+            data["ip_address"] = random.choice(ips)
+        
             location = GEOIP2_CLIENT.city(data['ip_address'])
             data["latitude"] = location["latitude"]
             data["longitude"] = location["longitude"]
@@ -201,7 +180,7 @@ def save_js_log (request):
     except Exception as e:
         with open("enqueue_js_log_errors.txt", "a") as f:
             f.write(str(e) + '\n')
-    
+
     return HttpResponse(status=200)
 
 
