@@ -38,6 +38,8 @@ urlpatterns = [
 
     # Serves exit link activity page
     re_path('^exit_link_activity/$', views.exitLinkActivity, name="exit-link-activity"),
+    # Serves data for data table at exit link activity page
+    re_path('^exit_link_activity_data/$', views.exitLinkActivityData, name="exit-link-activity-data"),
 
     # Serves visitor map page
     re_path('^visitor_map/$', views.visitorMap, name="visitor-map"),

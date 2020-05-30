@@ -39,7 +39,6 @@ function getData() {
 
             // Parsing the data
             data = JSON.parse(data);
-            console.log(data);
 
             data_table_array = []
 
@@ -53,8 +52,6 @@ function getData() {
 
                 ])
             });
-
-            console.log(data_table_array);
 
             // Clearing the DataTable and adding rows with new data
             cameFromActivityDataTable.clear().rows.add(data_table_array).draw();

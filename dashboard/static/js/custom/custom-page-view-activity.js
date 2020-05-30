@@ -40,7 +40,6 @@ function getData() {
 
             // Parsing the data
             data = JSON.parse(data);
-            console.log(data);
 
             data_table_array = []
 
@@ -54,8 +53,6 @@ function getData() {
                     '<td>' + key.fields.ip_address + '<br> <a href="https://spoken-tutorial.org' + key.fields.page_url + '" style="text-decoration: none; color: blue">https://spoken-tutorial.org' + key.fields.page_url + '</a><br> <a href="' + key.fields.referrer + '" style="text-decoration: none; color: green">' + key.fields.referrer + '</a></td>'
                 ])
             });
-
-            console.log(data_table_array);
 
             // Clearing the DataTable and adding rows with new data
             pageViewActivityDataTable.clear().rows.add(data_table_array).draw();

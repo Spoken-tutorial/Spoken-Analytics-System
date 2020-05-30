@@ -53,8 +53,6 @@ function getData() {
                 ])
             });
 
-            console.log(data_table_array);
-
             // Clearing the DataTable and adding rows with new data
             visitoractivityDataTable.clear().rows.add(data_table_array).draw();
         },

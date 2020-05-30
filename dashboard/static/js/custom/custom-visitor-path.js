@@ -36,7 +36,6 @@ function getData() {
 
             // Parsing the data
             data = JSON.parse(data);
-            console.log(data);
 
             data_table_array = []
 
@@ -50,8 +49,6 @@ function getData() {
                     '<td><div class="row info-row"><div class="col-md-6 no-padding">' + key.fields.city + ', ' + key.fields.region + ', ' + key.fields.country + '&nbsp <span style="font-weight: 700;">' + key.fields.ip_address + '</span></div><div class="col-md-1 no-padding">visit #' + key.fields.visit_num + '</div><div class="col-md-5 no-padding">' + key.fields.os + ', ' + key.fields.browser + ', ' + key.fields.device + '</div></div><div class="paths">' + path + '</div></td>'
                 ])
             });
-
-            console.log(data_table_array);
 
             // Clearing the DataTable and adding rows with new data
             visitorPathDataTable.clear().rows.add(data_table_array).draw();

@@ -341,6 +341,29 @@ def exitLinkActivity(request):
     
     return render(request, 'exit_link_activity.html', context)
 
+def exitLinkActivityData(request):
+    """
+    Suppy data to data table of exit link activity page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+    
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting visitor activity stats from database
+    exit_link_activity_stats = ExitLinkActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', exit_link_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
+
 def visitorMap(request):
     """
     Renders the visitor map page
