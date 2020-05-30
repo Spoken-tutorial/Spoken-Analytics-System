@@ -223,11 +223,43 @@
             })
         });
 
-
         function showIPInput() {
             $('#ip-lookup-button').hide();
             $('#ip-input').show().select();
         }
+
+        // for time slider of activites page
+
+        var rangeSlider = function() {
+
+            $('#date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
+            $('#start-time').val(moment.utc().startOf('day').format('HH:mm'));
+            $('#end-time').val(moment.utc().startOf('day').add(10, 'minutes').format('HH:mm'));
+
+
+            var slider = $('.range-slider'),
+                range = $('.range-slider__range'),
+                value = $('.range-slider__value');
+
+            slider.each(function() {
+
+                value.each(function() {
+                    var value = $(this).prev().attr('value');
+                    $(this).html(value);
+                });
+
+                range.on('input', function() {
+                    var minutes_start = this.value * 10;
+                    var minutes_end = this.value * 10 + 10;
+                    var start_time = moment.utc().startOf('day').add(minutes_start, 'minutes').format('HH:mm')
+                    var end_time = moment.utc().startOf('day').add(minutes_end, 'minutes').format('HH:mm')
+                    $('#start-time').val(start_time);
+                    $('#end-time').val(end_time);
+                });
+            });
+        };
+
+        rangeSlider();
     </script>
 
     {% block custom_js %} {% endblock %}

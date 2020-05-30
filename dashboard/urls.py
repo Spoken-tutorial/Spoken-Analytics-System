@@ -35,6 +35,8 @@ urlpatterns = [
     re_path('^page_view_activity/$', views.pageViewActivity, name="page-view-activity"),
     # Serves visitor activity page
     re_path('^visitor_activity/$', views.visitorActivity, name="visitor-activity"),
+    # Serves data for data table at visitor activity page
+    re_path('^visitor_activity_data/$', views.visitorActivityData, name="visitor-activity-data"),
     # Serves visitor paths page
     re_path('^visitor_path/$', views.visitorPath, name="visitor-path"),
     # Serves magnify page

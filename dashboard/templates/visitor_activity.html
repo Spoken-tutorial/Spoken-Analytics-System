@@ -2,7 +2,7 @@
 <title>Visitor Activity</title>
 {% endblock %} {% block custom_css %}
 
-<link href="{% static 'css/custom/custom-visitor-activity.css' %}" rel="stylesheet"> {% endblock %} {% block content %}
+<link href="{% static 'css/custom/custom-visitor-activity.css' %}" rel="stylesheet">{% endblock %} {% block content %}
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -10,6 +10,23 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-primary">Visitor Activity</h1>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <div id="date-select-div" style="display: inline">
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="getData()">
+            </div>
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="start-time" type="time" style="width: 10em" disabled>
+            </div>
+            -
+            <div style="display: inline-flex">
+                <input class="form-control form-control-sm" id="end-time" type="time" style="width: 10em" disabled>
+            </div>
+        </div>
+        <div class="range-slider" style="display: inline">
+            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="getData()">
+        </div>
     </div>
 
     <div class="card shadow mb-4">
@@ -21,84 +38,6 @@
                         <th></th>
                     </thead>
                     <tbody>
-                        {% for activity in visitor_activity %}
-                        <tr>
-                            <td>
-                                <dl>
-                                    <dt>
-                                        Page Views:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.page_views }}
-                                    </dd>
-                                    <dt>
-                                        Latest Page View:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.latest_page_view|date:'j M Y H:i:s' }}
-                                    </dd>
-                                    <dt>
-                                        Visit Length:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.visit_length_sec|intdiv:60 }} min {{ activity.visit_length_sec|mod:60 }} sec
-                                    </dd>
-                                    <dt>
-                                        System:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.browser }}
-                                        <br> {{ activity.os }}
-                                        <br> {{ activity.device }}
-                                    </dd>
-                                </dl>
-                            </td>
-                            <td>
-                                <dl>
-                                    <dt>
-                                        Total Visits:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.total_visits }}
-                                    </dd>
-                                    <dt>
-                                        Location:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.city }}, {{ activity.region }}, {{ activity.country }}
-                                    </dd>
-                                    <dt>
-                                        IP Address:
-                                    </dt>
-                                    <dd>
-                                        {{ activity.ip_address }}
-                                    </dd>
-                                    <dt>
-                                        Referring URL:
-                                    </dt>
-                                    <dd>
-                                        <a href="{{ activity.referrer }}" style="text-decoration: none; color: green">{{ activity.referrer }}</a>
-                                    </dd>
-                                    <dt>
-                                        Entry Page:
-                                    </dt>
-                                    <dd>
-                                        <a href="{{ activity.entry_page }}" style="text-decoration: none; color: blue">{{ activity.entry_page }}</a>
-                                    </dd>
-                                    {% if activity.page_views == 1 %}
-                                    <dt>
-                                        Visit Page:
-                                    </dt> {% else %}
-                                    <dt>
-                                        Latest Page:
-                                    </dt> {% endif %}
-                                    <dd>
-                                        <a href="{{ activity.latest_page }}" style="text-decoration: none; color: blue">{{ activity.latest_page }}</a>
-                                    </dd>
-                                </dl>
-                            </td>
-                        </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>

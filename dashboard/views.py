@@ -368,6 +368,29 @@ def visitorActivity(request):
     
     return render(request, 'visitor_activity.html', context)
 
+
+def visitorActivityData(request):
+    """
+    Suppy data to data table of visitor activity page
+    """
+
+    data = json.loads(request.body) # Extract data from request
+    
+    from_datetime = datetime.strptime(data['from'], '%Y-%m-%d %H:%M') # converting to datetime object
+    to_datetime = datetime.strptime(data['to'], '%Y-%m-%d %H:%M')     # converting to datetime object
+
+    # make datetimes timezone aware
+    from_datetime = tz.localize(from_datetime)
+    to_datetime = tz.localize(to_datetime)
+
+    # getting foss stats from database
+    visitor_activity_stats = VisitorActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
+
+    # Converting data to json object
+    json_res = serializers.serialize('json', visitor_activity_stats)
+
+    return JsonResponse(json_res, safe=False) # sending data
+
 def visitorPath(request):
     """
     Renders the visitor paths page
