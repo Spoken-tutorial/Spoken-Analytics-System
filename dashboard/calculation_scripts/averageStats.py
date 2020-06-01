@@ -1,5 +1,7 @@
 """
-This script calculates the average stats from different collections
+This script calculates the daily, weekly, monthly and yearly average stats.
+It takes stats from 'DailyStats', 'WeeklyStats', 'MonthlyStats' and 'YearlyStats'
+then calculates average and stores them to 'AverageStats'.
 """
 import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
@@ -124,5 +126,6 @@ avg_stats.average_yearly_returning_visits = average_yearly_returning_visits
 
 avg_stats.total_page_views = all_logs_total
 avg_stats.datetime = tz.localize(datetime.datetime.now() - datetime.timedelta(1))
+
 # Saving the object
 avg_stats.save()

@@ -1,8 +1,14 @@
+"""
+This script stores the location (latitude and longitude) of users in 'VisitorSpot'.
+'VisitorSpot' is used to display location of users on Map.
+"""
+
 import datetime
-from dashboard.models import Log, CameFromActivity
+from dashboard.models import Log, VisitorSpot
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)
@@ -22,16 +28,13 @@ ip_addresses = [] # Stores unique ip addresses
 for log in yesterdays_logs:
     if log.ip_address not in ip_addresses:
         ip_addresses.append(log.ip_address)
-
+        
 for ip_address in ip_addresses:
 
-    ip_logs = Log.objects.filter(ip_address=ip_address).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime')
+    ip_logs = Log.objects.filter(ip_address=ip_address).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('-datetime').first()
 
-    for log in ip_logs:
-        # store the came from log only if referring in present and is not from spoken website
-        if not log.referrer.find('https://spoken-tutorial.org') != -1 and not log.referrer.find('(No referring link)') != -1:
-            came_from_stats = CameFromActivity()
-            came_from_stats.datetime = log.datetime
-            came_from_stats.referrer = log.referrer
-            came_from_stats.entry_page = log.path_info
-            came_from_stats.save()
+    visitor_spot = VisitorSpot()
+    visitor_spot.datetime = ip_logs.datetime
+    visitor_spot.ip_address =  ip_logs.ip_address
+    visitor_spot.geom = {'type': 'Point','coordinates': [ip_logs.longitude, ip_logs.latitude] }
+    visitor_spot.save()

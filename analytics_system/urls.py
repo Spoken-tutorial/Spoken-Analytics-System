@@ -21,7 +21,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # redirect /dashboard/* URLs to dashboard/urls.py for processing
+    # redirect /dashboard/* URLs to dashboard/urls.py for further processing
     path('dashboard/', include('dashboard.urls')),
 
     # logs_api

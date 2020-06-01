@@ -1,12 +1,14 @@
 """
-This script takes logs from the dashboard_log collection, calculates no of page loads from different locations.
+This script takes logs from the 'Log' and calculates no of page loads from different locations.
 """
+
 import datetime
 from dashboard.models import Log, RegionStats, CityStats
 from django.db.models import Count
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)

@@ -94,7 +94,7 @@ def graphData(request):
     json_stats = serializers.serialize('json', stats)
 
     # getting average stats
-    avg_stats = AverageStats.objects.all()
+    avg_stats = AverageStats.objects.all().order_by('-datetime').first()
 
     # Converting data to json object
     json_avg_stats = serializers.serialize('json', avg_stats)
@@ -361,15 +361,7 @@ def visitorMap(request):
     """
     Renders the visitor map page
     """
-
-    # retriving data from database
-    obj = VisitorSpot.objects.all().order_by('-datetime')[0:10]
-
-    context = {
-        'visitor_spots': obj,
-    }
-    
-    return render(request, 'visitor_map.html', context)
+    return render(request, 'visitor_map.html')
 
 def visitorMapData(request):
     """

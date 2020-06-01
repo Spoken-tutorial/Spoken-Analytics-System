@@ -1,14 +1,13 @@
-from __future__ import unicode_literals
 from djongo import models
 from djgeojson.fields import PointField
 
 # Create your models here.
 class Log(models.Model):
     path_info = models.CharField(max_length=200)
-    event_name = models.CharField(max_length=200, blank=False)
+    event_name = models.CharField(max_length=200)
     page_title = models.CharField(max_length=200)
-    visited_by = models.CharField(max_length=100, blank=False)
-    ip_address = models.GenericIPAddressField(null=False)
+    visited_by = models.CharField(max_length=100)
+    ip_address = models.GenericIPAddressField()
     datetime = models.DateTimeField()
     referrer = models.CharField(max_length=500)
     browser_family = models.CharField(max_length=100)
@@ -19,9 +18,9 @@ class Log(models.Model):
     device_type = models.CharField(max_length=50)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    country = models.CharField(max_length=100, blank=False)
-    region = models.CharField(max_length=5, blank=False)
-    city = models.CharField(max_length=100, blank=False)
+    country = models.CharField(max_length=100)
+    region = models.CharField(max_length=5)
+    city = models.CharField(max_length=100)
     
     def __str__(self):
         return "Website Log Object"
@@ -117,8 +116,8 @@ class YearlyStats(models.Model):
     objects = models.DjongoManager()
 
 class EventStats(models.Model):
+    datetime = models.DateTimeField()
     date = models.DateField()
-    event_name = models.CharField(max_length=100, blank=False)
     page_title = models.CharField(max_length=200)
     path_info = models.CharField (max_length=200)
     page_views = models.IntegerField()
@@ -130,6 +129,7 @@ class EventStats(models.Model):
     objects = models.DjongoManager()
 
 class FossStats(models.Model):
+    datetime = models.DateTimeField()
     date = models.DateField()
     foss_name = models.CharField(max_length=100)
     page_views = models.IntegerField()

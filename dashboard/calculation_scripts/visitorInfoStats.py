@@ -1,8 +1,14 @@
+"""
+This script calculates stats of visitors.
+It take logs from 'Log' and stores info of each visitor in 'VisitorInfo'.
+"""
+
 import datetime
 from dashboard.models import Log, VisitorInfo
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)

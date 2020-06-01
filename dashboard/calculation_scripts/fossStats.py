@@ -1,15 +1,18 @@
 """
-This script takes logs from the dashboard_dailystats collection, calculates daily logs stats 
-(date and unique_visits) for different events.
-Terms: 
-    Unique visits: unique visit is counted if user visits the site for the first time or he/she revisit it after 30 minutes.
+This script calculates
+1. page views : number of times a foss is viewed by the user.
+2. unique visits : it is counted if user views the foss for the first time or he/she reviews it after 30 minutes.
+of different foss and save them to 'FossStats'.
+
+The script runs everyday after 12:00 AM.
 """
 import datetime
-from dashboard.models import Log, EventStats
-from django.utils.timezone import get_current_timezone
+import re
+from dashboard.models import Log, FossStats
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)
@@ -21,18 +24,26 @@ yesterday_max = datetime.datetime.combine(yesterday, datetime.time.max) # Yester
 yesterday_min = tz.localize(yesterday_min)
 yesterday_max = tz.localize(yesterday_max)
 
-paths = [] # Stores all paths for which data is present
+foss = [] # Stores all foss for which data is present
 
 logs = Log.objects.filter(datetime__range=(yesterday_min, yesterday_max)) # Getting the logs
 
-# Calculating paths of which data is present
+# Calculating foss of which data is present
 for log in logs:
-    if log.path_info not in paths:
-        paths.append(log.path_info)
+    # If path_info matches paths like /watch/*
+    if log.path_info.find('/watch/') != -1:
+        foss_name = re.split('/', log.path_info)
+        if foss_name[2] not in foss:
+            foss.append(foss_name[2])
 
-for path in paths:
+# For each foss calculates stats
+for foss_name in foss:
 
-    daily_logs = Log.objects.filter(path_info=path).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
+    # if there is no foss name then continue
+    if foss_name == '':
+        continue
+
+    daily_logs = Log.objects.filter(path_info__contains=foss_name).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
     
     # if logs are found
     if daily_logs:
@@ -64,10 +75,13 @@ for path in paths:
                     prev_datetime = log.datetime
         
         # saving the events stats
-        event_stats = EventStats()
-        event_stats.date = yesterday.date()
-        event_stats.path_info = path
-        event_stats.page_title = daily_logs.first().page_title
-        event_stats.page_views = len(daily_logs)
-        event_stats.unique_visits = unique_visits
-        event_stats.save()
+        foss_stats = FossStats()
+
+        foss_stats.date = yesterday.date()
+        foss_stats.datetime = tz.localize(yesterday)
+        # Change foss names stored in path_info as 'Advance+C' to 'Advance C'
+        foss_stats.foss_name = foss_name.replace("+", " ")
+        foss_stats.page_views = len(daily_logs)
+        foss_stats.unique_visits = unique_visits
+
+        foss_stats.save()

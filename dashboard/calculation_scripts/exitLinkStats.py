@@ -1,15 +1,15 @@
 """
-This script takes logs from the dashboard_dailystats collection, calculates daily logs stats 
-(date and unique_visits) for different events.
-Terms: 
-    Unique visits: unique visit is counted if user visits the site for the first time or he/she revisit it after 30 minutes.
+This script calculates exit link stats.
+It takes logs from 'ExitLinkActivity', calculates exit link stats and 
+stores them to 'ExitLinkStats'.
 """
+
 import datetime
 from dashboard.models import ExitLinkActivity, ExitLinkStats
-from django.utils.timezone import get_current_timezone
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)
