@@ -4,12 +4,15 @@ import json
 import math
 import re
 import time
+import reverse_geocoder as rg 
+import pycountry
 
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST   
 from .utils import update_tutorial_progress
+
 
 from analytics_system import MONGO_CLIENT, REDIS_CLIENT, GEOIP2_CLIENT
 
@@ -99,23 +102,19 @@ def save_middleware_log (request):
             data["longitude"] = location["longitude"]
             data["country"] = location["country_name"]
             data["city"] = location["city"]
-            data['region_code'] = location["region"]
-            data["region"] = REGION_CODE_TO_REGION.get(data["region_code"])
+            region_code = location["region"]
+            data["region"] = REGION_CODE_TO_REGION.get(region_code)
 
         except:  # check https://pypi.org/project/geoip2/ for the exceptions thrown by GeoIP2
             data["latitude"] = None
             data["longitude"] = None
             data["country"] = "Unknown"
             data["city"] = "Unknown"
-            data['region_code'] = "Unknown"
             data["region"] = "Unknown"
 
         # sometimes the Geolocation may not return some of the fields
         if not data["country"]:
             data["country"] = "Unknown"
-
-        if not data["region_code"]:
-            data["region_code"] = "Unknown"
 
         if not data["city"]:
             data["city"] = "Unknown"
@@ -173,6 +172,25 @@ def save_js_log (request):
 
         if not data['referer']:
             data['referer'] = '(No referring link)'
+
+        if data['country'] == "" or data['region'] == "" or data['city'] == "":
+
+            # extract Geolocation info
+            rg_result = rg.search((float (data["latitude"]), float (data["longitude"]))) 
+            data['region'] = rg_result[0]['admin1']
+            data['city'] = rg_result[0]['name']
+            country_code = rg_result[0]['cc']
+            data['country'] = pycountry.countries.get(alpha_2=country_code).name
+
+            # sometimes the Geolocation may not return some of the fields
+            if not data["country"]:
+                data["country"] = "Unknown"
+
+            if not data["city"]:
+                data["city"] = "Unknown"
+
+            if not data["region"]:
+                data["region"] = "Unknown"
 
         # enqueue job in the redis queue named 'js_log'
         REDIS_CLIENT.rpush('js_log', json.dumps(data))
