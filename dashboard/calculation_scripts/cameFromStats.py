@@ -1,8 +1,8 @@
 """
-This script takes logs from the dashboard_dailystats collection, calculates daily logs stats 
-(date and unique_visits) for different events.
-Terms: 
-    Unique visits: unique visit is counted if user visits the site for the first time or he/she revisit it after 30 minutes.
+This script takes logs from the 'Log' calculates came from stats for different referrers
+and stored them to 'CameFromStats'.
+
+The script runs everyday after 12:00 AM.
 """
 import datetime
 from dashboard.models import Log, CameFromStats

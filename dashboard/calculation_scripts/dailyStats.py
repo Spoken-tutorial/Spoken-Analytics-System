@@ -21,8 +21,9 @@ from django.conf import settings
 # Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
+
 # Yesterdays datetime
-yesterday = datetime.datetime.now() - datetime.timedelta(1)
+yesterday = datetime.datetime.now() - datetime.timedelta(i)
 
 yesterday_min = datetime.datetime.combine(yesterday, datetime.time.min) # Yesterdays min datetime
 yesterday_max = datetime.datetime.combine(yesterday, datetime.time.max) # Yesterdays max datetime

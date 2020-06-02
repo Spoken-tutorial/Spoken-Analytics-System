@@ -2,6 +2,8 @@
 This script calculates visitor path stats.
 It takes logs from 'Log', calculates visitor path stats and 
 stores them to 'VisitorPath'.
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime

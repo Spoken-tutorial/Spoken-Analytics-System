@@ -1,6 +1,8 @@
 """
 This script calculates stats of visitors.
 It take logs from 'Log' and stores info of each visitor in 'VisitorInfo'.
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime

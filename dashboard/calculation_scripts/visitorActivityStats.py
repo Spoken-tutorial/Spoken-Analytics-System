@@ -2,6 +2,8 @@
 This script calculates visitor activity stats.
 It takes logs from 'Log', calculates visitor activity stats and 
 stores them to 'VisitorAcitivty'.
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime

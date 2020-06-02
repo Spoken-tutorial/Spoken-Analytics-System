@@ -2,6 +2,8 @@
 This script calculates page view activity stats.
 It takes logs from 'Log', calculates page view stats and 
 stores them to 'PageViewActivity'.
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime

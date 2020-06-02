@@ -350,8 +350,6 @@ def exitLinkActivityData(request):
     from_datetime = tz.localize(from_datetime)
     to_datetime = tz.localize(to_datetime)
 
-    print(from_datetime, to_datetime)
-
     # getting visitor activity stats from database
     exit_link_activity_stats = ExitLinkActivity.objects.filter(datetime__range=(from_datetime, to_datetime))
 

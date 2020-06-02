@@ -1,6 +1,8 @@
 """
 This script stores the location (latitude and longitude) of users in 'VisitorSpot'.
 'VisitorSpot' is used to display location of users on Map.
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime
