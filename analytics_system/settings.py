@@ -156,7 +156,7 @@ CELERY_IMPORTS = (
     'dashboard.logsUtil_calcAvg',
     'dashboard.logsUtil_calcEventStats',
     'dashboard.logsUtil_calcFossStats',
-    'dashboard.logsUtil_calcISP',
+    # 'dashboard.logsUtil_calcISP',
     'dashboard.logsUtil_calcLocStats',
     'dashboard.logsUtil_daily',
     'dashboard.logsUtil_monthly',
@@ -196,10 +196,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'dashboard.logsUtil_calcFossStats.calc_foss_stats',
         'schedule': crontab(minute=0, hour=0),  # everyday at 12am
     },
-    'calc_ISP': {
-        'task': 'dashboard.logsUtil_calcISP.calc_ISP',
-        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
-    },
+    # 'calc_ISP': {
+    #     'task': 'dashboard.logsUtil_calcISP.calc_ISP',
+    #     'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    # },
     'calc_loc_stats': {
         'task': 'dashboard.logsUtil_calcLocStats.calc_loc_stats',
         'schedule': crontab(minute=0, hour=0),  # everyday at 12am
@@ -215,7 +215,7 @@ MONITOR_QUEUE_ITERATION_DELAY = 5  # delay between successive iterations of moni
 
 USE_MIDDLEWARE_LOGS = False  # whether to use middleware logs or client-side JS logs system
 
-SAVE_LOGS_WITH_CELERY = False
+SAVE_LOGS_WITH_CELERY = True
 
 MONGO_BULK_INSERT_COUNT = 5  # change to 10000 later
 

@@ -50,29 +50,25 @@ since the queue is a FIFO structure).
 """
 def monitor_queue ():
 
-    while (True):
+    while True:
 
         try:
            
             if REDIS_CLIENT.llen(task_queue) >= settings.MONGO_BULK_INSERT_COUNT:
 
+                t0 = time.clock()
+
+                # Extract MONGO_BULK_INSERT_COUNT number of logs from task queue
                 logs = REDIS_CLIENT.lrange(task_queue, 0, settings.MONGO_BULK_INSERT_COUNT - 1)
-                
-                # trim the queue to remove the leftmost 10000 logs
-                # TODO: check if there's any opportunity for data loss, i.e.
-                # if it's possible for the queue size to increase between when the function 
-                # ltrim() is called, and when the queue is actually trimmed. The newest logs
-                # may be lost in this case.
-                REDIS_CLIENT.ltrim(task_queue, start=settings.MONGO_BULK_INSERT_COUNT, end=-1)
 
                 for i in range(len(logs)):
+
+                    # Pop item from task queue
+                    REDIS_CLIENT.lpop(task_queue)
 
                     # Extract json data into dict
                     my_json = logs[i].decode('utf8')
                     logs[i] = json.loads(my_json)
-                    # print (logs[i])
-                
-                t0 = time.clock()
 
                 if settings.SAVE_LOGS_WITH_CELERY:
 
@@ -98,9 +94,14 @@ def monitor_queue ():
 
             logger.info(f'Number of items in queue {task_queue}: {REDIS_CLIENT.llen(task_queue)}')
             time.sleep(settings.MONITOR_QUEUE_ITERATION_DELAY)
+        
+        except redis.ConnectionError:
+            logger.error("Either the redis server is not running, or the redis configurations are incorrect.")
+            time.sleep(settings.MONITOR_QUEUE_ITERATION_DELAY)
+
         except Exception:
             logger.exception("Exception occurred") 
 
 
 if __name__ == '__main__':
-    monitor_queue()  # This program can never crash once the monitor_queue() function is called.
+    monitor_queue()  # This redis monitor can never crash once the monitor_queue() function is called.

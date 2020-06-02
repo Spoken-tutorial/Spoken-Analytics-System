@@ -64,22 +64,22 @@ and pushing the log to a redis queue.
 @require_POST
 def save_middleware_log (request):
 
-    data = {}
-
-    # Note that request.POST can contain multiple items for each key. 
-    # If you are expecting multiple items for each key, you can use lists, 
-    # which returns all values as a list.
-    for key, values in request.POST.lists():
-
-        if key == 'request':
-            continue
-
-        if len(values) == 1:
-            data[key] = values[0]
-        else:
-            data[key] = values
-
     try:
+
+        data = {}
+
+        # Note that request.POST can contain multiple items for each key. 
+        # If you are expecting multiple items for each key, you can use lists, 
+        # which returns all values as a list.
+        for key, values in request.POST.lists():
+
+            if key == 'request':
+                continue
+
+            if len(values) == 1:
+                data[key] = values[0]
+            else:
+                data[key] = values
 
         # if the address is not a properly formatted IPv4 or IPv6, reject the log
         if not re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', data["ip_address"]):
@@ -94,6 +94,7 @@ def save_middleware_log (request):
         import random
         # extract Geolocation info
         
+        data['region'] = None
         try:
             data["ip_address"] = random.choice(ips)
         
@@ -103,7 +104,9 @@ def save_middleware_log (request):
             data["country"] = location["country_name"]
             data["city"] = location["city"]
             region_code = location["region"]
-            data["region"] = REGION_CODE_TO_REGION.get(region_code)
+
+            if data['country'].upper() == "INDIA":
+                data["region"] = REGION_CODE_TO_REGION.get(region_code)
 
         except:  # check https://pypi.org/project/geoip2/ for the exceptions thrown by GeoIP2
             data["latitude"] = None
@@ -116,11 +119,11 @@ def save_middleware_log (request):
         if not data["country"]:
             data["country"] = "Unknown"
 
-        if not data["city"]:
-            data["city"] = "Unknown"
-
         if not data["region"]:
             data["region"] = "Unknown"
+
+        if not data["city"]:
+            data["city"] = "Unknown"
 
         # enqueue job in the redis queue named 'middleware_log'
         REDIS_CLIENT.rpush('middleware_log', json.dumps(data))
@@ -147,50 +150,50 @@ and pushing the log to a redis queue.
 def save_js_log (request):
 
     try:
+
         data = {}
-        data["visit_duration"] = request.POST.get('visit_duration')
-        data['referer'] = request.POST.get('referer')
-        data['browser_family'] = request.POST.get('browser_family')
-        data['browser_version'] = request.POST.get('browser_version')
-        data['os_family'] = request.POST.get('os_family')
-        data['os_version'] = request.POST.get('os_version')
-        data['title'] = request.POST.get('title')
-        # data['event_name'] = EVENT_NAME_DICT[key]['name']
-        data['url_name'] = request.POST.get('url_name')
-        data['visited_by'] = request.POST.get('visited_by')  # request.user.username if request.user.is_authenticated else 'anonymous'
-        data["method"] = request.POST.get('method')
-        data['ip_address'] = request.POST.get('ip_address')  # request.META['REMOTE_ADDR']
-        data['method'] = request.POST.get ('method')  # request.method
-        data['datetime'] = str(datetime.datetime.fromtimestamp(int (request.POST.get("datetime"))/1000))
-        data['first_time_visit'] = request.POST.get ('first_time_visit')
-        data['country'] = request.POST.get ('country')
-        data['region'] = request.POST.get ('region')
-        data['city'] = request.POST.get ('city')
-        data['latitude'] = request.POST.get ('latitude')
-        data['longitude'] = request.POST.get ('longitude')
-        data['device_type'] = request.POST.get ('device_type')
 
-        if not data['referer']:
-            data['referer'] = '(No referring link)'
+        # Note that request.POST can contain multiple items for each key. 
+        # If you are expecting multiple items for each key, you can use lists, 
+        # which returns all values as a list.
+        for key, values in request.POST.lists():
 
+            if key == 'request':
+                continue
+
+            if len(values) == 1:
+                data[key] = values[0]
+            else:
+                data[key] = values
+
+        data['datetime'] = str(datetime.datetime.fromtimestamp(int (data["datetime"])/1000))
+        data['latitude'] = float (data['latitude'])
+        data['longitude'] = float (data['longitude'])
+
+        # If the user lets the browser have location access, we get their accurate
+        # coordinates, which we can convert to a location using the reverse_geocoder library.
         if data['country'] == "" or data['region'] == "" or data['city'] == "":
 
-            # extract Geolocation info
-            rg_result = rg.search((float (data["latitude"]), float (data["longitude"]))) 
-            data['region'] = rg_result[0]['admin1']
-            data['city'] = rg_result[0]['name']
-            country_code = rg_result[0]['cc']
-            data['country'] = pycountry.countries.get(alpha_2=country_code).name
+            # perform reverse geocoding
+            try:
 
-            # sometimes the Geolocation may not return some of the fields
-            if not data["country"]:
-                data["country"] = "Unknown"
+                rg_result = rg.search((data["latitude"], data["longitude"])) 
+                data['region'] = rg_result[0]['admin1']
+                data['city'] = rg_result[0]['name']
+                country_code = rg_result[0]['cc']
+                data['country'] = pycountry.countries.get(alpha_2=country_code).name
 
-            if not data["city"]:
-                data["city"] = "Unknown"
+            except:
 
-            if not data["region"]:
-                data["region"] = "Unknown"
+                # in case the reverse geocoding did not return a field.
+                if not data["country"]:
+                    data["country"] = "Unknown"
+
+                if not data["region"]:
+                    data["region"] = "Unknown"
+
+                if not data["city"]:
+                    data["city"] = "Unknown"
 
         # enqueue job in the redis queue named 'js_log'
         REDIS_CLIENT.rpush('js_log', json.dumps(data))
@@ -206,6 +209,7 @@ exit_link_logs = db.exit_link_logs
 
 """
 API function called from the client-side Javascript for saving exit link info.
+Currently this is not in use.
 """
 @csrf_exempt
 @require_POST
@@ -232,7 +236,6 @@ def save_exit_info (request):
 Function for handling the AJAX call of saving tutorial progress data. This AJAX
 call is made in watch_tutorial.html. Calls update_tutorial_progress in utils.py
 for the actual saving in MongoDB.
-This code is currently not in use, as an API-based code is currently used instead.
 TODO: don't let users make their own post requests to this view. Remove CSRF exempt
 """
 @csrf_exempt
@@ -267,7 +270,6 @@ def save_tutorial_progress (request):
 """
 Function for handling the AJAX call of changing tutorial completion data. This AJAX
 call is made in watch_tutorial.html.
-This code is currently not in use, as an API-based code is currently used instead.
 TODO: don't let users make their own post requests to this view. Remove CSRF exempt
 """
 @csrf_exempt
@@ -305,7 +307,6 @@ def change_completion (request):
 """
 Function for handling the AJAX call of checking tutorial completion. This AJAX
 call is made in watch_tutorial.html.
-This code is currently not in use, as an API-based code is currently used instead.
 TODO: don't let users make their own post requests to this view. Remove CSRF exempt
 """
 @csrf_exempt

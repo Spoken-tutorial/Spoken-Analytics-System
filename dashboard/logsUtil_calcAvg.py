@@ -5,6 +5,7 @@ import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats
 from pytz import timezone
 from django.conf import settings
+from celery import shared_task
 
 
 # using bind=True on the shared_task decorator to turn the below function
