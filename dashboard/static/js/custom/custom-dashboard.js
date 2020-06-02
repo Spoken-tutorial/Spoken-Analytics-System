@@ -32,7 +32,7 @@ $(document).ready(function() {
     });
 
     // Initialize date selects with initial values
-    document.querySelector("#graph-to-date").value = moment().toISOString().substr(0, 10);
+    document.querySelector("#graph-to-date").value = moment().subtract(1, 'days').toISOString().substr(0, 10);
     document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
 
     var week_of_year = moment().isoWeek();

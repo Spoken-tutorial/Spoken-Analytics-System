@@ -1,8 +1,15 @@
+"""
+This script calculates page view activity stats.
+It takes logs from 'Log', calculates page view stats and 
+stores them to 'PageViewActivity'.
+"""
+
 import datetime
 from dashboard.models import Log, PageViewActivity
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)

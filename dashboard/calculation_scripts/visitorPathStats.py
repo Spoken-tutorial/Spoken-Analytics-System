@@ -1,8 +1,15 @@
+"""
+This script calculates visitor path stats.
+It takes logs from 'Log', calculates visitor path stats and 
+stores them to 'VisitorPath'.
+"""
+
 import datetime
 from dashboard.models import Log, VisitorPath
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)

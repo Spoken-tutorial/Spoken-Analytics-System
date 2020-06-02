@@ -1,8 +1,14 @@
+"""
+This script stores the location (latitude and longitude) of users in 'VisitorSpot'.
+'VisitorSpot' is used to display location of users on Map.
+"""
+
 import datetime
 from dashboard.models import Log, VisitorSpot
 from pytz import timezone
 from django.conf import settings
 
+# Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
 yesterday = datetime.datetime.now() - datetime.timedelta(1)

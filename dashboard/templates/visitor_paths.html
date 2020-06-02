@@ -1,5 +1,5 @@
 {% extends 'base.html' %} {% load static %} {% load mathfilters %} {% block title %}
-<title>Visitor Activity</title>
+<title>Visitor Path</title>
 {% endblock %} {% block custom_css %}
 
 <link href="{% static 'css/custom/custom-visitor-path.css' %}" rel="stylesheet"> {% endblock %} {% block content %}
@@ -9,12 +9,12 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-primary">Visitor Activity</h1>
+        <h1 class="h3 mb-0 text-primary">Visitor Path</h1>
     </div>
     <div style="margin-bottom: 10px;">
         <div id="date-select-div" style="display: inline">
             <div style="display: inline-flex">
-                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="getData()">
+                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="">
             </div>
             <div style="display: inline-flex">
                 <input class="form-control form-control-sm" id="start-time" type="time" style="width: 10em" disabled>
@@ -25,8 +25,9 @@
             </div>
         </div>
         <div class="range-slider" style="display: inline">
-            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="getData()">
+            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="">
         </div>
+        <button class="btn btn-primary" onclick="getData()">View</button>
     </div>
 
     <div class="card shadow mb-4">

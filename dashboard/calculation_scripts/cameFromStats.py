@@ -31,16 +31,17 @@ for log in logs:
         referrers.append(log.referrer)
 
 for referrer in referrers:
+    # if referrer is present
+    if log.referrer:
+        # if referring url is not of spoken website
+        if not log.referrer.find('https://spoken-tutorial.org') != -1:
 
-    # if referring url is not of spoken website
-    if not log.referrer.find('https://spoken-tutorial.org') != -1:
+            referrer_logs = Log.objects.filter(referrer=referrer).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
+            
+            came_from_stats = CameFromStats()
 
-        referrer_logs = Log.objects.filter(referrer=referrer).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
-        
-        came_from_stats = CameFromStats()
+            came_from_stats.datetime = tz.localize(yesterday)
+            came_from_stats.referrer = referrer
+            came_from_stats.page_views = len(referrer_logs)
 
-        came_from_stats.datetime = tz.localize(yesterday)
-        came_from_stats.referrer = referrer
-        came_from_stats.page_views = len(referrer_logs)
-
-        came_from_stats.save()
+            came_from_stats.save()

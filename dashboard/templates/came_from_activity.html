@@ -12,7 +12,7 @@
     <div style="margin-bottom: 10px;">
         <div id="date-select-div" style="display: inline">
             <div style="display: inline-flex">
-                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="getData()">
+                <input class="form-control form-control-sm" id="date" type="date" style="width: 10em" onchange="">
             </div>
             <div style="display: inline-flex">
                 <input class="form-control form-control-sm" id="start-time" type="time" style="width: 10em" disabled>
@@ -23,8 +23,9 @@
             </div>
         </div>
         <div class="range-slider" style="display: inline">
-            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="getData()">
+            <input class="range-slider__range" type="range" value="0" min="0" max="143" oninput="">
         </div>
+        <button class="btn btn-primary" onclick="getData()">View</button>
     </div>
 
     <div class="card shadow mb-4">

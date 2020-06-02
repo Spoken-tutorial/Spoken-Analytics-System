@@ -1,5 +1,9 @@
-# Add the event names, title page and path for new events for which stats are to be calculated.
+"""
+This file contains name of events for logs data are being logged.
+Add the event names and title page new events for which stats are to be calculated.
+"""
 
+# List of tuples containing event_names and page titles
 events_titles = [
     ("event.video.watch", "Watch Tutorial | spoken-tutorial.org"), 
     ("event.cdcontent.download", "CD Content Creation | spoken-tutorial.org"), 
@@ -23,3 +27,10 @@ events_titles = [
     ("event.home.view" , "Home | spoken-tutorial.org"), 
     ("event.media.cdimage", "CD Image Download | spoken-tutorial.org")
 ]
+
+# Function to get page title of particular event
+def get_title_of_event(event_name):
+    for i in range(len(events_titles)):
+        if events_titles[i][0] == event_name:
+            return events_titles[i][1]
+    return ""
