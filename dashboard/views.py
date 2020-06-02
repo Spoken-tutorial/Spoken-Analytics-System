@@ -5,7 +5,7 @@ from django.db import connections
 from bson.json_util import dumps
 from django.shortcuts import render
 from django.http import JsonResponse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from pytz import timezone
 from django.core import serializers
 from djgeojson.serializers import Serializer as GeoJSONSerializer
@@ -68,10 +68,12 @@ def graphData(request):
 
         from_date = datetime.strptime(data['from'], '%Y-%m-%d') # converting to datetime object
         to_date = datetime.strptime(data['to'], '%Y-%m-%d')     # converting to datetime object
-
-    # make datetimes timezone aware
-    from_date = tz.localize(from_date)
-    to_date = tz.localize(to_date)
+        
+        to_date_max = datetime.combine(to_date, time.max) # max time for to_date
+        
+        # make datetimes timezone aware
+        from_date = tz.localize(from_date)
+        to_date = tz.localize(to_date_max)
 
     # extracting data on basis of granuality (weekly, monthly, etc)
     if data_summary_type == 'daily':
@@ -90,14 +92,14 @@ def graphData(request):
 
         stats = YearlyStats.objects.filter(datetime__range=(from_date, to_date)).order_by('datetime')
 
-    # Converting data to json object
+    # Converting data to json objectdatetime.
     json_stats = serializers.serialize('json', stats)
 
     # getting average stats
     avg_stats = AverageStats.objects.all().order_by('-datetime').first()
 
     # Converting data to json object
-    json_avg_stats = serializers.serialize('json', avg_stats)
+    json_avg_stats = serializers.serialize('json', [avg_stats])
 
     json_res = {'stats': json_stats, 'avg_stats': json_avg_stats}
 
@@ -347,6 +349,8 @@ def exitLinkActivityData(request):
     # make datetimes timezone aware
     from_datetime = tz.localize(from_datetime)
     to_datetime = tz.localize(to_datetime)
+
+    print(from_datetime, to_datetime)
 
     # getting visitor activity stats from database
     exit_link_activity_stats = ExitLinkActivity.objects.filter(datetime__range=(from_datetime, to_datetime))

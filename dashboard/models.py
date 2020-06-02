@@ -25,6 +25,9 @@ class Log(models.Model):
     def __str__(self):
         return "Website Log Object"
 
+    class Meta:
+        db_table = 'website_logs_js'
+
     objects = models.DjongoManager()
 
 
@@ -177,6 +180,9 @@ class ExitLinkActivity(models.Model):
 
     def __str__(self):
         return "Exit Link Activity Model"
+    
+    class Meta:
+        db_table = 'exit_link_logs'
 
     objects = models.DjongoManager()
 

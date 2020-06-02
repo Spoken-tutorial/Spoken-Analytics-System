@@ -1,4 +1,10 @@
 """
+*** Important ***
+We aren't using this script as of now.
+
+The exit link activity and exit link stats features are to be
+implemented in next version.
+
 This script calculates exit link stats.
 It takes logs from 'ExitLinkActivity', calculates exit link stats and 
 stores them to 'ExitLinkStats'.

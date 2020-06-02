@@ -30,11 +30,12 @@ logs = Log.objects.filter(datetime__range=(yesterday_min, yesterday_max)) # Gett
 
 # Calculating foss of which data is present
 for log in logs:
-    # If path_info matches paths like /watch/*
-    if log.path_info.find('/watch/') != -1:
-        foss_name = re.split('/', log.path_info)
-        if foss_name[2] not in foss:
-            foss.append(foss_name[2])
+    if log.path_info:
+        # If path_info matches paths like /watch/*
+        if log.path_info.find('/watch/') != -1:
+            foss_name = re.split('/', log.path_info)
+            if foss_name[2] not in foss:
+                foss.append(foss_name[2])
 
 # For each foss calculates stats
 for foss_name in foss:
