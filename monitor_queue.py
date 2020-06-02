@@ -61,10 +61,10 @@ def monitor_queue ():
                 # Extract MONGO_BULK_INSERT_COUNT number of logs from task queue
                 logs = REDIS_CLIENT.lrange(task_queue, 0, settings.MONGO_BULK_INSERT_COUNT - 1)
 
-                for i in range(len(logs)):
+                # Trim the queue to only contain the non-extracted items, if any.
+                REDIS_CLIENT.ltrim(task_queue, start=settings.MONGO_BULK_INSERT_COUNT, end=-1)
 
-                    # Pop item from task queue
-                    REDIS_CLIENT.lpop(task_queue)
+                for i in range(len(logs)):
 
                     # Extract json data into dict
                     my_json = logs[i].decode('utf8')
@@ -73,7 +73,7 @@ def monitor_queue ():
                 if settings.SAVE_LOGS_WITH_CELERY:
 
                     dump_json_logs.delay(logs)
-                    logger.info(f'{len(logs)} items successfully sent to Celery in {time.clock() - t0} seconds.')
+                    logger.info(f'Task containing {len(logs)} logs successfully sent to Celery in {time.clock() - t0} seconds.')
 
                 else:
             
@@ -91,8 +91,15 @@ def monitor_queue ():
 
                     logger.info(f'{len(logs)} items successfully inserted into MongoDB in {time.clock() - t0} seconds.')
 
-
-            logger.info(f'Number of items in queue {task_queue}: {REDIS_CLIENT.llen(task_queue)}')
+            # If the number of items in the redis queue is not less than
+            # MONGO_BULK_INSERT_COUNT, then immediately continue the loop.
+            # Otherwise continue the loop after a delay.
+            rqueue_len = REDIS_CLIENT.llen(task_queue)
+            logger.info(f'Number of items in queue {task_queue}: {rqueue_len}')
+            
+            if rqueue_len >= settings.MONGO_BULK_INSERT_COUNT:
+                continue
+            
             time.sleep(settings.MONITOR_QUEUE_ITERATION_DELAY)
         
         except redis.ConnectionError:

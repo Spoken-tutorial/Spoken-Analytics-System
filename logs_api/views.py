@@ -103,10 +103,10 @@ def save_middleware_log (request):
             data["longitude"] = location["longitude"]
             data["country"] = location["country_name"]
             data["city"] = location["city"]
-            region_code = location["region"]
+            data["region"] = location["region"]
 
             if data['country'].upper() == "INDIA":
-                data["region"] = REGION_CODE_TO_REGION.get(region_code)
+                data["region"] = REGION_CODE_TO_REGION.get(data["region"])
 
         except:  # check https://pypi.org/project/geoip2/ for the exceptions thrown by GeoIP2
             data["latitude"] = None
@@ -169,6 +169,8 @@ def save_js_log (request):
         data['datetime'] = str(datetime.datetime.fromtimestamp(int (data["datetime"])/1000))
         data['latitude'] = float (data['latitude'])
         data['longitude'] = float (data['longitude'])
+        data['view_args'] = []
+        data['view_kwargs'] = {}
 
         # If the user lets the browser have location access, we get their accurate
         # coordinates, which we can convert to a location using the reverse_geocoder library.
@@ -209,7 +211,6 @@ exit_link_logs = db.exit_link_logs
 
 """
 API function called from the client-side Javascript for saving exit link info.
-Currently this is not in use.
 """
 @csrf_exempt
 @require_POST
@@ -217,7 +218,7 @@ def save_exit_info (request):
 
     try:
         data = {}
-        data['datetime'] = str(datetime.datetime.fromtimestamp(int (request.POST.get("datetime"))/1000))
+        data['datetime'] = datetime.datetime.fromtimestamp(int (request.POST.get("datetime"))/1000)
         data['exit_link_clicked'] = request.POST.get('exit_link_clicked')
         data['exit_link_page'] = request.POST.get('exit_link_page')
 

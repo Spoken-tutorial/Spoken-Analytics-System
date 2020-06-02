@@ -11,7 +11,7 @@ from analytics_system import MONGO_CLIENT
 
 # configurations for pymongo
 db = MONGO_CLIENT.logs
-website_logs_middleware = db.website_logs_middleware
+website_logs = db.website_logs
 website_logs_js = db.website_logs_js
 
 
@@ -32,7 +32,7 @@ def dump_json_logs(self, logs):  # celery task for bulk insertion of logs into M
         # the ordered=False option ensures that all the logs are attempted for insert,
         # even if one of the intermediate logs fails the insertion.
         if settings.USE_MIDDLEWARE_LOGS:
-            website_logs_middleware.insert_many([logs[i] for i in range(len(logs))], ordered=False)
+            website_logs.insert_many([logs[i] for i in range(len(logs))], ordered=False)
         else:
             website_logs_js.insert_many([logs[i] for i in range(len(logs))], ordered=False)
 
