@@ -2,6 +2,8 @@
 This script calculates came from activity stats.
 It takes logs from 'Log', calculates came from activity stats and 
 stores them to 'CameFromActivity'.
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime

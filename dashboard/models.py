@@ -26,7 +26,7 @@ class Log(models.Model):
         return "Website Log Object"
 
     class Meta:
-        db_table = 'website_logs_js'
+        db_table = 'website_logs'
 
     objects = models.DjongoManager()
 

@@ -1,6 +1,10 @@
 """
-This file can generate fake data for database.
-change num_rows to desired number of rows to be inserted.
+This file can generate fake data for 'Log' and 'Exit Link Activity' 
+using populator of faker library.
+
+Change the value of num_rows_log and num_rows_exitlink to specify number of logs to be generated 
+for each table.
+
 excute this file in python shell.
 >> exec(open("gen_fake_data.py").read())
 """
@@ -10,17 +14,12 @@ import random
 import dateutil.parser
 from dateutil import tz
 from django_populate import Faker
-from dashboard.models import Log, CameFromActivity, ExitLinkActivity, VisitorSpot
-from dashboard.models import PageViewActivity, VisitorActivity, VisitorPath, VisitorInfo
-from dashboard.models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFromStats, ExitLinkStats
+from dashboard.models import Log, ExitLinkActivity
 
-num_rows = 10000 # number of rows to insert
-
+# timezone object to localize time
 india_tz = tz.gettz('Asia/Kolkata')
 
-# Creating populator object
-populator = Faker.getPopulator()
-
+# Sample data used for generating fake logs
 event_names = ["event.video.watch", "event.cdcontent.download", "event.tutorial.search", "event.news", "event.login", 
 "event.logout", "event.register", "event.software.training", "event.software.training.planner", 
 "event.software.training.student.batch", "event.software.training.select.participants", 
@@ -210,22 +209,31 @@ os = ["Linux", "Android", "Windows", "Mac"]
 
 os_versions = ["7", "8", "8.1"]
 
-# For Logs Model
-def randomData():
+# number of rows to be inserted in 'Log'
+num_rows_log = 100000
+
+# number of rows to be inserted in 'ExitLinkAcitivty'
+num_rows_exitlink = 100000
+
+# Creating populator object
+populator = Faker.getPopulator()
+
+# function for Logs Model
+def randomDataLog():
     data = {
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+10d', tzinfo=india_tz),
         'path_info': lambda x: "/watch/" + random.choice(foss) + "/" + random.choice(tutorials) + "/" + random.choice(languages) if random.choice(paths) == "/watch/" else random.choice(paths),
         'event_name': lambda x: random.choice(event_names),
         'page_title': lambda x: random.choice(page_titles),
         'visited_by': lambda x: populator.generator.user_name() if random.randint(0, 1) == 1 else "anonymous",
         'ip_address':  lambda x: "230.124.0." + str(random.randint(0, 255)),
-        'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+2d', tzinfo=india_tz),
         'referrer': lambda x: random.choice(referrer),
         'browser_family': lambda x: random.choice(browsers),
         'browser_version': lambda x: random.choice(browser_versions),
         'os_family': lambda x: random.choice(os),
         'os_version': lambda x: random.choice(os_versions),
         'device_family': lambda x: random.choice(["Lenovo K8 Note", "Realme XT", "Realme X2", "Samasung M31S", "Samsung M40"]),
-        'device_type': lambda x: random.choice(["Mobile", "PC"]),
+        'device_type': lambda x: random.choice(["Mobile", "PC", "Tablet"]),
         'latitude': lambda x: populator.generator.local_latlng(country_code='IN', coords_only=True)[0],
         'longitude': lambda x: populator.generator.local_latlng(country_code='IN', coords_only=True)[1],
         'city': lambda x: random.choice(cities),
@@ -233,197 +241,26 @@ def randomData():
         'country': 'India',
     }
     return data
+# Adding data to populator object
+populator.addEntity(Log, num_rows_log, randomDataLog())
 
-# For CameFromActivity Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+6d', tzinfo=india_tz),
-#         'referrer': lambda x: random.choice(referrer),
-#         'entry_page': lambda x: random.choice(paths)
-#     }
-#     return data
+# Inserting data to database
+populator.execute()
 
-# For DownloadActivity Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'download_link': lambda x: random.choice(download_links),
-#         'clicked_from': lambda x: random.choice(clicked_from)
-#     }
-#     return data
+# Creating populator object
+populator = Faker.getPopulator()
 
-# For ExitLinkActivity Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'exit_link_clicked': lambda x: random.choice(exit_links),
-#         'exit_link_page': lambda x: random.choice(pages)
-#     }
-#     return data
-
-# For VisitorSpot Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'geom': lambda x: {'type': 'Point','coordinates': [float(i) for i in populator.generator.local_latlng(country_code='IN', coords_only=True)][::-1] }
-#     }
-#     return data
-
-# For PageViewActivity Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'browser': lambda x: random.choice(browsers),
-#         'os': lambda x: random.choice(os),
-#         'screen_res': lambda x: random.choice(resolutions),
-#         'city': lambda x: random.choice(cities),
-#         'region': lambda x: random.choice(states_uts),
-#         'country': 'India',
-#         'language': lambda x: random.choice(languages),
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'isp': lambda x: random.choice(isp),
-#         'page_url': lambda x: random.choice(pages),
-#         'referrer': lambda x: random.choice(referrer),
-#     }
-#     return data
-
-# For PageViewActivity Model
-# def randomData():
-#     data = {
-#         'page_views': lambda x: random.randint(1, 10),
-#         'total_visits':  lambda x: random.randint(1, 40),
-#         'latest_page_view': lambda x: populator.generator.date_time_between(start_date='-1d', end_date='+1d', tzinfo=india_tz),
-#         'city': lambda x: random.choice(cities),
-#         'region': lambda x: random.choice(states_uts),
-#         'country': 'India',
-#         'visit_length_sec': lambda x: random.randint(1, 500),
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'isp': lambda x: random.choice(isp),
-#         'screen_res': lambda x: random.choice(resolutions),
-#         'referrer': lambda x: random.choice(referrer),
-#         'browser': lambda x: random.choice(browsers),
-#         'os': lambda x: random.choice(os),
-#         'entry_page': lambda x: random.choice(pages),
-#         'latest_page': lambda x: random.choice(pages),
-#         'visit_page': lambda x: random.choice(pages),
-#     }
-#     return data
-
-# For VisitorPath Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'city': lambda x: random.choice(cities),
-#         'region': lambda x: random.choice(states_uts),
-#         'country': 'India',
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'isp': lambda x: random.choice(isp),
-#         'visit_num':  lambda x: random.randint(1, 10),
-#         'screen_res': lambda x: random.choice(resolutions),
-#         'browser': lambda x: random.choice(browsers),
-#         'os': lambda x: random.choice(os),
-#         'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
-#     }
-#     return data
-
-# For KeywordActivity Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'name': lambda x: random.choice(['www.google.com', 'www.google.co.in', 'google.com']),
-#         'search_query': '(Keywords Unavailable)',
-#         'entry_page': lambda x: random.choice(paths)
-#     }
-#     return data
-
-# For VisitorInfo Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'referrer': lambda x: random.choice(referrer),
-#         'browser': lambda x: random.choice(browsers),
-#         'ip_address': lambda x: "230.124." + str(random.randint(0, 255)) + "." + str(random.randint(0, 255)),
-#         'os': lambda x: random.choice(os),
-#         'city': lambda x: random.choice(cities),
-#         'region': lambda x: random.choice(states_uts),
-#         'country': 'India',
-#         'screen_res': lambda x: random.choice(resolutions),
-#         'returning_visits': lambda x: random.randint(1, 10),
-#         'javascript': lambda x: random.randint(0, 1),
-#         'visit_length_sec': lambda x: random.randint(1, 500),
-#         'isp': lambda x: random.choice(isp),
-#         'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
-#     }
-#     return data
-
-# For ISPStats Model
-# def randomData():
-#     data = {
-#         'isp': lambda x: random.choice(isp),
-#         'path': lambda x: [{'datetime': populator.generator.date_time_between(start_date='-2d', end_date='now', tzinfo=india_tz), 'referrer': random.choice(referrer), 'page_url': random.choice(pages)} for i in range(random.randint(1, 10))]
-#     }
-#     return data
-
-# For BrowserStats Model
-# def randomData():
-    # data = {
-    #     'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-    #     'browser_type': lambda x: random.choice(['Mobile Browsers', 'Chrome', 'Firefox', 'Edge', 'Opera', 'Other']),
-    #     'name': lambda x: random.choice(browsers),
-    #     'page_views': lambda x: random.randint(0, 1000),
-    # }
-    # return data
-
-# For PlatformStats Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'platform': lambda x: random.choice(['Desktop', 'Mobile', 'Tablet']),
-#         'page_views': lambda x: random.randint(1, 1000),
-#     }
-#     return data
-
-# For OSStats Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-2d', end_date='+1d', tzinfo=india_tz),
-#         'os': lambda x: random.choice(['Android', 'iOS', 'Win10', 'Win7', 'Win8.1', 'OSX']),
-#         'page_views': lambda x: random.randint(1, 1000),
-#     }
-#     return data
-
-# For SourcesStats Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
-#         'referrer_page_views': lambda x: random.randint(1, 1000),
-#         'search_page_views': lambda x: random.randint(1, 1000),
-#         'direct_page_views': lambda x: random.randint(1, 1000),
-#         'total_page_views': lambda x: random.randint(1, 3000),
-#     }
-#     return data
-
-# For CameFromStats Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
-#         'referrer': lambda x: random.choice(referrer),
-#         'page_views': lambda x: random.randint(1, 1000),
-#     }
-#     return data
-
-# For ExitLinkStats Model
-# def randomData():
-#     data = {
-#         'datetime': lambda x: populator.generator.date_time_between(start_date='-10d', end_date='+1d', tzinfo=india_tz),
-#         'exit_link': lambda x: random.choice(exit_links),
-#         'page_views': lambda x: random.randint(1, 1000),
-#     }
-#     return data
+# function for ExitLinkActivity Model
+def randomDataExitLinkActivity():
+    data = {
+        'datetime': lambda x: populator.generator.date_time_between(start_date='-2y', end_date='+10d', tzinfo=india_tz),
+        'exit_link_clicked': lambda x: random.choice(exit_links),
+        'exit_link_page': lambda x: random.choice(pages)
+    }
+    return data
 
 # Adding data to populator object
-populator.addEntity(Log, num_rows, randomData())
+populator.addEntity(ExitLinkActivity, num_rows_exitlink, randomDataExitLinkActivity())
 
 # Inserting data to database
 populator.execute()

@@ -2,6 +2,8 @@
 This script calculates the daily, weekly, monthly and yearly average stats.
 It takes stats from 'DailyStats', 'WeeklyStats', 'MonthlyStats' and 'YearlyStats'
 then calculates average and stores them to 'AverageStats'.
+
+The script runs everyday after 12:00 AM.
 """
 import datetime
 from dashboard.models import Log, DailyStats, WeeklyStats, MonthlyStats, YearlyStats, AverageStats

@@ -169,7 +169,8 @@ $(document).ready(function() {
             // Parsing the data
             region_stats = JSON.parse(data.region_stats);
             city_stats = JSON.parse(data.city_stats);
-            total_page_views = JSON.parse(data.total_page_views);
+            total_region_stats_page_views = JSON.parse(data.total_region_stats_page_views);
+            total_city_stats_page_views = JSON.parse(data.total_city_stats_page_views);
 
             foss_stats = JSON.parse(data.foss_stats);
             total_foss_page_views = JSON.parse(data.total_foss_page_views);
@@ -201,11 +202,11 @@ $(document).ready(function() {
             var exit_link_table = $('#exit-link-table tbody')
 
             region_stats.forEach((key, value) => {
-                region_table.append("<tr><td>" + key.fields.region + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_page_views) * 100).toFixed(2) + "%</td></tr>");
+                region_table.append("<tr><td>" + key.region + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_region_stats_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_region_stats_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
 
             city_stats.forEach((key, value) => {
-                city_table.append("<tr><td>" + key.fields.city + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.fields.page_views / total_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.fields.page_views / total_page_views) * 100).toFixed(2) + "%</td></tr>");
+                city_table.append("<tr><td>" + key.city + "</td><td><div class='progress progress-sm mb-2' style='margin-top: 0.7em;'><div class='progress-bar' role='progressbar' style='width: " + (key.page_views / total_city_stats_page_views).toFixed(2) * 100 + "%'aria-valuemin='0' aria-valuemax='100'></div></div></td><td class='text-primary'>" + ((key.page_views / total_city_stats_page_views) * 100).toFixed(2) + "%</td></tr>");
             });
 
 

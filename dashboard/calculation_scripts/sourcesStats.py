@@ -1,6 +1,8 @@
 """
 This script takes logs from the 'Log' and calculates no of page loads 
 from different sources (search, referrer and direct).
+
+The script runs everyday after 12:00 AM.
 """
 
 import datetime

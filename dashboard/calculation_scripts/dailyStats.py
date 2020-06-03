@@ -21,6 +21,7 @@ from django.conf import settings
 # Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
+
 # Yesterdays datetime
 yesterday = datetime.datetime.now() - datetime.timedelta(1)
 
