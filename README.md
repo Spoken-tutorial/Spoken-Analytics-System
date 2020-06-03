@@ -18,13 +18,21 @@ cd Spoken-Analytics-System
 git checkout arish
 ```
 
-
 * Next, install the dependencies using pip:
 ```
 pip install -r requirements-dev.txt 
 ```
 
-* Change analytics_system/config.py-exp to analytics_system/config.py and change the configuration of databases
+* Change analytics_system/config.py-exp to analytics_system/config.py and change the configuration of database.
+
+* Go to file in env/lib/python3.6/site-packages/djongo/models/fields.py and change the line no 91 to 
+```
+for field in self.model_container._meta._get_fields(reverse = False):
+```
+(mind the underscores)
+This is to be done because there is bug in djongo in latest release.
+
+* For testing purpose download the [database dump](https://drive.google.com/file/d/18TtQIrt_hUbsX8u21vpBYuQQsZNhL-CS/view?usp=sharing). Most of the test data is of date range 25-05-2020 to 02-06-2020.
 
 * Restore the mongo dump
 ```
@@ -37,31 +45,12 @@ python3 manage.py makemigraions
 python3 manage.py migrate --database=default
 ```
 
-* Go to file in env/lib/python3.6/site-packages/djongo/models/fields.py and change the line no 91 to
-```
-for field in self.model_container._meta._get_fields(reverse = False):
-```
-(mind the underscores)
-This is to be done because there is bug in djongo in latest release.
-
-* After that you have to run (in the shell) all the files present in calculation_scripts directory so that stats can be calculated. 
-Note : First five files should be run in the same order given below.
-```
-python3 manage.py shell < temp_dailyStats.py
-python3 manage.py shell < temp_weeklyStats.py
-python3 manage.py shell < temp_monthlyStats.py
-python3 manage.py shell < temp_yearlyStats.py
-python3 manage.py shell < temp_averageStats.py
-...
-
-```
-
 * Finally, you’re ready to start the development server:
 ```
 python manage.py runserver
 ```
 
-Visit http://127.0.0.1:8000/dashboard in your browser to get to visualization page.
+Visit [Dashboard](http://127.0.0.1:8000/dashboard) in your browser to get to visualization page.
 
 
 
