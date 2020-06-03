@@ -125,13 +125,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
+# https://docs.djangoproject.com/en/3.0/topics/i0n/
 
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Kolkata'
 
-USE_I18N = True
+USE_I0N = True
 
 USE_L10N = True
 
@@ -153,56 +153,99 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 CELERY_IMPORTS = (
-    'dashboard.logsUtil_calcAvg',
-    'dashboard.logsUtil_calcEventStats',
-    'dashboard.logsUtil_calcFossStats',
-    # 'dashboard.logsUtil_calcISP',
-    'dashboard.logsUtil_calcLocStats',
-    'dashboard.logsUtil_daily',
-    'dashboard.logsUtil_monthly',
-    'dashboard.logsUtil_weekly',
-    'dashboard.logsUtil_yearly',
+    'dashboard.calculation_scripts.averageStats',
+    'dashboard.calculation_scripts.cameFromActivityStats',
+    'dashboard.calculation_scripts.cameFromStats',
+    'dashboard.calculation_scripts.dailyStats',
+    'dashboard.calculation_scripts.eventStats',
+    'dashboard.calculation_scripts.exitLinkStats',
+    'dashboard.calculation_scripts.fossStats',
+    'dashboard.calculation_scripts.locationStats',
+    'dashboard.calculation_scripts.monthlyStats',
+    'dashboard.calculation_scripts.pageViewActivityStats',
+    'dashboard.calculation_scripts.sourcesStats',
+    'dashboard.calculation_scripts.systemStats',
+    'dashboard.calculation_scripts.visitorActivityStats',
+    'dashboard.calculation_scripts.visitorInfoStats',
+    'dashboard.calculation_scripts.visitorPathStats',
+    'dashboard.calculation_scripts.visitorSpotStats',
+    'dashboard.calculation_scripts.weeklyStats',
+    'dashboard.calculation_scripts.yearlyStats',
 )
 
 # Other Celery settings
 CELERY_BEAT_SCHEDULE = {
-    'daily': {
-        'task': 'dashboard.logsUtil_daily.daily',
+    'average_statistics': {
+        'task': 'dashboard.calculation_scripts.averageStats.average_statistics',
         'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    'weekly': {
-        'task': 'dashboard.logsUtil_weekly.weekly',
-        'schedule': crontab(minute=0, hour=0, day_of_week='sun'),  # execute every Sunday, at 12am
+    'came_from_activity_statistics': {
+        'task': 'dashboard.calculation_scripts.cameFromActivityStats.came_from_activity_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    'monthly': {
-        'task': 'dashboard.logsUtil_monthly.monthly',
-        'schedule': crontab(minute=0, hour=0, day_of_month='1'),  # execute on the first day of every month,
-                                                                  # at 12am
+    'came_from_statistics': {
+        'task': 'dashboard.calculation_scripts.cameFromStats.came_from_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    'yearly': {
-        'task': 'dashboard.logsUtil_yearly.yearly',
-        'schedule': crontab(minute=0, hour=0, day_of_month='1', month_of_year='1'),  # execute on 1st Jan,
-                                                                                     # at 12am every year.
+    'daily_statistics': {
+        'task': 'dashboard.calculation_scripts.dailyStats.daily_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    'calc_avg': {
-        'task': 'dashboard.logsUtil_calcAvg.calc_avg',
-        'schedule': crontab(minute=0, hour=0),  # everyday at 12am.
+    'event_statistics': {
+        'task': 'dashboard.calculation_scripts.eventStats.event_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    'calc_event_stats': {
-        'task': 'dashboard.logsUtil_calcEventStats.calc_event_stats',
-        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    'exit_link_statistics': {
+        'task': 'dashboard.calculation_scripts.exitLinkStats.exit_link_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    'calc_foss_stats': {
-        'task': 'dashboard.logsUtil_calcFossStats.calc_foss_stats',
-        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    'foss_statistics': {
+        'task': 'dashboard.calculation_scripts.fossStats.foss_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
-    # 'calc_ISP': {
-    #     'task': 'dashboard.logsUtil_calcISP.calc_ISP',
-    #     'schedule': crontab(minute=0, hour=0),  # everyday at 12am
-    # },
-    'calc_loc_stats': {
-        'task': 'dashboard.logsUtil_calcLocStats.calc_loc_stats',
-        'schedule': crontab(minute=0, hour=0),  # everyday at 12am
+    'location_statistics': {
+        'task': 'dashboard.calculation_scripts.locationStats.location_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'monthly_statistics': {
+        'task': 'dashboard.calculation_scripts.monthlyStats.monthly_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'page_view_activity_statistics': {
+        'task': 'dashboard.calculation_scripts.pageViewActivityStats.page_view_activity_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'sources_statistics': {
+        'task': 'dashboard.calculation_scripts.sourcesStats.sources_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'system_statistics': {
+        'task': 'dashboard.calculation_scripts.systemStats.system_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'visitor_activity_statistics': {
+        'task': 'dashboard.calculation_scripts.visitorActivityStats.visitor_activity_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'visitor_info_statistics': {
+        'task': 'dashboard.calculation_scripts.visitorInfoStats.visitor_info_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'visitor_path_statistics': {
+        'task': 'dashboard.calculation_scripts.visitorPathStats.visitor_path_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'visitor_spot_statistics': {
+        'task': 'dashboard.calculation_scripts.visitorSpotStats.visitor_spot_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'weekly_statistics': {
+        'task': 'dashboard.calculation_scripts.weeklyStats.weekly_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
+    },
+    'yearly_statistics': {
+        'task': 'dashboard.calculation_scripts.yearlyStats.yearly_statistics',
+        'schedule': crontab(minute=0, hour=0),  # execute daily at midnight
     },
 }
 
