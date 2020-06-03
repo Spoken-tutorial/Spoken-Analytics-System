@@ -81,6 +81,9 @@ def save_middleware_log (request):
             else:
                 data[key] = values
 
+        if 'post_data' in data:
+            data['post_data'] = json.loads (data['post_data'])
+        
         # if the address is not a properly formatted IPv4 or IPv6, reject the log
         if not re.match(r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', data["ip_address"]):
             if not re.match(r'^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$', data['ip_address']):
@@ -172,30 +175,38 @@ def save_js_log (request):
         data['view_args'] = []
         data['view_kwargs'] = {}
 
-        # If the user lets the browser have location access, we get their accurate
-        # coordinates, which we can convert to a location using the reverse_geocoder library.
+        """
+        If the user lets the browser have location access, we get their accurate
+        coordinates, which we can convert to a location using the reverse_geocoder library.
+        However, the reverse_geocoder library is slow, and hence the following code is commented out.
+        Currently using placeholders.
+        """
         if data['country'] == "" or data['region'] == "" or data['city'] == "":
 
-            # perform reverse geocoding
-            try:
+        #     # perform reverse geocoding
+        #     try:
 
-                rg_result = rg.search((data["latitude"], data["longitude"])) 
-                data['region'] = rg_result[0]['admin1']
-                data['city'] = rg_result[0]['name']
-                country_code = rg_result[0]['cc']
-                data['country'] = pycountry.countries.get(alpha_2=country_code).name
+        #         rg_result = rg.search((data["latitude"], data["longitude"])) 
+        #         data['region'] = rg_result[0]['admin1']
+        #         data['city'] = rg_result[0]['name']
+        #         country_code = rg_result[0]['cc']
+        #         data['country'] = pycountry.countries.get(alpha_2=country_code).name
 
-            except:
+        #     except:
 
-                # in case the reverse geocoding did not return a field.
-                if not data["country"]:
-                    data["country"] = "Unknown"
+        #         # in case the reverse geocoding did not return a field.
+        #         if not data["country"]:
+        #             data["country"] = "Unknown"
 
-                if not data["region"]:
-                    data["region"] = "Unknown"
+        #         if not data["region"]:
+        #             data["region"] = "Unknown"
 
-                if not data["city"]:
-                    data["city"] = "Unknown"
+        #         if not data["city"]:
+        #             data["city"] = "Unknown"
+
+            data['country'] = 'India'
+            data['region'] = 'Maharashtra'
+            data['city'] = 'Mumbai'
 
         # enqueue job in the redis queue named 'js_log'
         REDIS_CLIENT.rpush('js_log', json.dumps(data))
