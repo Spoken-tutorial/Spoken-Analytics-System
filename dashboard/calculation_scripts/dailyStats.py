@@ -23,7 +23,7 @@ tz = timezone(settings.TIME_ZONE)
 
 
 # Yesterdays datetime
-yesterday = datetime.datetime.now() - datetime.timedelta(i)
+yesterday = datetime.datetime.now() - datetime.timedelta(1)
 
 yesterday_min = datetime.datetime.combine(yesterday, datetime.time.min) # Yesterdays min datetime
 yesterday_max = datetime.datetime.combine(yesterday, datetime.time.max) # Yesterdays max datetime

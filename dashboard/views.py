@@ -184,8 +184,8 @@ def getReportsStats(request):
     """
 
     # Getting data from various tables
-    region_stats = RegionStats.objects.all().order_by('-page_views')[0:10]
-    city_stats = CityStats.objects.all().order_by('-page_views')[0:10]
+    region_stats = RegionStats.objects.values('region').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
+    city_stats = CityStats.objects.values('city').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
     events_stats = EventStats.objects.values('path_info', 'page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
@@ -199,7 +199,8 @@ def getReportsStats(request):
     exit_link_stats = ExitLinkStats.objects.values('exit_link').order_by('-page_views').annotate(page_views=Sum('page_views'))[0:10]
 
     # total page views (needed to find percentage of page views)
-    total_page_views = Log.objects.all().count()
+    total_region_stats_page_views = RegionStats.objects.aggregate(Sum('page_views'))
+    total_city_stats_page_views = CityStats.objects.aggregate(Sum('page_views'))
     total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))
     total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))
     total_browser_page_views = BrowserStats.objects.aggregate(Sum('page_views'))
@@ -207,8 +208,8 @@ def getReportsStats(request):
     total_os_page_views = OSStats.objects.aggregate(Sum('page_views'))
 
     # Converting data to json format
-    json_region_stats = serializers.serialize('json', region_stats)
-    json_city_stats = serializers.serialize('json', city_stats)
+    json_region_stats = json.dumps(list(region_stats), cls=DjangoJSONEncoder)
+    json_city_stats = json.dumps(list(city_stats), cls=DjangoJSONEncoder)
 
     json_foss_stats = json.dumps(list(foss_stats), cls=DjangoJSONEncoder)
     json_event_stats = json.dumps(list(events_stats), cls=DjangoJSONEncoder)
@@ -223,7 +224,8 @@ def getReportsStats(request):
     json_res = {
         'region_stats': json_region_stats,
         'city_stats': json_city_stats,  
-        'total_page_views': total_page_views,
+        'total_region_stats_page_views': total_region_stats_page_views['page_views__sum'],
+        'total_city_stats_page_views': total_city_stats_page_views['page_views__sum'],
 
         'foss_stats': json_foss_stats,
         'total_foss_page_views': total_foss_page_views['page_views__sum'],
@@ -278,10 +280,11 @@ def locationReport(request):
     Renders the location stats page
     """
     # Getting data from various tables
-    region_stats = RegionStats.objects.all().order_by('-page_views')
-    city_stats = CityStats.objects.all().order_by('-page_views')
+    region_stats = RegionStats.objects.values('region').order_by('-page_views').annotate(page_views=Sum('page_views'))
+    city_stats = CityStats.objects.values('city').order_by('-page_views').annotate(page_views=Sum('page_views'))
 
-    total_page_views = AverageStats.objects.all().order_by('-datetime').first().total_page_views
+    total_region_stats_page_views = RegionStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+    total_city_stats_page_views = CityStats.objects.aggregate(Sum('page_views'))['page_views__sum']
 
     # variables to store stats
     r_stats = []
@@ -289,10 +292,10 @@ def locationReport(request):
 
     # Preparing data to be sent to template
     for stat in region_stats:
-        r_stats.append({'region' : stat.region, 'page_views': int(stat.page_views), 'percentage': round((stat.page_views/total_page_views) * 100, 2)})
+        r_stats.append({'region' : stat['region'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_region_stats_page_views) * 100, 2)})
     
     for stat in city_stats:
-        c_stats.append({'city' : stat.city, 'page_views': int(stat.page_views), 'percentage': round((stat.page_views/total_page_views) * 100, 2)})
+        c_stats.append({'city' : stat['city'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_city_stats_page_views) * 100, 2)})
 
     context = {
         'region_stats': r_stats,

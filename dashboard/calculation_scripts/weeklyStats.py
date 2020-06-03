@@ -21,7 +21,7 @@ from django.conf import settings
 # Timezone object used to localize time in current timezone
 tz = timezone(settings.TIME_ZONE)
 
-yesterday = datetime.datetime.now() - datetime.timedelta(i) # Yesterdays datetime
+yesterday = datetime.datetime.now() - datetime.timedelta(1) # Yesterdays datetime
 seven_days_ago = yesterday - datetime.timedelta(yesterday.weekday()) # 7 days ago datetime
 
 seven_days_ago_min = datetime.datetime.combine(seven_days_ago, datetime.time.min) # Seven days ago min datetime
