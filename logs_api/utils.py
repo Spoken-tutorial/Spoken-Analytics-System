@@ -15,7 +15,7 @@ def update_tutorial_progress(data):
 
     try:
         # mark as complete if current timestamp >= 80% of total length of tutorial
-        if data['curr_time'] >= 0.8 * data['total_time']:
+        if data['allow_completion_change'] == 'true' and data['curr_time'] >= 0.8 * data['total_time']:
 
             tutorial_progress_logs.find_one_and_update(
                 { "username" : data['username'] }, 
@@ -31,7 +31,7 @@ def update_tutorial_progress(data):
 
             return
 
-        # if curr_time is not yet 80% of total
+        # if curr_time is not yet 80% of total or completion change is not allowed.
 
         tutorial_progress_logs.find_one_and_update(
             { "username" : data['username'] }, 

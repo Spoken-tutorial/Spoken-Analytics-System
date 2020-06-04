@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Spoken-Analytics-System
 
 ## Setting up the project
@@ -55,3 +56,7 @@ Visit [Dashboard](http://127.0.0.1:8000/dashboard) in your browser to get to vis
 
 
 
+=======
+[README for Analytics System](dashboard/)  
+[README for Logs API](logs_api/)
+>>>>>>> krithik
