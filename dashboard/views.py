@@ -509,7 +509,8 @@ def fossEventReport(request):
     foss_stats = FossStats.objects.values('foss_name').order_by('-page_views').annotate(page_views=Sum('page_views'))
     event_stats = EventStats.objects.values('page_title').order_by('-page_views').annotate(page_views=Sum('page_views'))
 
-    total_page_views = AverageStats.objects.all().order_by('-datetime').first().total_page_views
+    total_foss_page_views = FossStats.objects.aggregate(Sum('page_views'))['page_views__sum']
+    total_events_page_views = EventStats.objects.aggregate(Sum('page_views'))['page_views__sum']
 
     # variables to store stats
     e_stats = []
@@ -517,10 +518,10 @@ def fossEventReport(request):
 
     # Preparing data to be sent to template
     for stat in event_stats:
-        e_stats.append({'page_title' : stat['page_title'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_page_views) * 100, 2)})
+        e_stats.append({'page_title' : stat['page_title'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_events_page_views) * 100, 2)})
     
     for stat in foss_stats:
-        f_stats.append({'foss_name' : stat['foss_name'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_page_views) * 100, 2)})
+        f_stats.append({'foss_name' : stat['foss_name'], 'page_views': int(stat['page_views']), 'percentage': round((stat['page_views']/total_foss_page_views) * 100, 2)})
 
     context = {
         'foss_stats': f_stats,

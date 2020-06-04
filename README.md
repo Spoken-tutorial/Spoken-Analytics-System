@@ -30,7 +30,7 @@ pip install -r requirements-dev.txt
 for field in self.model_container._meta._get_fields(reverse = False):
 ```
 (mind the underscores)
-This is to be done because there is bug in djongo in latest release.
+This is to be done because there is bug in djongo (a library used in this project) in latest release.
 
 * For testing purpose download the [database dump](https://drive.google.com/file/d/18TtQIrt_hUbsX8u21vpBYuQQsZNhL-CS/view?usp=sharing). Most of the test data is of date range 25-05-2020 to 02-06-2020.
 

@@ -18,7 +18,7 @@ Chart.defaults.global.elements.line.tension = 0; // tension of lines in line gra
 $(document).ready(function() {
 
     $('#graph-from-date').val(moment().subtract(15, 'days').toISOString().substr(0, 10));
-    $('#graph-to-date').val(moment().toISOString().substr(0, 10));
+    $('#graph-to-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
 
     getEventData();
 
