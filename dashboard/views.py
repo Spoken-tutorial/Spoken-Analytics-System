@@ -19,7 +19,6 @@ from .models import BrowserStats, PlatformStats, OSStats, SourcesStats, CameFrom
 # get current timezone 
 tz = timezone(settings.TIME_ZONE)
 
-# Create your views here.
 def index(request):
     """
     Renders the dashboard page
@@ -33,7 +32,6 @@ def index(request):
     
     return render(request, 'index.html', context)
 
-# This view serves the daily stats to graph of dashboard
 def graphData(request):
     """
     Suppy data to graph for visualization

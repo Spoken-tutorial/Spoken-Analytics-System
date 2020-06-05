@@ -1,9 +1,13 @@
 """
-This file contains name of events for logs data are being logged.
-Add the event names and title page new events for which stats are to be calculated.
+This file contains name of events of which logs are being logged.
+
+Currently this file is being used only to find the titles of page using event name.
+The logs stored using middleware do not contain title of page.
+So the function get_title_of_event() is used to get the page title.
+This file is only used in the calculation of event stats.
 """
 
-# List of tuples containing event_names and page titles
+# List of tuples containing event names and page titles
 events_titles = [
     ("event.video.watch", "Watch Tutorial | spoken-tutorial.org"), 
     ("event.cdcontent.download", "CD Content Creation | spoken-tutorial.org"), 
