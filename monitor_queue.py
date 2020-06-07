@@ -39,7 +39,6 @@ else:
 logging.basicConfig(level=logging.INFO, format='[%(name)s] [%(asctime)s] %(levelname)s : %(message)s')
 logger = logging.getLogger('monitor_queue')
 
-
 """
 Continuosly monitor the redis 'tasks' queue length.
 if reaches >= MONGO_BULK_INSERT_COUNT items, pop the 
@@ -50,10 +49,22 @@ since the queue is a FIFO structure).
 """
 def monitor_queue ():
 
+    redis_connected_flag = True
+    
     while True:
 
         try:
-           
+            
+            if not redis_connected_flag:
+
+                try:
+                    REDIS_CLIENT.ping()
+                    redis_connected_flag = True
+                    logger.info(f'Successfully connected to Redis server.')
+                except Exception as e:
+                    time.sleep(settings.MONITOR_QUEUE_ITERATION_DELAY)
+                    continue
+
             if REDIS_CLIENT.llen(task_queue) >= settings.MONGO_BULK_INSERT_COUNT:
 
                 t0 = time.clock()
@@ -61,7 +72,8 @@ def monitor_queue ():
                 # Extract MONGO_BULK_INSERT_COUNT number of logs from task queue
                 logs = REDIS_CLIENT.lrange(task_queue, 0, settings.MONGO_BULK_INSERT_COUNT - 1)
 
-                # Trim the queue to only contain the non-extracted items, if any.
+                # Trim the queue to only contain the non-extracted items, if any. There
+                # is no opportunity here for the loss of logs, other than the ones being trimmed.
                 REDIS_CLIENT.ltrim(task_queue, start=settings.MONGO_BULK_INSERT_COUNT, end=-1)
 
                 for i in range(len(logs)):
@@ -103,7 +115,9 @@ def monitor_queue ():
             time.sleep(settings.MONITOR_QUEUE_ITERATION_DELAY)
         
         except redis.ConnectionError:
-            logger.error("Either the redis server is not running, or the redis configurations are incorrect.")
+            if redis_connected_flag:
+                redis_connected_flag = False
+                logger.error("Either the redis server is not running, or the redis configurations are incorrect.")
             time.sleep(settings.MONITOR_QUEUE_ITERATION_DELAY)
 
         except Exception:
