@@ -24,8 +24,8 @@ var eventsDataTable = $('#events-data-table').DataTable({
 // Initialization of date selects
 $(document).ready(function() {
 
-    $('#event-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
-    $('#event-to-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
+    $('#event-from-date').val(moment().subtract(8, 'days').toISOString().substr(0, 10));
+    $('#event-to-date').val(moment().subtract(8, 'days').toISOString().substr(0, 10));
 
     getEventsData();
 

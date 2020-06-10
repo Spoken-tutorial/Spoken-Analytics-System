@@ -78,6 +78,7 @@ def event_statistics(self):
             event_stats.date = yesterday.date()
             event_stats.path_info = path
 
+            # ff page_title is present, use page_title else get page title from events_info.py
             if daily_logs.first().page_title != "":
                 title = daily_logs.first().page_title
             else:

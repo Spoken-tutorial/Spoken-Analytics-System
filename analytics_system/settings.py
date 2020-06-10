@@ -87,7 +87,7 @@ DATABASES = {
     # Default database
     'default': {
         'ENGINE': 'djongo',
-        'NAME': MongoDB,
+        'NAME': MONGO_DB,
     },
     # Database used for authentication
     'spoken': {
@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': DB,
         'USER': DB_USER,
         'PASSWORD': DB_PASS,
-        'HOST': '',                            # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'HOST': '',                                           # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',
     },
 }

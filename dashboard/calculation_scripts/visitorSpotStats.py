@@ -42,5 +42,6 @@ def visitor_spot_statistics(self):
         visitor_spot = VisitorSpot()
         visitor_spot.datetime = ip_logs.datetime
         visitor_spot.ip_address =  ip_logs.ip_address
-        visitor_spot.geom = {'type': 'Point','coordinates': [ip_logs.longitude, ip_logs.latitude] }
+        # geom object is used to display point on graph
+        visitor_spot.geom = {'type': 'Point','coordinates': [ip_logs.longitude, ip_logs.latitude] } 
         visitor_spot.save()

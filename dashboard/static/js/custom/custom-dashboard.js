@@ -32,8 +32,8 @@ $(document).ready(function() {
     });
 
     // Initialize date selects with initial values
-    document.querySelector("#graph-to-date").value = moment().subtract(1, 'days').toISOString().substr(0, 10);
-    document.querySelector("#graph-from-date").value = moment().subtract(7, 'days').toISOString().substr(0, 10);
+    document.querySelector("#graph-to-date").value = moment().subtract(8, 'days').toISOString().substr(0, 10);
+    document.querySelector("#graph-from-date").value = moment().subtract(15, 'days').toISOString().substr(0, 10);
 
     var week_of_year = moment().isoWeek();
     var year = moment().year();
@@ -463,14 +463,14 @@ $('#summary-granularity-trigger').on('change', function() {
     updateAverageCounters();
 
     // Reset graph-to-date to current date
-    $("#graph-to-date").val(moment().toISOString().substr(0, 10));
+    $("#graph-to-date").val(moment().subtract(8, 'days').toISOString().substr(0, 10));
 
     if (data_summary_type == 'daily') {
 
         timeFormat = 'YYYY-MM-DD';
 
         // Reset graph-to-date to current date - 7 days
-        $("#graph-from-date").val(moment().subtract(7, 'days').toISOString().substr(0, 10));
+        $("#graph-from-date").val(moment().subtract(15, 'days').toISOString().substr(0, 10));
 
         $('#date-select-div').show();
         $('#week-select-div').hide();
