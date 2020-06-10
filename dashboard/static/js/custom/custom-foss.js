@@ -23,8 +23,8 @@ var fossDataTable = $('#foss-data-table').DataTable({
 // Initialization of date selects
 $(document).ready(function() {
 
-    $('#foss-from-date').val(moment().subtract(8, 'days').toISOString().substr(0, 10));
-    $('#foss-to-date').val(moment().subtract(8, 'days').toISOString().substr(0, 10));
+    $('#foss-from-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
+    $('#foss-to-date').val(moment().subtract(1, 'days').toISOString().substr(0, 10));
 
     getFossData();
 

@@ -27,7 +27,7 @@ def location_statistics(self):
     yesterday_max = tz.localize(yesterday_max)
 
     # Getting yesterdays data from log collection
-    yesterdays_logs = Log.objects.filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') 
+    yesterdays_logs = Log.objects.filter(datetime__range=(yesterday_min, yesterday_max))
 
 
     # Calculating city stats (which city got how much page views)

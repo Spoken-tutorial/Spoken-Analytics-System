@@ -69,7 +69,6 @@ def foss_statistics(self):
                     if ip == log.ip_address:
                         # if ip is found for the first time
                         if first_time == 0:
-                            prev_datetime = log.datetime
                             first_time = 1
                             unique_visits += 1
                         else:

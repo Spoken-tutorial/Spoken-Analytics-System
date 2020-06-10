@@ -40,12 +40,12 @@ def came_from_statistics(self):
             # if referring url is not of spoken website
             if not log.referrer.find('https://spoken-tutorial.org') != -1:
 
-                referrer_logs = Log.objects.filter(referrer=referrer).filter(datetime__range=(yesterday_min, yesterday_max)).order_by('datetime') # Getting data of the date from log collection
+                referrer_logs = Log.objects.filter(referrer=referrer).filter(datetime__range=(yesterday_min, yesterday_max)).count() # Getting data of the date from log collection
                 
                 came_from_stats = CameFromStats()
 
                 came_from_stats.datetime = tz.localize(yesterday)
                 came_from_stats.referrer = referrer
-                came_from_stats.page_views = len(referrer_logs)
+                came_from_stats.page_views = referrer_logs
 
                 came_from_stats.save()

@@ -1,5 +1,8 @@
 # Spoken-Analytics-System
 
+## Overview
+This is the web analytics system developed under the FOSSEE fellowship program. This system stores the logs whenever a visitor visits the [spoken website](https://spoken-tutorial.org/) and calculates the statistics and crate visualization of statistics. This system is similar to [statcounter](https://statcounter.com) which is currently being used as web analytics system for spoken website.
+
 ## Setting up the project
 * Create a virtual environment in recently created directory and activate it:
 ```
@@ -18,7 +21,7 @@ cd Spoken-Analytics-System
 pip install -r requirements-dev.txt 
 ```
 
-* Change analytics_system/config.py-exp to analytics_system/config.py and change the configuration of database.
+* Change analytics_system/example.config.py to analytics_system/config.py and change the configuration of databases.
 
 * Go to file in env/lib/python3.6/site-packages/djongo/models/fields.py and change the line no 91 to 
 ```
