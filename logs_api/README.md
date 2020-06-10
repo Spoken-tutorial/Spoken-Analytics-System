@@ -1,7 +1,8 @@
 # Website log storage API
 
-- Run the Django server on port 8001, as specified in the repo's README ~ ```python manage.py runserver <internal_ip_address>:8001```
+- Run the Django server on port 8001, as specified in the repo's README ~ ```python manage.py runserver 127.0.0.1:8001```
 - Ensure the Redis server is running and configured correctly. Then run monitor_queue.py ~ ```python monitor_queue.py```
+- **Note:** If you need to change the IP address/port on which the server runs, you will also need to change the LOGS_API_URL value in the settings.py of spoken-website.
 
 # Tutorial progress logs API
 

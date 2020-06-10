@@ -42,10 +42,10 @@ python3 manage.py migrate --database=default
 
 * Finally, you’re ready to start the development server:
 ```
-python manage.py runserver <internal_ip_address>:8001
+python manage.py runserver 127.0.0.1:8001
 ```
 
-Visit http://<internal_ip_address>:8000/dashboard in your browser to get to visualization page.
+Visit http://127.0.0.1:8001/dashboard in your browser to get to visualization page.
 
 
 ### [README for Logs API](logs_api/)
