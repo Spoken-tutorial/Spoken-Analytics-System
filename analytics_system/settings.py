@@ -256,11 +256,11 @@ GEOIP_PATH  = BASE_DIR + '/geodb/'
 
 MONITOR_QUEUE_ITERATION_DELAY = 5  # delay between successive iterations of monitor_queue.py, in seconds
 
-USE_MIDDLEWARE_LOGS = False  # whether to use middleware logs or client-side JS logs system
+USE_MIDDLEWARE_LOGS = True  # whether to use middleware logs or client-side JS logs system
 
 SAVE_LOGS_WITH_CELERY = False
 
-MONGO_BULK_INSERT_COUNT = 1  # change to 10000 later
+MONGO_BULK_INSERT_COUNT = 5  # change to a large value like 10000 later
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (20.5937, 78.9629),

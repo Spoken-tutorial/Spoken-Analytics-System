@@ -158,3 +158,16 @@ TODO - continue where the user left off
 pip install pyyaml ua-parser user-agents  
 pip install django-user-agents
 pip install reverse-geocoder
+
+# Using Logstash to sync MongoDB and Elasticsearch
+
+- Download the driver [here](https://dbschema.com/jdbc-driver/MongoDb.html)
+- Extract the zip contents
+- Ensure you have Elasticsearch, MongoDB and Logstash installed, and that Elasticsearch is running.
+- Download the configuration file [mongo-es-logstash.conf](mongo-es-logstash.conf) present in this repo, and change the configurations as required (you will definitely need to change the value of jdbc_driver_library).
+- Run logstash with
+> sudo /path/to/logstash -f /path/to/mongo-es-logstash.conf    
+  
+For example,    
+  
+> sudo /usr/share/logstash/bin/logstash -f /home/krithik/Desktop/Git/Spoken-Analytics-System/Misc/mongo-es-logstash.conf    
