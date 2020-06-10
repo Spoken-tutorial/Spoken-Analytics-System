@@ -1,7 +1,7 @@
 # Spoken-Analytics-System
 
 ## Overview
-This is the web analytics system developed under the FOSSEE fellowship program. This system stores the logs whenever a visitor visits the [spoken website](https://spoken-tutorial.org/) and calculates the statistics and crate visualization of statistics. This system is similar to [statcounter](https://statcounter.com) which is currently being used as web analytics system for spoken website.
+This is the web analytics system developed under the FOSSEE fellowship program. This system stores the logs whenever a visitor visits the [spoken website](https://spoken-tutorial.org/) and calculates the statistics and create visualization of statistics. This system is similar to [statcounter](https://statcounter.com) which is currently being used as web analytics system for spoken website.
 
 ## Setting up the project
 * Create a virtual environment in recently created directory and activate it:
