@@ -17,7 +17,7 @@ This will send the cron jobs defined in settings.py to Celery. So Celery has to 
 
 ## [Documentation Report](https://docs.google.com/document/d/1YXwQmeMuMrX0YKncGss35xBPszmqwgO2zt37Oj0-0Vk/edit)
 
-## Presentation Video - yet to add.
+## [Presentation Video](https://drive.google.com/file/d/1MxgjGecnsIjRe7RS8GWwE61BneNbGoqU/view?usp=sharing).
 
 ## Using Logstash to sync MongoDB and Elasticsearch
 
