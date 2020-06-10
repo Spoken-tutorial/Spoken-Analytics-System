@@ -179,7 +179,9 @@ def save_js_log (request):
         If the user lets the browser have location access, we get their accurate
         coordinates, which we can convert to a location using the reverse_geocoder library.
         However, the reverse_geocoder library is slow, and hence the following code is commented out.
-        Currently using placeholders.
+        Currently using placeholders, check below
+        If the user does not let the browser have their location data, freegeoip API is queried, which
+        returns all the location data, so we don't need to worry about reverse geocoding.
         """
         if data['country'] == "" or data['region'] == "" or data['city'] == "":
 
@@ -204,6 +206,7 @@ def save_js_log (request):
         #         if not data["city"]:
         #             data["city"] = "Unknown"
 
+            # use placeholder data instead, for now
             data['country'] = 'India'
             data['region'] = 'Maharashtra'
             data['city'] = 'Mumbai'
