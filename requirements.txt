@@ -5,7 +5,7 @@ celery==4.4.2
 certifi==2020.4.5.1
 chardet==3.0.4
 dataclasses==0.7
-Django==2.2.12
+Django==2.2.28
 django-cors-headers==3.2.1
 django-geojson==3.0.0
 django-leaflet==0.26.0
